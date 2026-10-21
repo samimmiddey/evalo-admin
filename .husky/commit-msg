@@ -1,0 +1,15 @@
+# Validate the commit message against the rules in commitlint.config.mjs
+# Git passes the path of the temporary file holding the message as $1
+# If commitlint exits with an error, git cancels the commit
+echo "🔍 Checking commit message..."
+
+if npx --no -- commitlint --edit "$1"; then
+   # Message follows the conventional format
+   echo "✅ Commit message is valid!"
+else
+   # Non-zero exit blocks the commit, so show the expected format
+   echo "❌ Invalid commit message. Use the format: type(scope): subject"
+   echo "   Allowed types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
+   echo "   Example: feat(auth): add login form"
+   exit 1
+fi

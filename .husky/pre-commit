@@ -1,0 +1,14 @@
+# Pre-commit hook runs lint-staged on staged files only
+echo "🔍 Starting pre-commit checks..."
+
+# Exit code 0 = all checks passed, any other code means lint errors remain
+if npx lint-staged; then
+   echo "✅ Lint-staged checks passed successfully!"
+else
+   echo "Lint-staged checks failed. Please fix the issues and try again."
+   # Non-zero exit makes git cancel the commit
+   exit 1
+fi
+
+# Only reached if the checks passed, because the else branch exits above
+echo "🚀 All pre-commit checks passed. Proceeding with commit..."
