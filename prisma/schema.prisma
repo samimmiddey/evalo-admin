@@ -1,0 +1,285 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ENUMS
+
+enum UserRole {
+  UNASSIGNED
+  CANDIDATE
+  INTERVIEWER
+}
+
+enum BookingStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum CompletionReason {
+  MUTUAL
+  CANDIDATE_NO_SHOW
+}
+
+enum StreamStatus {
+  READY
+  PENDING
+  FAILED
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BOOKED
+  BLOCKED
+}
+
+enum PayoutStatus {
+  PROCESSING
+  PROCESSED
+  REJECTED
+}
+
+enum InterviewExpertise {
+  FRONTEND
+  BACKEND
+  FULLSTACK
+  DEVOPS
+  DSA
+  SYSTEM_DESIGN
+  MOBILE
+  ML_AI
+  SECURITY
+  QA
+  CLOUD
+}
+
+enum FeedbackRating {
+  POOR
+  AVERAGE
+  GOOD
+  EXCELLENT
+}
+
+enum TransactionType {
+  CREDIT_PURCHASE
+  BOOKING_DEDUCTION
+  BOOKING_EARNING
+  ADMIN_ADJUSTMENT
+  BOOKING_REFUND
+  BOOKING_REVERSAL
+}
+
+enum SubscriptionStatus {
+  INITIALIZED
+  BANK_APPROVAL_PENDING
+  ACTIVE
+  ON_HOLD
+  PAUSED
+  CANCELLED
+  COMPLETED
+  EXPIRED
+}
+
+// USER
+
+model User {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  email       String   @unique
+  firstName   String?
+  lastName    String?
+  phone       String?
+  imageUrl    String?
+  role        UserRole @default(UNASSIGNED)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // candidate only
+  credits                  Int       @default(0)
+  currentPlan              String    @default("free")
+  creditsLastAllocatedAt   DateTime?
+  lastProcessedPeriodStart DateTime?
+
+  // interviewer only
+  bio           String?
+  designation   String?
+  company       String?
+  experience    Int?
+  expertise     InterviewExpertise[]
+  creditRate    Int                  @default(1)
+  creditBalance Int                  @default(0)
+  averageRating Float?
+  totalRatings  Int                  @default(0)
+
+  availabilities        Availability[]
+  bookingsAsCandidate   Booking[]           @relation("CandidateBookings")
+  bookingsAsInterviewer Booking[]           @relation("InterviewerBookings")
+  transactions          CreditTransaction[]
+  payouts               Payout[]
+  subscriptions         Subscription[]
+}
+
+// SUBSCRIPTION (Cashfree Mandates)
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cashfreeSubId      String             @unique
+  cashfreePlanId     String
+  planSlug           String
+  status             SubscriptionStatus @default(INITIALIZED)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  customerPhone      String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([userId, status])
+  @@index([cashfreeSubId])
+}
+
+// AVAILABILITY
+
+model Availability {
+  id            String             @id @default(uuid())
+  interviewerId String
+  interviewer   User               @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
+  startTime     DateTime
+  endTime       DateTime
+  status        AvailabilityStatus @default(AVAILABLE)
+
+  @@index([interviewerId, startTime])
+}
+
+// BOOKINGS
+
+model Booking {
+  id             String              @id @default(uuid())
+  candidateId    String
+  candidate      User                @relation("CandidateBookings", fields: [candidateId], references: [id])
+  interviewerId  String
+  interviewer    User                @relation("InterviewerBookings", fields: [interviewerId], references: [id])
+  startTime      DateTime
+  endTime        DateTime
+  status           BookingStatus       @default(SCHEDULED)
+  completionReason CompletionReason?
+  streamStatus     StreamStatus        @default(READY)
+  creditsCharged Int
+  streamCallId   String?             @unique
+  recordingUrl   String?
+  isRefunded     Boolean             @default(false)
+  feedback       Feedback?
+  review         Review?
+  transactions   CreditTransaction[]
+  sessions       BookingSession[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([status, createdAt])
+  @@index([interviewerId, status])
+  @@index([candidateId, status])
+}
+
+// FEEDBACK (Gemini AI Evaluation)
+
+model Feedback {
+  id             String         @id @default(uuid())
+  bookingId      String         @unique
+  booking        Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  summary        String         @db.Text
+  technical      String         @db.Text
+  communication  String         @db.Text
+  problemSolving String         @db.Text
+  recommendation String
+  strengths      String[]
+  improvements   String[]
+  overallRating  FeedbackRating
+  createdAt      DateTime       @default(now())
+}
+
+// REVIEWS (Candidate review/rating of Interviewer)
+
+model Review {
+  id        String   @id @default(uuid())
+  bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+}
+
+// CREDIT TRANSACTIONS
+
+model CreditTransaction {
+  id        String          @id @default(uuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int
+  type      TransactionType
+  reason    CompletionReason?
+  bookingId String?
+  booking   Booking?        @relation(fields: [bookingId], references: [id])
+  createdAt DateTime        @default(now())
+}
+
+// PAYOUTS
+
+model Payout {
+  id            String       @id @default(uuid())
+  interviewerId String
+  interviewer   User         @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
+  credits       Int
+  platformFee   Float
+  netAmount     Float
+  status        PayoutStatus @default(PROCESSING)
+  adminNote     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  processedAt   DateTime?
+  processedBy   String?
+
+  @@index([status, createdAt])
+  @@index([interviewerId, status])
+}
+
+// BOOKING SESSIONS
+
+model BookingSession {
+  id                String   @id @default(uuid())
+  bookingId         String
+  booking           Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  streamSessionId   String
+  coPresenceSeconds          Int      @default(0)
+  interviewerPresenceSeconds Int      @default(0)
+  candidatePresenceSeconds   Int      @default(0)
+  createdAt                  DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([bookingId, streamSessionId])
+  @@index([bookingId])
+}
+
+// PLATFORM CONFIG
+
+model PlatformConfig {
+  id                 String   @id @default(uuid())
+  creditPayoutRate   Float
+  platformFeePercent Float
+  minPayoutCredits   Int
+  currency           String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
