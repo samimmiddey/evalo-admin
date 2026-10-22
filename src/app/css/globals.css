@@ -7,9 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-geist: var(--font-geist);
+  --font-inter: var(--font-inter);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,6 +45,7 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --breakpoint-xs: 460px;
 }
 
 :root {
@@ -121,10 +121,38 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    @apply font-inter;
   }
-  html {
-    @apply font-sans;
-  }
+}
+
+/* common classes */
+.s-padding {
+  padding: 6.5rem 0;
+}
+
+.s-padding-t {
+  padding-top: 6.5rem;
+}
+
+.s-padding-b {
+  padding-bottom: 6.5rem;
+}
+
+.s-margin {
+  margin: 6.5rem 0;
+}
+
+.s-margin-t {
+  margin-top: 6.5rem;
+}
+
+.s-margin-b {
+  margin-bottom: 6.5rem;
+}
+
+.container {
+  @apply !mx-auto w-full max-w-350 px-4;
 }

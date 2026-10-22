@@ -1,0 +1,113 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* 2xl */
+@media screen and (max-width: 1535px) {
+   .container {
+      @apply max-w-300;
+   }
+
+   .s-padding {
+      padding: 5.5rem 0;
+   }
+
+   .s-padding-t {
+      padding-top: 5.5rem;
+   }
+
+   .s-padding-b {
+      padding-bottom: 5.5rem;
+   }
+
+   .s-margin {
+      margin: 5.5rem 0;
+   }
+
+   .s-margin-t {
+      margin-top: 5.5rem;
+   }
+
+   .s-margin-b {
+      margin-bottom: 5.5rem;
+   }
+}
+
+/* XL */
+@media screen and (max-width: 1279px) {
+   .container {
+      @apply max-w-5xl;
+   }
+}
+
+/* LG */
+@media screen and (max-width: 1023px) {
+   .container {
+      @apply max-w-3xl;
+   }
+
+   .s-padding {
+      padding: 5rem 0;
+   }
+
+   .s-padding-t {
+      padding-top: 5rem;
+   }
+
+   .s-padding-b {
+      padding-bottom: 5rem;
+   }
+
+   .s-margin {
+      margin: 5rem 0;
+   }
+
+   .s-margin-t {
+      margin-top: 5rem;
+   }
+
+   .s-margin-b {
+      margin-bottom: 5rem;
+   }
+}
+
+/* MD */
+@media screen and (max-width: 767px) {
+   .container {
+      @apply max-w-160;
+   }
+
+   .s-padding {
+      padding: 4.5rem 0;
+   }
+
+   .s-padding-t {
+      padding-top: 4.5rem;
+   }
+
+   .s-padding-b {
+      padding-bottom: 4.5rem;
+   }
+
+   .s-margin {
+      margin: 4.5rem 0;
+   }
+
+   .s-margin-t {
+      margin-top: 4.5rem;
+   }
+
+   .s-margin-b {
+      margin-bottom: 4.5rem;
+   }
+}
+
+/* SM */
+@media screen and (max-width: 639px) {
+   .container {
+      @apply max-w-full;
+   }
+}
+
+/* XS */
+@media screen and (max-width: 459px) {}
