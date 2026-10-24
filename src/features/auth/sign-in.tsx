@@ -4,7 +4,7 @@ import ScreenLoader from '@/components/common/screen-loader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { authData } from '@/data/auth/auth.data';
-import { useAuth, useClerk, useSession, useSignIn } from '@clerk/nextjs';
+import { useAuth, useClerk, useSignIn } from '@clerk/nextjs';
 import { Eye, EyeOff } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
@@ -29,7 +29,6 @@ const SignIn = () => {
    const { signIn, errors, fetchStatus } = useSignIn();
    const { isSignedIn } = useAuth();
    const { client } = useClerk();
-   const { session } = useSession();
    const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
    const router = useRouter();
@@ -123,12 +122,15 @@ const SignIn = () => {
    };
 
    // Show loader if clerk isn't loaded
-   if (!signIn) {
+   if (!signIn || !client) {
       return <ScreenLoader text="Loading..." />;
    }
 
+   const currentSession = client.sessions.find((s) => s.id === signIn.createdSessionId);
+   const isAdmin = currentSession?.user?.publicMetadata?.role === 'ADMIN';
+
    // Show loader if sign in is complete or user is already signed in
-   if ((signIn.status === 'complete' || isSignedIn) && session?.user?.publicMetadata?.role === 'ADMIN') {
+   if ((signIn.status === 'complete' || isSignedIn) && isAdmin) {
       return (
          <ScreenLoader
             text="Redirecting..."
