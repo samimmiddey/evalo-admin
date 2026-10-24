@@ -10,7 +10,7 @@ const PrimaryTitle = ({
    className,
 }: PrimaryTitleProps) => {
    return (
-      <h2 className={cn('font-bricolage font-bold text-3xl lg:text-[40px] 2xl:text-5xl', className)}>
+      <h2 className={cn('font-geist font-bold text-3xl lg:text-4xl 2xl:text-[42px] text-zinc-100', className)}>
          {text}
       </h2>
    );
