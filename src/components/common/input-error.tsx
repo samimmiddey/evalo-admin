@@ -7,7 +7,7 @@ interface InputErrorProps {
 
 const InputError = ({ message, className }: InputErrorProps) => {
    return (
-      <p className={cn('text-red-400 text-xs 2xl:text-sm -mt-0.5 2xl:-mt-1', className)}>
+      <p className={cn('text-red-400 text-xs 2xl:text-sm -mt-0.5', className)}>
          {message}
       </p>
    );

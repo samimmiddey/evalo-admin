@@ -3,6 +3,10 @@ import { Geist, Inter } from "next/font/google";
 import "./css/globals.css";
 import "./css/responsive.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from '@clerk/ui/themes';
+import { TopLoader } from "@/components/common/top-loader";
+import { Toaster } from "sonner";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -27,13 +31,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-zinc-950">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ClerkProvider appearance={{ theme: dark }}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+          >
+            <TopLoader />
+            {children}
+            <Toaster position="top-center" richColors />
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

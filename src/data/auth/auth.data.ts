@@ -1,7 +1,7 @@
 import { AuthData } from './auth.types';
 
 export const authData: AuthData = {
-   form: {
+   signIn: {
       title: 'Welcome Back',
       description: 'Enter your authorized administrator credentials to manage interview reviews and AI feedback',
       emailInput: {
@@ -18,6 +18,19 @@ export const authData: AuthData = {
       },
       forgotPassword: 'Forgot password?',
       submitButtonText: 'Sign in',
+   },
+   otp: {
+      title: 'Verify your account',
+      description: 'Enter the 6-digit verification code sent to your email address',
+      codeInput: {
+         name: 'code',
+         type: 'text',
+         label: 'Verification code',
+         placeholder: 'Enter 6-digit code',
+      },
+      submitButtonText: 'Verify code',
+      resendButtonText: 'Resend code',
+      useDifferentEmailText: 'Use a different email',
    },
    brand: {
       headline: {

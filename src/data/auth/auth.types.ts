@@ -1,3 +1,5 @@
+import { AuthSchemaTypes, OtpSchemaTypes } from "@/features/auth/schemas/auth.schema";
+
 export interface TelemetryDataPoint {
    time: string;
    current: number;
@@ -35,8 +37,8 @@ export interface AuthBrandData {
    };
 }
 
-export interface InputData {
-   name: string;
+export interface InputData<T extends string = string> {
+   name: T;
    type: string;
    label: string;
    placeholder: string;
@@ -45,13 +47,23 @@ export interface InputData {
 export interface AuthFormData {
    title: string;
    description: string;
-   emailInput: InputData;
-   passwordInput: InputData;
+   emailInput: InputData<keyof AuthSchemaTypes>;
+   passwordInput: InputData<keyof AuthSchemaTypes>;
    forgotPassword: string;
    submitButtonText: string;
 }
 
+export interface OtpFormData {
+   title: string;
+   description: string;
+   codeInput: InputData<keyof OtpSchemaTypes>;
+   submitButtonText: string;
+   resendButtonText: string;
+   useDifferentEmailText: string;
+}
+
 export interface AuthData {
-   form: AuthFormData;
+   signIn: AuthFormData;
+   otp: OtpFormData;
    brand: AuthBrandData;
 }

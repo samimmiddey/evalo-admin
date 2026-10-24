@@ -52,7 +52,7 @@ const AuthBrand = () => {
          </div>
 
          {/* Center Showcase Section */}
-         <div className="relative z-10 w-full max-w-lg 2xl:max-w-xl mx-auto space-y-6">
+         <div className="relative z-10 w-full max-w-lg 2xl:max-w-xl mx-auto flex flex-col gap-7">
             {/* Title & Eyebrow */}
             <div className="space-y-3">
                <PrimaryTitle
