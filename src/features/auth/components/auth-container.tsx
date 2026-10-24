@@ -18,7 +18,7 @@ const AuthContainer = ({ title, description, children }: AuthHeaderProps) => {
             <div className="w-full max-w-md mx-auto">
                <div className="mb-8 text-center flex flex-col items-center">
                   <Logo containerClassName='2xl:scale-110' />
-                  <PrimaryTitle text={title} className='text-[28px] lg:text-3xl 2xl:text-4xl mt-3 2xl:mt-4' />
+                  <PrimaryTitle text={title} className='text-[28px] lg:text-3xl 2xl:text-4xl mt-2.5 2xl:mt-4' />
                   <PrimaryBody
                      text={description}
                      className="mt-2 2xl:mt-3 text-sm! 2xl:text-[15px]!"

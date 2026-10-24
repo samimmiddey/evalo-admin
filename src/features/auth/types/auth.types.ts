@@ -1,7 +1,8 @@
-import type { useSignIn } from "@clerk/nextjs";
+import type { useClerk, useSignIn } from "@clerk/nextjs";
 
 type SignInResource = NonNullable<ReturnType<typeof useSignIn>["signIn"]>;
 type SignInErrors = ReturnType<typeof useSignIn>["errors"];
+type ClerkClient = ReturnType<typeof useClerk>["client"];
 
 export interface SignInParams {
    signIn: SignInResource;
@@ -9,6 +10,7 @@ export interface SignInParams {
    password: string;
    errors: SignInErrors;
    onNavigate: () => void;
+   client: ClerkClient;
 }
 
 export interface AuthResult {
@@ -21,6 +23,7 @@ export interface VerifySignInCodeParams {
    code: string;
    errors: SignInErrors;
    onNavigate: () => void;
+   client: ClerkClient;
 }
 
 export interface ResendSignInCodeParams {

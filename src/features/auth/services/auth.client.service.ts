@@ -8,6 +8,7 @@ export const signInWithPassword = async ({
    password,
    errors,
    onNavigate,
+   client
 }: SignInParams): Promise<AuthResult> => {
    const { error } = await signIn.password({ emailAddress, password });
 
@@ -16,7 +17,22 @@ export const signInWithPassword = async ({
    }
 
    if (signIn.status === "complete") {
-      await signIn.finalize({ navigate: onNavigate });
+      // Prevent Clerk from auto-redirecting
+      await signIn.finalize();
+
+      // Read role
+      const session = client.sessions.find((s) => s.id === signIn.createdSessionId);
+      const role = (session?.user?.publicMetadata as { role?: string; })?.role;
+
+      // If not ADMIN, sign out AND reset sign-in status back to null
+      if (role !== "ADMIN") {
+         await session?.remove();
+         await signIn.reset();
+         return { success: false, message: "Access denied. Administrator privileges required." };
+      }
+
+      // Admin verified -> proceed to navigate
+      onNavigate();
       return { success: true };
    }
 
@@ -40,6 +56,7 @@ export const verifySignInCode = async ({
    code,
    errors,
    onNavigate,
+   client
 }: VerifySignInCodeParams): Promise<AuthResult> => {
    const { error } = await signIn.mfa.verifyEmailCode({ code });
 
@@ -48,7 +65,22 @@ export const verifySignInCode = async ({
    }
 
    if (signIn.status === "complete") {
-      await signIn.finalize({ navigate: onNavigate });
+      // Prevent Clerk from auto-redirecting
+      await signIn.finalize();
+
+      // Read role
+      const session = client.sessions.find((s) => s.id === signIn.createdSessionId);
+      const role = (session?.user?.publicMetadata as { role?: string; })?.role;
+
+      // If not ADMIN, sign out AND reset sign-in status back to null
+      if (role !== "ADMIN") {
+         await session?.remove();
+         await signIn.reset();
+         return { success: false, message: "Access denied. Administrator privileges required." };
+      }
+
+      // Admin verified -> proceed to navigate
+      onNavigate();
       return { success: true };
    }
 

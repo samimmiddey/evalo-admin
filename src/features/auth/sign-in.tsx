@@ -4,7 +4,7 @@ import ScreenLoader from '@/components/common/screen-loader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { authData } from '@/data/auth/auth.data';
-import { useAuth, useSignIn } from '@clerk/nextjs';
+import { useAuth, useClerk, useSession, useSignIn } from '@clerk/nextjs';
 import { Eye, EyeOff } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
@@ -28,6 +28,8 @@ const SignIn = () => {
 
    const { signIn, errors, fetchStatus } = useSignIn();
    const { isSignedIn } = useAuth();
+   const { client } = useClerk();
+   const { session } = useSession();
    const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
    const router = useRouter();
@@ -66,6 +68,7 @@ const SignIn = () => {
          password: data.password,
          errors,
          onNavigate,
+         client
       });
 
       if (result.success) {
@@ -87,6 +90,7 @@ const SignIn = () => {
          code: data.code,
          errors,
          onNavigate,
+         client
       });
 
       if (result.success) {
@@ -124,7 +128,7 @@ const SignIn = () => {
    }
 
    // Show loader if sign in is complete or user is already signed in
-   if (signIn.status === 'complete' || isSignedIn) {
+   if ((signIn.status === 'complete' || isSignedIn) && session?.user?.publicMetadata?.role === 'ADMIN') {
       return (
          <ScreenLoader
             text="Redirecting..."
@@ -223,6 +227,7 @@ const SignIn = () => {
                type="submit"
                size='xxl'
                className="w-full bg-violet-600 hover:bg-violet-500 text-white"
+               disabled={fetchStatus === 'fetching' || isSigningIn}
             >
                {
                   isSigningIn ?
