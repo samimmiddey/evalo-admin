@@ -1,8 +1,8 @@
-import React from 'react';
+import ForgotPassword from '@/features/auth/forgot-password';
 
 const ForgotPasswordPage = () => {
    return (
-      <div>ForgotPasswordPage</div>
+      <ForgotPassword />
    );
 };
 

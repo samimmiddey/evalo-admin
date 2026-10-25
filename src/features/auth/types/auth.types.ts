@@ -48,4 +48,5 @@ export interface SubmitNewPasswordParams {
    signIn: SignInResource;
    password: string;
    onNavigate: () => void;
+   client: ClerkClient;
 }

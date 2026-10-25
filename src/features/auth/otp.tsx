@@ -120,7 +120,7 @@ const OTP = ({ handleVerify, fetchStatus, resendCode, onBack }: OTPProps) => {
                <div id="clerk-captcha" />
 
                <Button
-                  className="w-full bg-violet-600 hover:bg-violet-500 text-white"
+                  className="w-full"
                   size="xxl"
                   disabled={fetchStatus === 'fetching' || isOtpVerifying}
                   type='submit'

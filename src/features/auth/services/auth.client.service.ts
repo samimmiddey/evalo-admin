@@ -155,6 +155,7 @@ export const submitNewPassword = async ({
    signIn,
    password,
    onNavigate,
+   client,
 }: SubmitNewPasswordParams): Promise<AuthResult> => {
    const { error } = await signIn.resetPasswordEmailCode.submitPassword({
       password,
@@ -166,12 +167,22 @@ export const submitNewPassword = async ({
    }
 
    if (signIn.status === "complete") {
-      const { error: finalizeError } = await signIn.finalize({ navigate: onNavigate });
+      // Prevent Clerk from auto-redirecting
+      await signIn.finalize();
 
-      if (finalizeError) {
-         return { success: false, message: getClerkErrorMessage(finalizeError) };
+      // Read role
+      const session = client.sessions.find((s) => s.id === signIn.createdSessionId);
+      const role = (session?.user?.publicMetadata as { role?: string; })?.role;
+
+      // If not ADMIN, sign out AND reset sign-in status back to null
+      if (role !== "ADMIN") {
+         await session?.remove();
+         await signIn.reset();
+         return { success: false, message: "Access denied. Administrator privileges required." };
       }
 
+      // Admin verified -> proceed to navigate
+      onNavigate();
       return { success: true };
    }
 

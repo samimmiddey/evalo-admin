@@ -228,7 +228,7 @@ const SignIn = () => {
             <Button
                type="submit"
                size='xxl'
-               className="w-full bg-violet-600 hover:bg-violet-500 text-white"
+               className="w-full"
                disabled={fetchStatus === 'fetching' || isSigningIn}
             >
                {

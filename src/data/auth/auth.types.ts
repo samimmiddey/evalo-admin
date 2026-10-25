@@ -1,4 +1,4 @@
-import { AuthSchemaTypes, OtpSchemaTypes } from "@/features/auth/schemas/auth.schema";
+import { AuthSchemaTypes, ForgotPasswordSchemaEmailTypes, OtpSchemaTypes } from "@/features/auth/schemas/auth.schema";
 
 export interface TelemetryDataPoint {
    time: string;
@@ -62,8 +62,41 @@ export interface OtpFormData {
    useDifferentEmailText: string;
 }
 
+export interface ForgotPasswordStepOneData {
+   title: string;
+   description: string;
+   emailInput: InputData<keyof ForgotPasswordSchemaEmailTypes>;
+   submitButtonText: string;
+   backToSignInText: string;
+}
+
+export interface ForgotPasswordStepTwoData {
+   title: string;
+   description: string;
+   codeInput: InputData<keyof ForgotPasswordSchemaEmailTypes>;
+   submitButtonText: string;
+   resendButtonText: string;
+   useDifferentEmailText: string;
+}
+
+export interface ForgotPasswordStepThreeData {
+   title: string;
+   description: string;
+   passwordInput: InputData<keyof ForgotPasswordSchemaEmailTypes>;
+   submitButtonText: string;
+   backToSignInText: string;
+}
+
+export interface ForgotPasswordFormData {
+   stepOne: ForgotPasswordStepOneData;
+   stepTwo: ForgotPasswordStepTwoData;
+   stepThree: ForgotPasswordStepThreeData;
+}
+
 export interface AuthData {
    signIn: AuthFormData;
    otp: OtpFormData;
+   forgotPassword: ForgotPasswordFormData;
    brand: AuthBrandData;
 }
+

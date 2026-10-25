@@ -32,6 +32,45 @@ export const authData: AuthData = {
       resendButtonText: 'Resend code',
       useDifferentEmailText: 'Use a different email',
    },
+   forgotPassword: {
+      stepOne: {
+         title: 'Reset your password',
+         description: 'Enter your authorized email address to receive a 6-digit password reset verification code',
+         emailInput: {
+            name: 'email',
+            type: 'email',
+            label: 'Email address',
+            placeholder: 'admin@evalo.com',
+         },
+         submitButtonText: 'Send reset code',
+         backToSignInText: 'Back to sign in',
+      },
+      stepTwo: {
+         title: 'Verify reset code',
+         description: 'Enter the 6-digit verification code sent to your email address',
+         codeInput: {
+            name: 'code',
+            type: 'text',
+            label: 'Verification code',
+            placeholder: 'Enter 6-digit code',
+         },
+         submitButtonText: 'Verify code',
+         resendButtonText: 'Resend code',
+         useDifferentEmailText: 'Use a different email',
+      },
+      stepThree: {
+         title: 'Set new password',
+         description: 'Create a new secure password to regain access to your account',
+         passwordInput: {
+            name: 'password',
+            type: 'password',
+            label: 'New password',
+            placeholder: '**********',
+         },
+         submitButtonText: 'Reset password',
+         backToSignInText: 'Back to sign in',
+      },
+   },
    brand: {
       headline: {
          prefix: 'Intelligent evaluation for every',
