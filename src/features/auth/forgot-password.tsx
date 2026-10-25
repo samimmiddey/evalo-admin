@@ -28,6 +28,7 @@ export default function ForgotPassword() {
    const [isSendingCode, setIsSendingCode] = useState<boolean>(false);
    const [isVerifyingCode, setIsVerifyingCode] = useState<boolean>(false);
    const [isSubmittingPassword, setIsSubmittingPassword] = useState<boolean>(false);
+   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
 
    const router = useRouter();
    const searchParams = useSearchParams();
@@ -108,6 +109,7 @@ export default function ForgotPassword() {
          password: data.password,
          client,
          onNavigate: () => {
+            setIsRedirecting(true);
             const sanitizedRedirectUrl = sanitizeRedirectUrl(redirectUrl);
             if (sanitizedRedirectUrl) {
                router.replace(sanitizedRedirectUrl);
@@ -124,7 +126,6 @@ export default function ForgotPassword() {
       }
 
       toast.success('Password reset successfully and signed you in');
-      setIsSubmittingPassword(false);
    }
 
    // Check if clerk is loaded
@@ -135,8 +136,8 @@ export default function ForgotPassword() {
    const currentSession = client.sessions.find((s) => s.id === signIn.createdSessionId);
    const isAdmin = currentSession?.user?.publicMetadata?.role === 'ADMIN';
 
-   // Show loader if sign in is complete or user is already signed in
-   if ((signIn.status === 'complete' || isSignedIn) && isAdmin) {
+   // Show loader if redirecting, sign in is complete, or user is already signed in
+   if (isRedirecting || ((signIn.status === 'complete' || isSignedIn) && isAdmin)) {
       return (
          <ScreenLoader
             text="Redirecting..."

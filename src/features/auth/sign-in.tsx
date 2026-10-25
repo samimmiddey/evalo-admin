@@ -30,6 +30,7 @@ const SignIn = () => {
    const { isSignedIn } = useAuth();
    const { client } = useClerk();
    const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
+   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
 
    const router = useRouter();
    const searchParams = useSearchParams();
@@ -38,7 +39,6 @@ const SignIn = () => {
    const {
       register,
       handleSubmit,
-      reset,
       formState: { errors: formErrors },
    } = useForm<AuthSchemaTypes>({
       resolver: zodResolver(authSchema),
@@ -49,6 +49,7 @@ const SignIn = () => {
    });
 
    const onNavigate = () => {
+      setIsRedirecting(true);
       const sanitizedRedirectUrl = sanitizeRedirectUrl(redirectUrl);
       if (sanitizedRedirectUrl) {
          router.replace(sanitizedRedirectUrl);
@@ -73,13 +74,11 @@ const SignIn = () => {
       if (result.success) {
          if (signIn.status === 'complete') {
             toast.success('Signed in successfully');
-            reset();
          }
       } else {
          toast.error(result.message);
+         setIsSigningIn(false);
       }
-
-      setIsSigningIn(false);
    };
 
    // Verify OTP
@@ -129,8 +128,8 @@ const SignIn = () => {
    const currentSession = client.sessions.find((s) => s.id === signIn.createdSessionId);
    const isAdmin = currentSession?.user?.publicMetadata?.role === 'ADMIN';
 
-   // Show loader if sign in is complete or user is already signed in
-   if ((signIn.status === 'complete' || isSignedIn) && isAdmin) {
+   // Show loader if redirecting, sign in is complete, or user is already signed in
+   if (isRedirecting || ((signIn.status === 'complete' || isSignedIn) && isAdmin)) {
       return (
          <ScreenLoader
             text="Redirecting..."
