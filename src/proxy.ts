@@ -21,7 +21,7 @@ export default clerkMiddleware(async (auth, req) => {
    if (!isPublicRoutes(pathname) && !isAuthenticated) {
       const signInUrl = new URL('/sign-in', req.url);
       const currentPath = pathname + search;
-      signInUrl.searchParams.set('redirect_url', currentPath);
+      if (currentPath !== '/') signInUrl.searchParams.set('redirect_url', currentPath);
 
       return NextResponse.redirect(signInUrl);
    }
