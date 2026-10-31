@@ -47,8 +47,8 @@ export function DashboardSidebarMenu({ items }: DashboardSidebarMenuProps) {
                            className={cn(
                               "h-10 px-3 rounded-lg text-sm font-medium transition-all duration-150 cursor-pointer group",
                               isActive
-                                 ? "bg-violet-500/15! text-violet-300! border border-violet-500/30"
-                                 : "text-zinc-400 hover:text-zinc-100 hover:bg-white/5"
+                                 ? "relative bg-violet-500/15! bg-linear-to-r! from-violet-500/30! via-violet-500/15! to-transparent! text-violet-200! before:absolute before:left-0 before:top-1/2 before:h-5 before:w-0.75 before:-translate-y-1/2 before:rounded-r-full before:bg-violet-400"
+                                 : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
                            )}
                         >
                            <Link
@@ -62,7 +62,7 @@ export function DashboardSidebarMenu({ items }: DashboardSidebarMenuProps) {
                                  <Icon
                                     className={cn(
                                        "size-4 shrink-0 transition-colors",
-                                       isActive ? "text-violet-300" : "text-zinc-400 group-hover:text-zinc-200"
+                                       isActive ? "text-violet-300" : "text-zinc-400 group-hover/menu-button:text-zinc-300"
                                     )}
                                  />
                               )}

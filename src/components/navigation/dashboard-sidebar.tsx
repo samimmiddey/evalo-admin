@@ -8,7 +8,6 @@ import {
    useSidebar,
 } from "@/components/ui/sidebar";
 import Logo from "@/components/common/logo";
-import MenuItemSkeleton from "./menuitem-skeleton";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -41,11 +40,7 @@ const DashboardSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) =>
 
          {/* Sidebar Content */}
          <SidebarContent className="py-4">
-            {navigationData.length > 0 ? (
-               <DashboardSidebarMenu items={navigationData} />
-            ) : (
-               <MenuItemSkeleton />
-            )}
+            <DashboardSidebarMenu items={navigationData} />
          </SidebarContent>
       </Sidebar>
    );

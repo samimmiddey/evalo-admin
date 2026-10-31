@@ -10,9 +10,17 @@ const DashboardNavbar = () => {
    return (
       <header className='sticky top-0 z-30 w-full h-14 border-b border-white/5 bg-zinc-900/40 backdrop-blur-xl transition-all'>
          <div className="h-full px-4 sm:px-6 flex items-center justify-between gap-4">
-            {/* Left: Sidebar trigger */}
-            <SidebarTrigger className="cursor-pointer size-8 rounded-lg bg-white/5 text-violet-400 transition-colors" />
 
+            <div className="flex items-center gap-3">
+               {/* Left: Sidebar trigger */}
+               <SidebarTrigger className="cursor-pointer size-8 rounded-lg bg-white/5 text-zinc-400 transition-colors" />
+
+               <div className="h-4 w-px bg-white/10 hidden sm:block" />
+
+               <span className="hidden sm:block text-xs font-medium uppercase tracking-wider text-zinc-400 font-geist">
+                  Admin
+               </span>
+            </div>
 
             {/* Right: User Profile & Actions */}
             <div className="flex items-center gap-3">
