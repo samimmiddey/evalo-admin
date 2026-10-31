@@ -9,6 +9,7 @@ import DateRangePicker from '@/components/common/date-range-picker';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { endOfMonth, startOfMonth } from 'date-fns';
+import { dashboardData } from '@/data/dashboard/dashboard.data';
 
 const Dashboard = () => {
    const [date, setDate] = useState<DateRange | undefined>({
@@ -34,9 +35,9 @@ const Dashboard = () => {
 
             {/* Header Text */}
             <HeaderLayout className="mb-0!">
-               <PrimaryTitle text='Dashboard Overview' />
+               <PrimaryTitle text={dashboardData.header.title} />
                <PrimaryBody
-                  text='A comprehensive overview of platform revenue, interviews, and subscriber growth'
+                  text={dashboardData.header.description}
                   className="max-w-2xl"
                />
             </HeaderLayout>

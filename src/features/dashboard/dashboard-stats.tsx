@@ -8,6 +8,7 @@ import { Banknote, CircleDollarSign, Users, Video } from 'lucide-react';
 import StatCard from './components/stat-card';
 import { formatCurrency } from '@/utils/format-currency';
 import { formatNumber } from '@/utils/format-number';
+import { dashboardData } from '@/data/dashboard/dashboard.data';
 
 interface DashboardStatsProps {
    startDate: Date | undefined;
@@ -33,35 +34,35 @@ const DashboardStats = ({ startDate, endDate }: DashboardStatsProps) => {
    // No-data state
    if (!data) {
       return <NoDataCard
-         title='No data found'
-         body='Currently there is no data to show. Please check later.'
+         title={dashboardData.noData.title}
+         body={dashboardData.noData.body}
       />;
    }
 
    const statItems: DashboardStatItem[] = [
       {
-         title: 'Platform Fees',
+         title: dashboardData.statCards.platformFees,
          value: formatCurrency(data.platformFees),
          subValue: `${data.platformFeesGrowth}% vs last period`,
          icon: CircleDollarSign,
          iconStyle: 'text-violet-400 bg-violet-500/15 border-violet-500/30'
       },
       {
-         title: 'Disbursed Payouts',
+         title: dashboardData.statCards.disbursedPayouts,
          value: formatCurrency(data.disbursedAmount),
          subValue: `${formatNumber(data.disbursedCount)} payouts processed`,
          icon: Banknote,
          iconStyle: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30'
       },
       {
-         title: 'Total Interviews',
+         title: dashboardData.statCards.totalInterviews,
          value: formatNumber(data.totalInterviews),
          subValue: `${data.completionRate}% completion rate`,
          icon: Video,
          iconStyle: 'text-blue-400 bg-blue-500/15 border-blue-500/30'
       },
       {
-         title: 'Active Subscriptions',
+         title: dashboardData.statCards.activeSubscriptions,
          value: formatNumber(data.activeSubscriptions),
          subValue: `${formatNumber(data.newSubscriptions)} new this period`,
          icon: Users,
