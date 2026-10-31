@@ -4,10 +4,6 @@
 
 /* 2xl */
 @media screen and (max-width: 1535px) {
-   .container {
-      @apply max-w-300;
-   }
-
    .s-padding {
       padding: 3.5rem 0;
    }
@@ -34,24 +30,13 @@
 }
 
 /* XL */
-@media screen and (max-width: 1279px) {
-   .container {
-      @apply max-w-5xl;
-   }
-}
+@media screen and (max-width: 1279px) {}
 
 /* LG */
-@media screen and (max-width: 1023px) {
-   .container {
-      @apply max-w-3xl;
-   }
-}
+@media screen and (max-width: 1023px) {}
 
 /* MD */
 @media screen and (max-width: 767px) {
-   .container {
-      @apply max-w-160;
-   }
 
    .s-padding {
       padding: 3rem 0;
@@ -79,11 +64,7 @@
 }
 
 /* SM */
-@media screen and (max-width: 639px) {
-   .container {
-      @apply max-w-full;
-   }
-}
+@media screen and (max-width: 639px) {}
 
 /* XS */
 @media screen and (max-width: 459px) {}
