@@ -1,3 +1,5 @@
+import { DateRange } from "react-day-picker";
+
 export interface StatusBadges {
    success: string;
    failed: string;
@@ -18,4 +20,9 @@ export interface StatusBadges {
 
 export interface GlobalTypes {
    statusBadges: StatusBadges;
+}
+
+export interface DatePresetItem {
+   label: string;
+   getRange: () => DateRange | undefined;
 }

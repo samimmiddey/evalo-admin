@@ -19,3 +19,34 @@ export const globalData: GlobalTypes = {
       paused: "Paused"
    }
 };
+
+import { endOfMonth, startOfMonth, subDays } from "date-fns";
+import { DatePresetItem } from "./global.types";
+
+export const DATE_PRESETS: DatePresetItem[] = [
+   {
+      label: "This Month",
+      getRange: () => ({
+         from: startOfMonth(new Date()),
+         to: endOfMonth(new Date())
+      })
+   },
+   {
+      label: "Last 7 Days",
+      getRange: () => ({
+         from: subDays(new Date(), 7),
+         to: new Date()
+      })
+   },
+   {
+      label: "Last 30 Days",
+      getRange: () => ({
+         from: subDays(new Date(), 30),
+         to: new Date()
+      })
+   },
+   {
+      label: "All Time",
+      getRange: () => undefined
+   }
+];
