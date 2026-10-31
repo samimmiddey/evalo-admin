@@ -9,27 +9,27 @@
    }
 
    .s-padding {
-      padding: 5.5rem 0;
+      padding: 3.5rem 0;
    }
 
    .s-padding-t {
-      padding-top: 5.5rem;
+      padding-top: 3.5rem;
    }
 
    .s-padding-b {
-      padding-bottom: 5.5rem;
+      padding-bottom: 3.5rem;
    }
 
    .s-margin {
-      margin: 5.5rem 0;
+      margin: 3.5rem 0;
    }
 
    .s-margin-t {
-      margin-top: 5.5rem;
+      margin-top: 3.5rem;
    }
 
    .s-margin-b {
-      margin-bottom: 5.5rem;
+      margin-bottom: 3.5rem;
    }
 }
 
@@ -45,30 +45,6 @@
    .container {
       @apply max-w-3xl;
    }
-
-   .s-padding {
-      padding: 5rem 0;
-   }
-
-   .s-padding-t {
-      padding-top: 5rem;
-   }
-
-   .s-padding-b {
-      padding-bottom: 5rem;
-   }
-
-   .s-margin {
-      margin: 5rem 0;
-   }
-
-   .s-margin-t {
-      margin-top: 5rem;
-   }
-
-   .s-margin-b {
-      margin-bottom: 5rem;
-   }
 }
 
 /* MD */
@@ -78,27 +54,27 @@
    }
 
    .s-padding {
-      padding: 4.5rem 0;
+      padding: 3rem 0;
    }
 
    .s-padding-t {
-      padding-top: 4.5rem;
+      padding-top: 3rem;
    }
 
    .s-padding-b {
-      padding-bottom: 4.5rem;
+      padding-bottom: 3rem;
    }
 
    .s-margin {
-      margin: 4.5rem 0;
+      margin: 3rem 0;
    }
 
    .s-margin-t {
-      margin-top: 4.5rem;
+      margin-top: 3rem;
    }
 
    .s-margin-b {
-      margin-bottom: 4.5rem;
+      margin-bottom: 3rem;
    }
 }
 

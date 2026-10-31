@@ -1,8 +1,8 @@
-import React from 'react';
+import Dashboard from '@/features/dashboard/dashboard';
 
 const DashboardPage = () => {
    return (
-      <div>DashboardPage</div>
+      <Dashboard />
    );
 };
 

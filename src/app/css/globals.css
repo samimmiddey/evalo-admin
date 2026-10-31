@@ -131,27 +131,27 @@
 
 /* common classes */
 .s-padding {
-  padding: 6.5rem 0;
+  padding: 5rem 0;
 }
 
 .s-padding-t {
-  padding-top: 6.5rem;
+  padding-top: 5rem;
 }
 
 .s-padding-b {
-  padding-bottom: 6.5rem;
+  padding-bottom: 5rem;
 }
 
 .s-margin {
-  margin: 6.5rem 0;
+  margin: 5rem 0;
 }
 
 .s-margin-t {
-  margin-top: 6.5rem;
+  margin-top: 5rem;
 }
 
 .s-margin-b {
-  margin-bottom: 6.5rem;
+  margin-bottom: 5rem;
 }
 
 .container {
