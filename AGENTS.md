@@ -13,3 +13,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - **Conversations:** During conversation, always answer in words. Never code unless explicitly asked.
 - **Responses:** When asked something, always give proper answer in a compact form. Only explain in large if it is truly requried or explictly requested. Keep your answers short, precise and to the point. Never talk about things that are unnecessary and not directly related.
 - **Modifications:** Never modify shared components without permission. If a feature/fix requires modification of a shared component, always flag it as a decision point.
+- **Ambiguity:** If a request is unclear, ask one short clarifying question instead of guessing.
+- **Dependencies:** Never add, remove, or upgrade packages without explicit approval.
+- **Existing Conventions:** Follow the project's existing naming, structure, styling, and patterns. Do not introduce new ones.
+- **No Unrequested Changes to Config:** Do not touch config, env, build, or tooling files unless asked.
+- **Formatting:** Do not reformat, reorder imports, or rename anything outside the requested change.
+- **Deletions:** Never delete files, code, or data without explicit permission.
+- **Scope Creep:** If you notice a bug or improvement outside the task, mention it properly and do not fix it.
