@@ -8,7 +8,7 @@ interface CardLayoutProps {
 
 const CardLayout = ({ children, className }: CardLayoutProps) => {
    return (
-      <div className={cn("relative overflow-hidden bg-zinc-900/40 border border-white/5 rounded-2xl p-6 2xl:p-8 transition-all duration-300 hover:border-white/10", className)}>
+      <div className={cn("relative overflow-hidden bg-zinc-900/40 border border-white/5 rounded-2xl p-6 2xl:p-8 transition-all duration-300", className)}>
          {children}
       </div>
    );

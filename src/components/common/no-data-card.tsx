@@ -4,7 +4,7 @@ import SecondaryTitle from './secondary-title';
 import PrimaryBody from './primary-body';
 import Link from 'next/link';
 
-interface EnhancedNoDataCardProps {
+interface NoDataCardProps {
    title: string;
    body: string;
    showButton?: boolean;
@@ -12,7 +12,7 @@ interface EnhancedNoDataCardProps {
    buttonLink?: string;
 }
 
-const EnhancedNoDataCard = ({ title, body, showButton = false, buttonText, buttonLink }: EnhancedNoDataCardProps) => {
+const NoDataCard = ({ title, body, showButton = false, buttonText, buttonLink }: NoDataCardProps) => {
    return (
       <div className="flex flex-col items-center justify-center text-center py-8 sm:py-9 2xl:py-10 px-6 bg-zinc-900/40 border border-dashed border-white/10 rounded-2xl relative overflow-hidden">
 
@@ -49,4 +49,4 @@ const EnhancedNoDataCard = ({ title, body, showButton = false, buttonText, butto
    );
 };
 
-export default EnhancedNoDataCard;
+export default NoDataCard;
