@@ -1,10 +1,15 @@
 import { db } from "@/lib/prisma";
 import { serverError } from "@/lib/server-error";
-import { DashboardMetrics, DashboardMetricsFilter } from "../types/dashboard.types";
+import {
+   DashboardMetrics,
+   DashboardMetricsFilter,
+   ExpertiseDemandItem,
+} from "../types/dashboard.types";
 import { getAuthenticatedUser } from "@/services/global.server.service";
 import { endOfDay } from "date-fns";
+import { InterviewExpertise } from "@/generated/prisma/enums";
 
-// Get Dashboard Overview Metrics
+// Get dashboard overview metrics
 export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): Promise<DashboardMetrics> => {
    try {
       await getAuthenticatedUser();
@@ -63,7 +68,7 @@ export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): 
          activeSubscriptions,
          newSubscriptions,
       ] = await Promise.all([
-         // Platform Fees and Disbursed Payouts (current period)
+         // Platform fees and disbursed payouts (current period)
          db.payout.aggregate({
             where: {
                status: "PROCESSED",
@@ -76,7 +81,7 @@ export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): 
             _count: true,
          }),
 
-         // Previous Platform Fees (for % growth)
+         // Previous platform fees (for % growth)
          prevPayoutDateFilter
             ? db.payout.aggregate({
                where: {
@@ -89,7 +94,7 @@ export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): 
             })
             : Promise.resolve({ _sum: { platformFee: null } }),
 
-         // Completed Sessions
+         // Completed sessions
          db.booking.count({
             where: {
                status: "COMPLETED",
@@ -97,21 +102,21 @@ export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): 
             },
          }),
 
-         // Total Sessions (for completion rate)
+         // Total sessions (for completion rate)
          db.booking.count({
             where: {
                ...dateFilter,
             },
          }),
 
-         // Total Active Subscriptions
+         // Total active subscriptions
          db.subscription.count({
             where: {
                status: "ACTIVE",
             },
          }),
 
-         // New Subscriptions in period
+         // New subscriptions in period
          db.subscription.count({
             where: {
                status: "ACTIVE",
@@ -155,6 +160,65 @@ export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): 
       return serverError({
          error,
          fallbackMessage: "Failed to fetch dashboard overview metrics",
+      });
+   }
+};
+
+// Get in-demand expertise metrics
+export const getExpertiseDemandMetrics = async (
+   filters: DashboardMetricsFilter
+): Promise<ExpertiseDemandItem[]> => {
+   try {
+      await getAuthenticatedUser();
+
+      const normalizedEndDate = filters.endDate ? endOfDay(filters.endDate) : undefined;
+
+      const dateFilter =
+         filters?.startDate || normalizedEndDate
+            ? {
+               createdAt: {
+                  ...(filters.startDate ? { gte: filters.startDate } : {}),
+                  ...(normalizedEndDate ? { lte: normalizedEndDate } : {}),
+               },
+            }
+            : {};
+
+      const bookings = await db.booking.findMany({
+         where: {
+            ...dateFilter,
+            status: { not: "CANCELLED" },
+         },
+         select: {
+            interviewer: {
+               select: {
+                  expertise: true,
+               },
+            },
+         },
+      });
+
+      const counts: Record<InterviewExpertise, number> = Object.values(InterviewExpertise).reduce(
+         (acc, domain) => ({ ...acc, [domain]: 0 }),
+         {} as Record<InterviewExpertise, number>
+      );
+      let totalTags = 0;
+
+      for (const booking of bookings) {
+         for (const domain of booking.interviewer.expertise) {
+            counts[domain] += 1;
+            totalTags += 1;
+         }
+      }
+
+      return Object.entries(counts).map(([domain, count]) => ({
+         label: domain as InterviewExpertise,
+         count,
+         percentage: totalTags > 0 ? Math.round((count / totalTags) * 100) : 0,
+      }));
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to fetch in-demand expertise metrics",
       });
    }
 };

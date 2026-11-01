@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { dashboardData } from '@/data/dashboard/dashboard.data';
+import ExperienceMetrics from './experience-metrics';
 
 const Dashboard = () => {
    const [date, setDate] = useState<DateRange | undefined>({
@@ -33,7 +34,7 @@ const Dashboard = () => {
       <div className='s-margin-t container'>
          <PageHeaderLayout>
 
-            {/* Header Text */}
+            {/* Header text */}
             <HeaderLayout className="mb-0!">
                <PrimaryTitle text={dashboardData.header.title} />
                <PrimaryBody
@@ -50,11 +51,24 @@ const Dashboard = () => {
 
          </PageHeaderLayout>
 
-         {/* Stat Cards */}
-         <DashboardStats
-            startDate={appliedDate?.from}
-            endDate={appliedDate?.to}
-         />
+         {/* Dashboard items */}
+         <div className="flex flex-col gap-5 2xl:gap-6">
+
+            {/* Stat cards */}
+            <DashboardStats
+               startDate={appliedDate?.from}
+               endDate={appliedDate?.to}
+            />
+
+            {/* Grid */}
+            <div className="grid lg:grid-cols-2 gap-5 2xl:gap-6">
+               <ExperienceMetrics
+                  startDate={appliedDate?.from}
+                  endDate={appliedDate?.to}
+               />
+            </div>
+
+         </div>
       </div>
    );
 };

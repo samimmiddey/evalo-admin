@@ -1,4 +1,5 @@
 import { BaseResponse } from "@/types/api.types";
+import { InterviewExpertise } from "@/generated/prisma/enums";
 import { LucideIcon } from "lucide-react";
 
 export interface DashboardMetricsFilter {
@@ -28,3 +29,11 @@ export interface DashboardStatItem {
    icon: LucideIcon;
    iconStyle: string;
 }
+
+export interface ExpertiseDemandItem {
+   label: InterviewExpertise;
+   count: number;
+   percentage: number;
+}
+
+export type ExpertiseDemandResponse = BaseResponse<ExpertiseDemandItem[]>;

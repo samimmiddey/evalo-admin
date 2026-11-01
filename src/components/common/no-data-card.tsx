@@ -17,19 +17,19 @@ const NoDataCard = ({ title, body, showButton = false, buttonText, buttonLink }:
       <div className="flex flex-col items-center justify-center text-center py-8 sm:py-9 2xl:py-10 px-6 bg-zinc-900/40 border border-dashed border-white/10 rounded-2xl relative overflow-hidden">
 
          {/* Icon */}
-         <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-zinc-900/80 border border-white/5 mb-6 shadow-inner">
+         <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-zinc-900/80 border border-white/5 mb-5 shadow-inner">
             <Database className="w-6 h-6 text-zinc-500" />
          </div>
 
          {/* Title */}
          <SecondaryTitle
-            text={title}
+            text={title || "No data available"}
             className='mb-2'
          />
 
          {/* Body */}
          <PrimaryBody
-            text={body}
+            text={body || "There's nothing to show here yet. Once data is available, it will appear here."}
             className='max-w-lg text-sm!'
          />
 
