@@ -15,8 +15,14 @@ export interface DashboardStatCards {
    activeSubscriptions: string;
 }
 
+export interface DashboardExperienceMetrics {
+   title: string;
+   noData: string;
+}
+
 export interface DashboardData {
    header: DashboardHeaderData;
    noData: DashboardNoDataState;
    statCards: DashboardStatCards;
+   experienceMetrics: DashboardExperienceMetrics;
 }

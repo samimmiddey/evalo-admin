@@ -8,6 +8,7 @@ import SecondaryTitle from '@/components/common/secondary-title';
 import BarChartLoader from './components/skeletons/bar-chart-loader';
 import ErrorText from '@/components/common/error-text';
 import NoDataText from '@/components/common/no-data-text';
+import { dashboardData } from '@/data/dashboard/dashboard.data';
 
 interface DashboardStatsProps {
    startDate: Date | undefined;
@@ -32,7 +33,7 @@ const ExperienceMetrics = ({ startDate, endDate }: DashboardStatsProps) => {
    return (
       <CardLayout className='p-5! 2xl:p-6!'>
          <SecondaryTitle
-            text='Most Requested Tech Domains'
+            text={dashboardData.experienceMetrics.title}
             className="text-zinc-300! text-base 2xl:text-lg mb-5 2xl:mb-6"
          />
          <div className="h-62.5 sm:h-75 2xl:h-85 flex items-center justify-center">
@@ -40,7 +41,7 @@ const ExperienceMetrics = ({ startDate, endDate }: DashboardStatsProps) => {
                error ? (
                   <ErrorText text={error} />
                ) : !hasData ? (
-                  <NoDataText text='No interview data found for this period' />
+                  <NoDataText text={dashboardData.experienceMetrics.noData} />
                ) : (
                   <CustomBarChart
                      data={data ?? []}

@@ -15,4 +15,8 @@ export const dashboardData: DashboardData = {
       totalInterviews: "Total Interviews",
       activeSubscriptions: "Active Subscriptions",
    },
+   experienceMetrics: {
+      title: "Most Requested Tech Domains",
+      noData: "No interview data found for this period"
+   }
 };
