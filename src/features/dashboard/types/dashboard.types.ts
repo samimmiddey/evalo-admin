@@ -37,3 +37,13 @@ export interface ExpertiseDemandItem {
 }
 
 export type ExpertiseDemandResponse = BaseResponse<ExpertiseDemandItem[]>;
+
+export interface InterviewVolumeTrendItem {
+   date: string;
+   completed: number;
+   scheduled: number;
+   cancelled: number;
+   total: number;
+}
+
+export type InterviewVolumeTrendsResponse = BaseResponse<InterviewVolumeTrendItem[]>;

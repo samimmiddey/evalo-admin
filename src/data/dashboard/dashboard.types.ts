@@ -20,9 +20,15 @@ export interface DashboardExperienceMetrics {
    noData: string;
 }
 
+export interface DashboardInterviewTrends {
+   title: string;
+   noData: string;
+}
+
 export interface DashboardData {
    header: DashboardHeaderData;
    noData: DashboardNoDataState;
    statCards: DashboardStatCards;
    experienceMetrics: DashboardExperienceMetrics;
+   interviewTrends: DashboardInterviewTrends;
 }

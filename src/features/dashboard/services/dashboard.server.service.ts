@@ -4,9 +4,10 @@ import {
    DashboardMetrics,
    DashboardMetricsFilter,
    ExpertiseDemandItem,
+   InterviewVolumeTrendItem,
 } from "../types/dashboard.types";
 import { getAuthenticatedUser } from "@/services/global.server.service";
-import { endOfDay } from "date-fns";
+import { eachDayOfInterval, endOfDay, format, startOfDay, subDays } from "date-fns";
 import { InterviewExpertise } from "@/generated/prisma/enums";
 
 // Get dashboard overview metrics
@@ -219,6 +220,99 @@ export const getExpertiseDemandMetrics = async (
       return serverError({
          error,
          fallbackMessage: "Failed to fetch in-demand expertise metrics",
+      });
+   }
+};
+
+// Get interview volume trends
+export const getInterviewVolumeTrends = async (
+   filters: DashboardMetricsFilter
+): Promise<InterviewVolumeTrendItem[]> => {
+   try {
+      await getAuthenticatedUser();
+
+      const normalizedEndDate = filters.endDate ? endOfDay(filters.endDate) : endOfDay(new Date());
+      let normalizedStartDate = filters.startDate ? startOfDay(filters.startDate) : undefined;
+
+      // If no start date is provided (e.g. All Time), look up earliest booking or default to last 30 days
+      if (!normalizedStartDate) {
+         const earliestBooking = await db.booking.findFirst({
+            orderBy: { createdAt: "asc" },
+            select: { createdAt: true },
+         });
+         normalizedStartDate = earliestBooking
+            ? startOfDay(earliestBooking.createdAt)
+            : startOfDay(subDays(normalizedEndDate, 29));
+      }
+
+      // Safeguard: Ensure start date doesn't exceed end date
+      if (normalizedStartDate > normalizedEndDate) {
+         normalizedStartDate = startOfDay(normalizedEndDate);
+      }
+
+      const bookings = await db.booking.findMany({
+         where: {
+            createdAt: {
+               gte: normalizedStartDate,
+               lte: normalizedEndDate,
+            },
+         },
+         select: {
+            createdAt: true,
+            status: true,
+         },
+      });
+
+      // Generate all calendar days within the interval
+      const days = eachDayOfInterval({
+         start: normalizedStartDate,
+         end: normalizedEndDate,
+      });
+
+      // Initialize map with all dates at 0 so continuous trendline has no gaps
+      const trendMap = new Map<
+         string,
+         { completed: number; scheduled: number; cancelled: number; total: number }
+      >();
+
+      for (const day of days) {
+         const dateKey = format(day, "yyyy-MM-dd");
+         trendMap.set(dateKey, {
+            completed: 0,
+            scheduled: 0,
+            cancelled: 0,
+            total: 0,
+         });
+      }
+
+      // Aggregate counts from database bookings
+      for (const booking of bookings) {
+         const dateKey = format(booking.createdAt, "yyyy-MM-dd");
+         const dayStats = trendMap.get(dateKey);
+
+         if (dayStats) {
+            dayStats.total += 1;
+            if (booking.status === "COMPLETED") {
+               dayStats.completed += 1;
+            } else if (booking.status === "SCHEDULED") {
+               dayStats.scheduled += 1;
+            } else if (booking.status === "CANCELLED") {
+               dayStats.cancelled += 1;
+            }
+         }
+      }
+
+      return Array.from(trendMap.entries()).map(([date, stats]) => ({
+         date,
+         completed: stats.completed,
+         scheduled: stats.scheduled,
+         cancelled: stats.cancelled,
+         total: stats.total,
+      }));
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to fetch interview volume trends",
       });
    }
 };

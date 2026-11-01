@@ -1,3 +1,4 @@
+import { LineSeriesConfig } from "@/components/common/charts/line-chart";
 import { DashboardData } from "./dashboard.types";
 
 export const dashboardData: DashboardData = {
@@ -18,5 +19,15 @@ export const dashboardData: DashboardData = {
    experienceMetrics: {
       title: "Most Requested Tech Domains",
       noData: "No interview data found for this period"
-   }
+   },
+   interviewTrends: {
+      title: "Interview Volume Trends",
+      noData: "No interview data found for this period",
+   },
 };
+
+export const TREND_SERIES: LineSeriesConfig[] = [
+   { dataKey: 'completed', name: 'Completed', color: '#10b981' },
+   { dataKey: 'scheduled', name: 'Scheduled', color: '#8b5cf6' },
+   { dataKey: 'cancelled', name: 'Cancelled', color: '#f43f5e' },
+];

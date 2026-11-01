@@ -11,6 +11,7 @@ import { DateRange } from 'react-day-picker';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { dashboardData } from '@/data/dashboard/dashboard.data';
 import ExperienceMetrics from './experience-metrics';
+import InterviewTrends from './interview-trends';
 
 const Dashboard = () => {
    const [date, setDate] = useState<DateRange | undefined>({
@@ -63,6 +64,10 @@ const Dashboard = () => {
             {/* Grid */}
             <div className="grid lg:grid-cols-2 gap-5 2xl:gap-6">
                <ExperienceMetrics
+                  startDate={appliedDate?.from}
+                  endDate={appliedDate?.to}
+               />
+               <InterviewTrends
                   startDate={appliedDate?.from}
                   endDate={appliedDate?.to}
                />
