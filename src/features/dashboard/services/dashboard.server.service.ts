@@ -5,6 +5,9 @@ import {
    DashboardMetricsFilter,
    ExpertiseDemandItem,
    InterviewVolumeTrendItem,
+   PaginatedRecentSessions,
+   RecentSessionItem,
+   RecentSessionsFilter,
 } from "../types/dashboard.types";
 import { getAuthenticatedUser } from "@/services/global.server.service";
 import { eachDayOfInterval, endOfDay, format, startOfDay, subDays } from "date-fns";
@@ -21,7 +24,7 @@ export const getAdminOverviewMetrics = async (filters: DashboardMetricsFilter): 
          filters?.startDate || normalizedEndDate
             ? {
                createdAt: {
-                  ...(filters.startDate ? { gte: filters.startDate } : {}),
+                  ...(filters?.startDate ? { gte: filters.startDate } : {}),
                   ...(normalizedEndDate ? { lte: normalizedEndDate } : {}),
                },
             }
@@ -178,7 +181,7 @@ export const getExpertiseDemandMetrics = async (
          filters?.startDate || normalizedEndDate
             ? {
                createdAt: {
-                  ...(filters.startDate ? { gte: filters.startDate } : {}),
+                  ...(filters?.startDate ? { gte: filters.startDate } : {}),
                   ...(normalizedEndDate ? { lte: normalizedEndDate } : {}),
                },
             }
@@ -272,7 +275,7 @@ export const getInterviewVolumeTrends = async (
       // Initialize map with all dates at 0 so continuous trendline has no gaps
       const trendMap = new Map<
          string,
-         { completed: number; scheduled: number; cancelled: number; total: number }
+         { completed: number; scheduled: number; cancelled: number; total: number; }
       >();
 
       for (const day of days) {
@@ -313,6 +316,97 @@ export const getInterviewVolumeTrends = async (
       return serverError({
          error,
          fallbackMessage: "Failed to fetch interview volume trends",
+      });
+   }
+};
+
+// Get recent sessions
+export const getRecentSessions = async (
+   filters?: RecentSessionsFilter
+): Promise<PaginatedRecentSessions> => {
+   try {
+      await getAuthenticatedUser();
+
+      const page = Math.max(1, filters?.page ?? 1);
+      const pageSize = Math.max(1, Math.min(100, filters?.pageSize ?? 10));
+      const skip = (page - 1) * pageSize;
+
+      const normalizedEndDate = filters?.endDate ? endOfDay(filters.endDate) : undefined;
+
+      const dateFilter =
+         filters?.startDate || normalizedEndDate
+            ? {
+               createdAt: {
+                  ...(filters?.startDate ? { gte: filters.startDate } : {}),
+                  ...(normalizedEndDate ? { lte: normalizedEndDate } : {}),
+               },
+            }
+            : {};
+
+      const [totalCount, bookings] = await Promise.all([
+         db.booking.count({
+            where: {
+               ...dateFilter,
+            },
+         }),
+         db.booking.findMany({
+            where: {
+               ...dateFilter,
+            },
+            skip,
+            take: pageSize,
+            orderBy: {
+               createdAt: "desc",
+            },
+            select: {
+               id: true,
+               status: true,
+               startTime: true,
+               candidate: {
+                  select: {
+                     firstName: true,
+                     lastName: true,
+                     email: true,
+                     imageUrl: true,
+                     credits: true,
+                  },
+               },
+            },
+         }),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+
+      const data: RecentSessionItem[] = bookings.map((booking) => {
+         const name = [booking.candidate.firstName, booking.candidate.lastName]
+            .filter(Boolean)
+            .join(" ")
+            .trim() || "Unknown User";
+
+         return {
+            id: booking.id,
+            name,
+            email: booking.candidate.email,
+            image: booking.candidate.imageUrl,
+            dateTime: booking.startTime,
+            status: booking.status,
+            userCredit: booking.candidate.credits,
+         };
+      });
+
+      return {
+         data,
+         page,
+         pageSize,
+         totalCount,
+         totalPages,
+         hasNextPage: page < totalPages,
+         hasPrevPage: page > 1,
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to fetch recent sessions",
       });
    }
 };

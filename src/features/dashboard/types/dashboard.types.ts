@@ -1,5 +1,5 @@
 import { BaseResponse } from "@/types/api.types";
-import { InterviewExpertise } from "@/generated/prisma/enums";
+import { InterviewExpertise, BookingStatus } from "@/generated/prisma/enums";
 import { LucideIcon } from "lucide-react";
 
 export interface DashboardMetricsFilter {
@@ -47,3 +47,30 @@ export interface InterviewVolumeTrendItem {
 }
 
 export type InterviewVolumeTrendsResponse = BaseResponse<InterviewVolumeTrendItem[]>;
+
+export interface RecentSessionsFilter extends DashboardMetricsFilter {
+   page?: number;
+   pageSize?: number;
+}
+
+export interface RecentSessionItem {
+   id: string;
+   name: string;
+   email: string;
+   image: string | null;
+   dateTime: Date;
+   status: BookingStatus;
+   userCredit: number;
+}
+
+export interface PaginatedRecentSessions {
+   data: RecentSessionItem[];
+   page: number;
+   pageSize: number;
+   totalCount: number;
+   totalPages: number;
+   hasNextPage: boolean;
+   hasPrevPage: boolean;
+}
+
+export type RecentSessionsResponse = BaseResponse<PaginatedRecentSessions>;

@@ -17,6 +17,10 @@ export const globalData: GlobalTypes = {
       bankPending: "Bank Pending",
       free: "Free",
       paused: "Paused"
+   },
+   tableNoData: {
+      title: "No records found",
+      body: "There are no entries to display at this time. Once data becomes available, it will appear here."
    }
 };
 

@@ -12,6 +12,7 @@ import { endOfMonth, startOfMonth } from 'date-fns';
 import { dashboardData } from '@/data/dashboard/dashboard.data';
 import ExperienceMetrics from './experience-metrics';
 import InterviewTrends from './interview-trends';
+import RecentSessions from './recent-sessions';
 
 const Dashboard = () => {
    const [date, setDate] = useState<DateRange | undefined>({
@@ -61,7 +62,7 @@ const Dashboard = () => {
                endDate={appliedDate?.to}
             />
 
-            {/* Grid */}
+            {/* Metrics and Trends */}
             <div className="grid lg:grid-cols-2 gap-5 2xl:gap-6">
                <ExperienceMetrics
                   startDate={appliedDate?.from}
@@ -72,6 +73,12 @@ const Dashboard = () => {
                   endDate={appliedDate?.to}
                />
             </div>
+
+            {/* Recent Sessions */}
+            <RecentSessions
+               startDate={appliedDate?.from}
+               endDate={appliedDate?.to}
+            />
 
          </div>
       </div>

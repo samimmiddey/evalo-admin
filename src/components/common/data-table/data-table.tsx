@@ -5,6 +5,9 @@ import { columnSizingFeature, tableFeatures, useTable, type ColumnDef, type RowD
 import TableSkeleton from './table-skeleton';
 import { usePaginationTrigger } from '@/hooks/use-pagination-trigger';
 import ListEndMessage from '../list-end-message';
+import ErrorCard from '../error-card';
+import NoDataCard from '../no-data-card';
+import { globalData } from '@/data/global/global.data';
 
 export const features = tableFeatures({
    columnSizingFeature
@@ -19,6 +22,7 @@ interface DataTableProps<TData extends RowData> {
    fetchNextPage?: () => void;
    pageSize: number;
    contentType: string;
+   error: string | null;
 }
 
 export function DataTable<TData extends RowData>({
@@ -29,7 +33,8 @@ export function DataTable<TData extends RowData>({
    isFetchingNextPage,
    fetchNextPage,
    pageSize,
-   contentType
+   contentType,
+   error
 }: DataTableProps<TData>) {
    const table = useTable({ features, columns, data });
 
@@ -68,6 +73,25 @@ export function DataTable<TData extends RowData>({
                   {
                      isLoading ? (
                         <TableSkeleton columns={columns.length} />
+                     ) : error ? (
+                        <TableRow>
+                           <TableCell colSpan={columns.length}>
+                              <ErrorCard
+                                 text={error}
+                                 className="border-none! bg-transparent!"
+                              />
+                           </TableCell>
+                        </TableRow>
+                     ) : data.length === 0 ? (
+                        <TableRow>
+                           <TableCell colSpan={columns.length}>
+                              <NoDataCard
+                                 title={globalData.tableNoData.title}
+                                 body={globalData.tableNoData.body}
+                                 className="border-none! bg-transparent!"
+                              />
+                           </TableCell>
+                        </TableRow>
                      ) : (
                         <>
                            {/* Existing rendered rows */}
