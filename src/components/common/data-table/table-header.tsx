@@ -1,21 +1,38 @@
-import React from 'react';
 import SecondaryTitle from '../secondary-title';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import PageHeaderLayout from '@/components/layouts/page-header-layout';
+import HeaderLayout from '@/components/layouts/header-layout';
+import PrimaryTitle from '../primary-title';
+import PrimaryBody from '../primary-body';
 
 interface DataTableHeaderProps {
    headerTitle?: string;
+   headerDesc?: string;
    viewAllLink?: string;
+   secondaryTitle?: boolean;
 }
 
-const DataTableHeader = ({ headerTitle, viewAllLink }: DataTableHeaderProps) => {
+const DataTableHeader = ({ headerTitle, headerDesc, viewAllLink, secondaryTitle = false }: DataTableHeaderProps) => {
    return (
-      <div className='mb-4 2xl:mb-5 flex items-center gap-4 justify-between'>
-         <SecondaryTitle
-            text={headerTitle ?? ''}
-            className="text-zinc-300!"
-         />
+      <PageHeaderLayout className={secondaryTitle ? 'mb-4! 2xl:mb-5!' : ''}>
+         {
+            secondaryTitle ? (
+               <SecondaryTitle
+                  text={headerTitle ?? ''}
+                  className="text-zinc-300!"
+               />
+            ) : (
+               <HeaderLayout className="mb-0!">
+                  <PrimaryTitle text={headerTitle ?? ''} />
+                  <PrimaryBody
+                     text={headerDesc ?? ''}
+                     className="max-w-2xl"
+                  />
+               </HeaderLayout>
+            )
+         }
          {
             viewAllLink &&
             <Link href={viewAllLink}>
@@ -27,7 +44,7 @@ const DataTableHeader = ({ headerTitle, viewAllLink }: DataTableHeaderProps) => 
                </Button>
             </Link>
          }
-      </div>
+      </PageHeaderLayout>
    );
 };
 

@@ -121,6 +121,7 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
          error={error}
          tableHeader={true}
          headerTitle='Recent Interview Sessions'
+         secondaryTitle={true}
          viewAllLink='/sessions'
       />
    );

@@ -26,6 +26,8 @@ interface DataTableProps<TData extends RowData> {
    error: string | null;
    tableHeader?: boolean;
    headerTitle?: string;
+   headerDesc?: string;
+   secondaryTitle?: boolean;
    viewAllLink?: string;
 }
 
@@ -41,6 +43,8 @@ export function DataTable<TData extends RowData>({
    error,
    tableHeader,
    headerTitle,
+   headerDesc,
+   secondaryTitle,
    viewAllLink
 }: DataTableProps<TData>) {
    const table = useTable({ features, columns, data });
@@ -57,7 +61,9 @@ export function DataTable<TData extends RowData>({
             tableHeader &&
             <DataTableHeader
                headerTitle={headerTitle}
+               headerDesc={headerDesc}
                viewAllLink={viewAllLink}
+               secondaryTitle={secondaryTitle}
             />
          }
          <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300">
