@@ -112,20 +112,17 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
    ];
 
    return (
-      <div>
-         <SecondaryTitle
-            text="Recent Interview Sessions"
-            className="text-zinc-300! text-base 2xl:text-lg mb-4 2xl:mb-5"
-         />
-         <DataTable
-            isLoading={isLoading}
-            contentType='Recent Sessions'
-            pageSize={params.pageSize}
-            columns={columns}
-            data={data?.data ?? []}
-            error={error}
-         />
-      </div>
+      <DataTable
+         isLoading={isLoading}
+         contentType='Recent Sessions'
+         pageSize={params.pageSize}
+         columns={columns}
+         data={data?.data ?? []}
+         error={error}
+         tableHeader={true}
+         headerTitle='Recent Interview Sessions'
+         viewAllLink='/sessions'
+      />
    );
 };
 

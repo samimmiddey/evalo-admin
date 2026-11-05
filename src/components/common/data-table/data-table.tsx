@@ -8,6 +8,7 @@ import ListEndMessage from '../list-end-message';
 import ErrorCard from '../error-card';
 import NoDataCard from '../no-data-card';
 import { globalData } from '@/data/global/global.data';
+import DataTableHeader from './table-header';
 
 export const features = tableFeatures({
    columnSizingFeature
@@ -23,6 +24,9 @@ interface DataTableProps<TData extends RowData> {
    pageSize: number;
    contentType: string;
    error: string | null;
+   tableHeader?: boolean;
+   headerTitle?: string;
+   viewAllLink?: string;
 }
 
 export function DataTable<TData extends RowData>({
@@ -34,7 +38,10 @@ export function DataTable<TData extends RowData>({
    fetchNextPage,
    pageSize,
    contentType,
-   error
+   error,
+   tableHeader,
+   headerTitle,
+   viewAllLink
 }: DataTableProps<TData>) {
    const table = useTable({ features, columns, data });
 
@@ -46,6 +53,13 @@ export function DataTable<TData extends RowData>({
 
    return (
       <div>
+         {
+            tableHeader &&
+            <DataTableHeader
+               headerTitle={headerTitle}
+               viewAllLink={viewAllLink}
+            />
+         }
          <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300">
             <Table className="w-full table-fixed min-w-200">
                <TableHeader className="border-b border-white/5 bg-zinc-900/60">
