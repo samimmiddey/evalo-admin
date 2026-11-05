@@ -24,7 +24,7 @@ interface DataTableProps<TData extends RowData> {
    pageSize: number;
    contentType: string;
    error: string | null;
-   tableHeader?: boolean;
+   showTableHeader?: boolean;
    headerTitle?: string;
    headerDesc?: string;
    secondaryTitle?: boolean;
@@ -41,7 +41,7 @@ export function DataTable<TData extends RowData>({
    pageSize,
    contentType,
    error,
-   tableHeader,
+   showTableHeader,
    headerTitle,
    headerDesc,
    secondaryTitle,
@@ -58,7 +58,7 @@ export function DataTable<TData extends RowData>({
    return (
       <div>
          {
-            tableHeader &&
+            showTableHeader &&
             <DataTableHeader
                headerTitle={headerTitle}
                headerDesc={headerDesc}

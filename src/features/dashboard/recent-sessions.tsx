@@ -119,7 +119,7 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
          columns={columns}
          data={data?.data ?? []}
          error={error}
-         tableHeader={true}
+         showTableHeader={true}
          headerTitle='Recent Interview Sessions'
          secondaryTitle={true}
          viewAllLink='/sessions'
