@@ -191,7 +191,7 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
             </div>
             <DrawerFooter className='flex flex-row items-center gap-2.5'>
                <Button
-                  size='lg'
+                  size='xl'
                   variant='ghost'
                   onClick={handleClear}
                   disabled={!Boolean(draftDate || draftRole || draftStatus)}
@@ -200,7 +200,7 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                   clear
                </Button>
                <Button
-                  size="lg"
+                  size="xl"
                   onClick={handleApply}
                   className='w-1/2'
                   disabled={!Boolean(draftDate || draftRole || draftStatus)}
