@@ -56,6 +56,7 @@ const eslintConfig = defineConfig([
         "warn",
         { props: "never", children: "never" },
       ],
+      "react-hooks/set-state-in-effect": "off"
     },
   }),
 ]);

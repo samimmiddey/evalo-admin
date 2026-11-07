@@ -239,7 +239,10 @@ const Users = () => {
                      { label: 'Banned', value: 'BANNED' }
                   ]
                },
-               resetFilters: () => setFilters(INITIAL_FILTERS)
+               resetFilters: () => {
+                  setFilters(INITIAL_FILTERS);
+                  setFilterButton(false);
+               }
             }}
          />
       </div>

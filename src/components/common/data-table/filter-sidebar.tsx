@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import {
    Drawer,
-   DrawerClose,
    DrawerContent,
    DrawerFooter,
    DrawerHeader,
@@ -15,6 +14,10 @@ import { Label } from "@/components/ui/label";
 import { Date, Role, Status } from "./data-table";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useMediaQuery from "@/hooks/use-media-query";
+import { useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
+import { UserRole, UserStatus } from "@/generated/prisma/enums";
+import { X } from "lucide-react";
 
 interface FilterSidebarProps {
    open: boolean;
@@ -26,25 +29,85 @@ interface FilterSidebarProps {
 }
 
 export function FilterSidebar({ open, setOpen, date, role, status, onResetFilters }: FilterSidebarProps) {
-   const smWidth = useMediaQuery(768);
+   const [draftDate, setDraftDate] = useState<DateRange | undefined>(date?.value);
+   const [draftRole, setDraftRole] = useState<UserRole | undefined>(role?.value);
+   const [draftStatus, setDraftStatus] = useState<UserStatus | undefined>(status?.value);
+
+   const mdWidth = useMediaQuery(768);
+
+   // Sync draft with parent props whenever drawer opens
+   useEffect(() => {
+      if (open) {
+         setDraftDate(date?.value);
+         setDraftRole(role?.value);
+         setDraftStatus(status?.value);
+      }
+   }, [open, date?.value, role?.value, status?.value]);
+
+   // Handle date change
+   const handleDateChange = (val: DateRange | undefined) => {
+      setDraftDate(val);
+   };
+
+   // Handle role change
+   const handleRoleChange = (val: UserRole | null) => {
+      setDraftRole(val ?? undefined);
+   };
+
+   // Handle status change
+   const handleStatusChange = (val: UserStatus | null) => {
+      setDraftStatus(val ?? undefined);
+   };
+
+   // Apply button
+   const handleApply = () => {
+      date?.setValue(draftDate);
+      role?.setValue(draftRole ?? null);
+      status?.setValue(draftStatus ?? null);
+      setOpen();
+   };
+
+   // Clear button
+   const handleClear = () => {
+      if (onResetFilters) {
+         onResetFilters();
+      }
+
+      setDraftDate(undefined);
+      setDraftRole(undefined);
+      setDraftStatus(undefined);
+   };
 
    return (
       <Drawer
          open={open}
          onOpenChange={setOpen}
-         showSwipeHandle={Boolean(smWidth)}
-         swipeDirection={smWidth ? "down" : "right"}
+         showSwipeHandle={Boolean(mdWidth)}
+         swipeDirection={mdWidth ? "down" : "right"}
       >
          <DrawerContent className='border-white/5 bg-zinc-900'>
             <DrawerHeader>
-               <SecondaryTitle
-                  text='Filters'
-                  className='text-base 2xl:text-lg font-medium'
-               />
-               <PrimaryBody
-                  text='Apply filters to refine your search results'
-                  className='text-[13px] 2xl:text-sm'
-               />
+               <div className="flex items-start gap-4 justify-between">
+                  <div className="flex flex-col gap-1 w-full">
+                     <SecondaryTitle
+                        text='Filters'
+                        className='text-base 2xl:text-lg font-medium'
+                     />
+                     <PrimaryBody
+                        text='Apply filters to refine your search results'
+                        className='text-[13px] 2xl:text-sm'
+                     />
+                  </div>
+                  {
+                     !mdWidth &&
+                     <div
+                        className="size-6 rounded-md bg-zinc-800 flex items-center justify-center shrink-0 cursor-pointer"
+                        onClick={setOpen}
+                     >
+                        <X className="h-4 w-4 text-zinc-300" />
+                     </div>
+                  }
+               </div>
             </DrawerHeader>
             <div className="p-4 flex flex-col gap-6 my-4">
                {
@@ -54,8 +117,8 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                         {date.label}
                      </Label>
                      <DateRangePicker
-                        date={date.value}
-                        setDate={date.setValue}
+                        date={draftDate}
+                        setDate={handleDateChange}
                      />
                   </div>
                }
@@ -66,10 +129,8 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                         {role.label}
                      </Label>
                      <Select
-                        value={role.value ?? 'NONE'}
-                        onValueChange={(value) => {
-                           role.setValue(value === 'NONE' ? null : value);
-                        }}
+                        value={draftRole ?? 'NONE'}
+                        onValueChange={(value) => handleRoleChange(value as UserRole)}
                      >
                         <SelectTrigger className="w-full h-10! border-white/10">
                            <SelectValue placeholder="None">
@@ -101,10 +162,8 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                         {status.label}
                      </Label>
                      <Select
-                        value={status.value ?? 'NONE'}
-                        onValueChange={(value) => {
-                           status.setValue(value === 'NONE' ? null : value);
-                        }}
+                        value={draftStatus ?? 'NONE'}
+                        onValueChange={(value) => handleStatusChange(value as UserStatus)}
                      >
                         <SelectTrigger className="w-full h-10! border-white/10">
                            <SelectValue placeholder="None">
@@ -130,28 +189,24 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                   </div>
                }
             </div>
-            <DrawerFooter>
-               {
-                  (date?.value || role?.value || status?.value) &&
-                  <Button
-                     size='lg'
-                     variant='ghost'
-                     onClick={onResetFilters}
-                     className='bg-red-500/10! text-red-400!'
-                  >
-                     clear
-                  </Button>
-               }
-               <DrawerClose
-                  render={
-                     <Button
-                        variant="outline"
-                        size='lg'
-                     />
-                  }
+            <DrawerFooter className='flex flex-row items-center gap-2.5'>
+               <Button
+                  size='lg'
+                  variant='ghost'
+                  onClick={handleClear}
+                  disabled={!Boolean(draftDate || draftRole || draftStatus)}
+                  className='bg-red-500/10! text-red-400! w-1/2'
                >
-                  Close
-               </DrawerClose>
+                  clear
+               </Button>
+               <Button
+                  size="lg"
+                  onClick={handleApply}
+                  className='w-1/2'
+                  disabled={!Boolean(draftDate || draftRole || draftStatus)}
+               >
+                  Apply Filters
+               </Button>
             </DrawerFooter>
          </DrawerContent>
       </Drawer>
