@@ -50,7 +50,6 @@ export type UserMinAggregateOutputType = {
   email: string | null
   firstName: string | null
   lastName: string | null
-  phone: string | null
   imageUrl: string | null
   role: $Enums.UserRole | null
   createdAt: Date | null
@@ -67,6 +66,8 @@ export type UserMinAggregateOutputType = {
   creditBalance: number | null
   averageRating: number | null
   totalRatings: number | null
+  phone: string | null
+  status: $Enums.UserStatus | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -75,7 +76,6 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   firstName: string | null
   lastName: string | null
-  phone: string | null
   imageUrl: string | null
   role: $Enums.UserRole | null
   createdAt: Date | null
@@ -92,6 +92,8 @@ export type UserMaxAggregateOutputType = {
   creditBalance: number | null
   averageRating: number | null
   totalRatings: number | null
+  phone: string | null
+  status: $Enums.UserStatus | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -100,7 +102,6 @@ export type UserCountAggregateOutputType = {
   email: number
   firstName: number
   lastName: number
-  phone: number
   imageUrl: number
   role: number
   createdAt: number
@@ -118,6 +119,8 @@ export type UserCountAggregateOutputType = {
   creditBalance: number
   averageRating: number
   totalRatings: number
+  phone: number
+  status: number
   _all: number
 }
 
@@ -146,7 +149,6 @@ export type UserMinAggregateInputType = {
   email?: true
   firstName?: true
   lastName?: true
-  phone?: true
   imageUrl?: true
   role?: true
   createdAt?: true
@@ -163,6 +165,8 @@ export type UserMinAggregateInputType = {
   creditBalance?: true
   averageRating?: true
   totalRatings?: true
+  phone?: true
+  status?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -171,7 +175,6 @@ export type UserMaxAggregateInputType = {
   email?: true
   firstName?: true
   lastName?: true
-  phone?: true
   imageUrl?: true
   role?: true
   createdAt?: true
@@ -188,6 +191,8 @@ export type UserMaxAggregateInputType = {
   creditBalance?: true
   averageRating?: true
   totalRatings?: true
+  phone?: true
+  status?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -196,7 +201,6 @@ export type UserCountAggregateInputType = {
   email?: true
   firstName?: true
   lastName?: true
-  phone?: true
   imageUrl?: true
   role?: true
   createdAt?: true
@@ -214,6 +218,8 @@ export type UserCountAggregateInputType = {
   creditBalance?: true
   averageRating?: true
   totalRatings?: true
+  phone?: true
+  status?: true
   _all?: true
 }
 
@@ -309,7 +315,6 @@ export type UserGroupByOutputType = {
   email: string
   firstName: string | null
   lastName: string | null
-  phone: string | null
   imageUrl: string | null
   role: $Enums.UserRole
   createdAt: Date
@@ -327,6 +332,8 @@ export type UserGroupByOutputType = {
   creditBalance: number
   averageRating: number | null
   totalRatings: number
+  phone: string | null
+  status: $Enums.UserStatus
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -358,7 +365,6 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   firstName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringNullableFilter<"User"> | string | null
-  phone?: Prisma.StringNullableFilter<"User"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -376,6 +382,8 @@ export type UserWhereInput = {
   creditBalance?: Prisma.IntFilter<"User"> | number
   averageRating?: Prisma.FloatNullableFilter<"User"> | number | null
   totalRatings?: Prisma.IntFilter<"User"> | number
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
+  status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityListRelationFilter
   bookingsAsCandidate?: Prisma.BookingListRelationFilter
   bookingsAsInterviewer?: Prisma.BookingListRelationFilter
@@ -390,7 +398,6 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
-  phone?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -408,6 +415,8 @@ export type UserOrderByWithRelationInput = {
   creditBalance?: Prisma.SortOrder
   averageRating?: Prisma.SortOrderInput | Prisma.SortOrder
   totalRatings?: Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   availabilities?: Prisma.AvailabilityOrderByRelationAggregateInput
   bookingsAsCandidate?: Prisma.BookingOrderByRelationAggregateInput
   bookingsAsInterviewer?: Prisma.BookingOrderByRelationAggregateInput
@@ -425,7 +434,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   firstName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringNullableFilter<"User"> | string | null
-  phone?: Prisma.StringNullableFilter<"User"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -443,6 +451,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   creditBalance?: Prisma.IntFilter<"User"> | number
   averageRating?: Prisma.FloatNullableFilter<"User"> | number | null
   totalRatings?: Prisma.IntFilter<"User"> | number
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
+  status?: Prisma.EnumUserStatusFilter<"User"> | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityListRelationFilter
   bookingsAsCandidate?: Prisma.BookingListRelationFilter
   bookingsAsInterviewer?: Prisma.BookingListRelationFilter
@@ -457,7 +467,6 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
-  phone?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -475,6 +484,8 @@ export type UserOrderByWithAggregationInput = {
   creditBalance?: Prisma.SortOrder
   averageRating?: Prisma.SortOrderInput | Prisma.SortOrder
   totalRatings?: Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -491,7 +502,6 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -509,6 +519,8 @@ export type UserScalarWhereWithAggregatesInput = {
   creditBalance?: Prisma.IntWithAggregatesFilter<"User"> | number
   averageRating?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
   totalRatings?: Prisma.IntWithAggregatesFilter<"User"> | number
+  phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  status?: Prisma.EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
 }
 
 export type UserCreateInput = {
@@ -517,7 +529,6 @@ export type UserCreateInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -535,6 +546,8 @@ export type UserCreateInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingCreateNestedManyWithoutInterviewerInput
@@ -549,7 +562,6 @@ export type UserUncheckedCreateInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -567,6 +579,8 @@ export type UserUncheckedCreateInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingUncheckedCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedCreateNestedManyWithoutInterviewerInput
@@ -581,7 +595,6 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -599,6 +612,8 @@ export type UserUpdateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUpdateManyWithoutInterviewerNestedInput
@@ -613,7 +628,6 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -631,6 +645,8 @@ export type UserUncheckedUpdateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUncheckedUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -645,7 +661,6 @@ export type UserCreateManyInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -663,6 +678,8 @@ export type UserCreateManyInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
 }
 
 export type UserUpdateManyMutationInput = {
@@ -671,7 +688,6 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -689,6 +705,8 @@ export type UserUpdateManyMutationInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -697,7 +715,6 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -715,6 +732,8 @@ export type UserUncheckedUpdateManyInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
 }
 
 export type EnumInterviewExpertiseNullableListFilter<$PrismaModel = never> = {
@@ -731,7 +750,6 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -749,6 +767,8 @@ export type UserCountOrderByAggregateInput = {
   creditBalance?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
   totalRatings?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -766,7 +786,6 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -783,6 +802,8 @@ export type UserMaxOrderByAggregateInput = {
   creditBalance?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
   totalRatings?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -791,7 +812,6 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -808,6 +828,8 @@ export type UserMinOrderByAggregateInput = {
   creditBalance?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
   totalRatings?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  status?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -875,6 +897,10 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type EnumUserStatusFieldUpdateOperationsInput = {
+  set?: $Enums.UserStatus
 }
 
 export type UserCreateNestedOneWithoutSubscriptionsInput = {
@@ -967,7 +993,6 @@ export type UserCreateWithoutSubscriptionsInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -985,6 +1010,8 @@ export type UserCreateWithoutSubscriptionsInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingCreateNestedManyWithoutInterviewerInput
@@ -998,7 +1025,6 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1016,6 +1042,8 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingUncheckedCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1045,7 +1073,6 @@ export type UserUpdateWithoutSubscriptionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1063,6 +1090,8 @@ export type UserUpdateWithoutSubscriptionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUpdateManyWithoutInterviewerNestedInput
@@ -1076,7 +1105,6 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1094,6 +1122,8 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUncheckedUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -1107,7 +1137,6 @@ export type UserCreateWithoutAvailabilitiesInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1125,6 +1154,8 @@ export type UserCreateWithoutAvailabilitiesInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   bookingsAsCandidate?: Prisma.BookingCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingCreateNestedManyWithoutInterviewerInput
   transactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
@@ -1138,7 +1169,6 @@ export type UserUncheckedCreateWithoutAvailabilitiesInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1156,6 +1186,8 @@ export type UserUncheckedCreateWithoutAvailabilitiesInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   bookingsAsCandidate?: Prisma.BookingUncheckedCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedCreateNestedManyWithoutInterviewerInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1185,7 +1217,6 @@ export type UserUpdateWithoutAvailabilitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1203,6 +1234,8 @@ export type UserUpdateWithoutAvailabilitiesInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   bookingsAsCandidate?: Prisma.BookingUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUpdateManyWithoutInterviewerNestedInput
   transactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
@@ -1216,7 +1249,6 @@ export type UserUncheckedUpdateWithoutAvailabilitiesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1234,6 +1266,8 @@ export type UserUncheckedUpdateWithoutAvailabilitiesInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   bookingsAsCandidate?: Prisma.BookingUncheckedUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedUpdateManyWithoutInterviewerNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1247,7 +1281,6 @@ export type UserCreateWithoutBookingsAsCandidateInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1265,6 +1298,8 @@ export type UserCreateWithoutBookingsAsCandidateInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityCreateNestedManyWithoutInterviewerInput
   bookingsAsInterviewer?: Prisma.BookingCreateNestedManyWithoutInterviewerInput
   transactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
@@ -1278,7 +1313,6 @@ export type UserUncheckedCreateWithoutBookingsAsCandidateInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1296,6 +1330,8 @@ export type UserUncheckedCreateWithoutBookingsAsCandidateInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutInterviewerInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedCreateNestedManyWithoutInterviewerInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1314,7 +1350,6 @@ export type UserCreateWithoutBookingsAsInterviewerInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1332,6 +1367,8 @@ export type UserCreateWithoutBookingsAsInterviewerInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingCreateNestedManyWithoutCandidateInput
   transactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
@@ -1345,7 +1382,6 @@ export type UserUncheckedCreateWithoutBookingsAsInterviewerInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1363,6 +1399,8 @@ export type UserUncheckedCreateWithoutBookingsAsInterviewerInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingUncheckedCreateNestedManyWithoutCandidateInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1392,7 +1430,6 @@ export type UserUpdateWithoutBookingsAsCandidateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1410,6 +1447,8 @@ export type UserUpdateWithoutBookingsAsCandidateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUpdateManyWithoutInterviewerNestedInput
   bookingsAsInterviewer?: Prisma.BookingUpdateManyWithoutInterviewerNestedInput
   transactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
@@ -1423,7 +1462,6 @@ export type UserUncheckedUpdateWithoutBookingsAsCandidateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1441,6 +1479,8 @@ export type UserUncheckedUpdateWithoutBookingsAsCandidateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedUpdateManyWithoutInterviewerNestedInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedUpdateManyWithoutInterviewerNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1465,7 +1505,6 @@ export type UserUpdateWithoutBookingsAsInterviewerInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1483,6 +1522,8 @@ export type UserUpdateWithoutBookingsAsInterviewerInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUpdateManyWithoutCandidateNestedInput
   transactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
@@ -1496,7 +1537,6 @@ export type UserUncheckedUpdateWithoutBookingsAsInterviewerInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1514,6 +1554,8 @@ export type UserUncheckedUpdateWithoutBookingsAsInterviewerInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUncheckedUpdateManyWithoutCandidateNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1527,7 +1569,6 @@ export type UserCreateWithoutTransactionsInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1545,6 +1586,8 @@ export type UserCreateWithoutTransactionsInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingCreateNestedManyWithoutInterviewerInput
@@ -1558,7 +1601,6 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1576,6 +1618,8 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingUncheckedCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1605,7 +1649,6 @@ export type UserUpdateWithoutTransactionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1623,6 +1666,8 @@ export type UserUpdateWithoutTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUpdateManyWithoutInterviewerNestedInput
@@ -1636,7 +1681,6 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1654,6 +1698,8 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUncheckedUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -1667,7 +1713,6 @@ export type UserCreateWithoutPayoutsInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1685,6 +1730,8 @@ export type UserCreateWithoutPayoutsInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingCreateNestedManyWithoutInterviewerInput
@@ -1698,7 +1745,6 @@ export type UserUncheckedCreateWithoutPayoutsInput = {
   email: string
   firstName?: string | null
   lastName?: string | null
-  phone?: string | null
   imageUrl?: string | null
   role?: $Enums.UserRole
   createdAt?: Date | string
@@ -1716,6 +1762,8 @@ export type UserUncheckedCreateWithoutPayoutsInput = {
   creditBalance?: number
   averageRating?: number | null
   totalRatings?: number
+  phone?: string | null
+  status?: $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutInterviewerInput
   bookingsAsCandidate?: Prisma.BookingUncheckedCreateNestedManyWithoutCandidateInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1745,7 +1793,6 @@ export type UserUpdateWithoutPayoutsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1763,6 +1810,8 @@ export type UserUpdateWithoutPayoutsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUpdateManyWithoutInterviewerNestedInput
@@ -1776,7 +1825,6 @@ export type UserUncheckedUpdateWithoutPayoutsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1794,6 +1842,8 @@ export type UserUncheckedUpdateWithoutPayoutsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   averageRating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   totalRatings?: Prisma.IntFieldUpdateOperationsInput | number
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
   availabilities?: Prisma.AvailabilityUncheckedUpdateManyWithoutInterviewerNestedInput
   bookingsAsCandidate?: Prisma.BookingUncheckedUpdateManyWithoutCandidateNestedInput
   bookingsAsInterviewer?: Prisma.BookingUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -1883,7 +1933,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   firstName?: boolean
   lastName?: boolean
-  phone?: boolean
   imageUrl?: boolean
   role?: boolean
   createdAt?: boolean
@@ -1901,6 +1950,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   creditBalance?: boolean
   averageRating?: boolean
   totalRatings?: boolean
+  phone?: boolean
+  status?: boolean
   availabilities?: boolean | Prisma.User$availabilitiesArgs<ExtArgs>
   bookingsAsCandidate?: boolean | Prisma.User$bookingsAsCandidateArgs<ExtArgs>
   bookingsAsInterviewer?: boolean | Prisma.User$bookingsAsInterviewerArgs<ExtArgs>
@@ -1916,7 +1967,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   firstName?: boolean
   lastName?: boolean
-  phone?: boolean
   imageUrl?: boolean
   role?: boolean
   createdAt?: boolean
@@ -1934,6 +1984,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   creditBalance?: boolean
   averageRating?: boolean
   totalRatings?: boolean
+  phone?: boolean
+  status?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1942,7 +1994,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   firstName?: boolean
   lastName?: boolean
-  phone?: boolean
   imageUrl?: boolean
   role?: boolean
   createdAt?: boolean
@@ -1960,6 +2011,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   creditBalance?: boolean
   averageRating?: boolean
   totalRatings?: boolean
+  phone?: boolean
+  status?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1968,7 +2021,6 @@ export type UserSelectScalar = {
   email?: boolean
   firstName?: boolean
   lastName?: boolean
-  phone?: boolean
   imageUrl?: boolean
   role?: boolean
   createdAt?: boolean
@@ -1986,9 +2038,11 @@ export type UserSelectScalar = {
   creditBalance?: boolean
   averageRating?: boolean
   totalRatings?: boolean
+  phone?: boolean
+  status?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkUserId" | "email" | "firstName" | "lastName" | "phone" | "imageUrl" | "role" | "createdAt" | "updatedAt" | "credits" | "currentPlan" | "creditsLastAllocatedAt" | "lastProcessedPeriodStart" | "bio" | "designation" | "company" | "experience" | "expertise" | "creditRate" | "creditBalance" | "averageRating" | "totalRatings", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clerkUserId" | "email" | "firstName" | "lastName" | "imageUrl" | "role" | "createdAt" | "updatedAt" | "credits" | "currentPlan" | "creditsLastAllocatedAt" | "lastProcessedPeriodStart" | "bio" | "designation" | "company" | "experience" | "expertise" | "creditRate" | "creditBalance" | "averageRating" | "totalRatings" | "phone" | "status", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   availabilities?: boolean | Prisma.User$availabilitiesArgs<ExtArgs>
   bookingsAsCandidate?: boolean | Prisma.User$bookingsAsCandidateArgs<ExtArgs>
@@ -2017,7 +2071,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     firstName: string | null
     lastName: string | null
-    phone: string | null
     imageUrl: string | null
     role: $Enums.UserRole
     createdAt: Date
@@ -2035,6 +2088,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     creditBalance: number
     averageRating: number | null
     totalRatings: number
+    phone: string | null
+    status: $Enums.UserStatus
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2469,7 +2524,6 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly firstName: Prisma.FieldRef<"User", 'String'>
   readonly lastName: Prisma.FieldRef<"User", 'String'>
-  readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly imageUrl: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -2487,6 +2541,8 @@ export interface UserFieldRefs {
   readonly creditBalance: Prisma.FieldRef<"User", 'Int'>
   readonly averageRating: Prisma.FieldRef<"User", 'Float'>
   readonly totalRatings: Prisma.FieldRef<"User", 'Int'>
+  readonly phone: Prisma.FieldRef<"User", 'String'>
+  readonly status: Prisma.FieldRef<"User", 'UserStatus'>
 }
     
 

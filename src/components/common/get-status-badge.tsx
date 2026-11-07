@@ -76,6 +76,12 @@ export const getStatusBadge = (status?: string | null, className?: string) => {
                {statusBadges.rejected}
             </Badge>
          );
+      case "BANNED":
+         return (
+            <Badge className={cn(commonClasses.danger, className)}>
+               {statusBadges.banned}
+            </Badge>
+         );
 
       // Cancelled / Expired
       case "CANCELLED":

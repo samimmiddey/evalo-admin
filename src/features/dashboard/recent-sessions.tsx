@@ -46,7 +46,7 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
                   />
                   <SecondaryTitle
                      text={name ?? '-'}
-                     className="text-xs! 2xl:text-sm!"
+                     className="text-xs! 2xl:text-sm! truncate"
                   />
                </div>
             );
@@ -71,7 +71,7 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
       },
       {
          accessorKey: 'userCredit',
-         header: 'Credit',
+         header: 'Credits',
          size: 100,
          cell: ({ row }) => {
             const { userCredit } = row.original;
@@ -119,8 +119,9 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
          columns={columns}
          data={data?.data ?? []}
          error={error}
-         showTableHeader={true}
-         headerTitle='Recent Interview Sessions'
+         tableHeader={{
+            title: 'Recent Interview Sessions'
+         }}
          secondaryTitle={true}
          viewAllLink='/sessions'
       />

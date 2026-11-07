@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -12,7 +7,173 @@ datasource db {
   provider = "postgresql"
 }
 
-// ENUMS
+model User {
+  id                       String               @id @default(cuid())
+  clerkUserId              String               @unique
+  email                    String               @unique
+  firstName                String?
+  lastName                 String?
+  imageUrl                 String?
+  role                     UserRole             @default(UNASSIGNED)
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
+  credits                  Int                  @default(0)
+  currentPlan              String               @default("free")
+  creditsLastAllocatedAt   DateTime?
+  lastProcessedPeriodStart DateTime?
+  bio                      String?
+  designation              String?
+  company                  String?
+  experience               Int?
+  expertise                InterviewExpertise[]
+  creditRate               Int                  @default(1)
+  creditBalance            Int                  @default(0)
+  averageRating            Float?
+  totalRatings             Int                  @default(0)
+  phone                    String?
+  status                   UserStatus           @default(ACTIVE)
+  availabilities           Availability[]
+  bookingsAsCandidate      Booking[]            @relation("CandidateBookings")
+  bookingsAsInterviewer    Booking[]            @relation("InterviewerBookings")
+  transactions             CreditTransaction[]
+  payouts                  Payout[]
+  subscriptions            Subscription[]
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String
+  cashfreeSubId      String             @unique
+  cashfreePlanId     String
+  planSlug           String
+  status             SubscriptionStatus @default(INITIALIZED)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  customerPhone      String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([cashfreeSubId])
+}
+
+model Availability {
+  id            String             @id @default(uuid())
+  interviewerId String
+  startTime     DateTime
+  endTime       DateTime
+  status        AvailabilityStatus @default(AVAILABLE)
+  interviewer   User               @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
+
+  @@index([interviewerId, startTime])
+}
+
+model Booking {
+  id               String              @id @default(uuid())
+  candidateId      String
+  interviewerId    String
+  startTime        DateTime
+  endTime          DateTime
+  status           BookingStatus       @default(SCHEDULED)
+  completionReason CompletionReason?
+  streamStatus     StreamStatus        @default(READY)
+  creditsCharged   Int
+  streamCallId     String?             @unique
+  recordingUrl     String?
+  isRefunded       Boolean             @default(false)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  candidate        User                @relation("CandidateBookings", fields: [candidateId], references: [id])
+  interviewer      User                @relation("InterviewerBookings", fields: [interviewerId], references: [id])
+  sessions         BookingSession[]
+  transactions     CreditTransaction[]
+  feedback         Feedback?
+  review           Review?
+
+  @@index([status, createdAt])
+  @@index([interviewerId, status])
+  @@index([candidateId, status])
+}
+
+model Feedback {
+  id             String         @id @default(uuid())
+  bookingId      String         @unique
+  summary        String
+  technical      String
+  communication  String
+  problemSolving String
+  recommendation String
+  strengths      String[]
+  improvements   String[]
+  overallRating  FeedbackRating
+  createdAt      DateTime       @default(now())
+  booking        Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  bookingId String   @unique
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model CreditTransaction {
+  id        String            @id @default(uuid())
+  userId    String
+  amount    Int
+  type      TransactionType
+  reason    CompletionReason?
+  bookingId String?
+  createdAt DateTime          @default(now())
+  booking   Booking?          @relation(fields: [bookingId], references: [id])
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payout {
+  id            String       @id @default(uuid())
+  interviewerId String
+  credits       Int
+  platformFee   Float
+  netAmount     Float
+  status        PayoutStatus @default(PROCESSING)
+  adminNote     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  processedAt   DateTime?
+  processedBy   String?
+  interviewer   User         @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([interviewerId, status])
+}
+
+model BookingSession {
+  id                         String   @id @default(uuid())
+  bookingId                  String
+  streamSessionId            String
+  coPresenceSeconds          Int      @default(0)
+  interviewerPresenceSeconds Int      @default(0)
+  candidatePresenceSeconds   Int      @default(0)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+  booking                    Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, streamSessionId])
+  @@index([bookingId])
+}
+
+model PlatformConfig {
+  id                 String   @id @default(uuid())
+  creditPayoutRate   Float
+  platformFeePercent Float
+  minPayoutCredits   Int
+  currency           String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
 
 enum UserRole {
   UNASSIGNED
@@ -91,195 +252,7 @@ enum SubscriptionStatus {
   EXPIRED
 }
 
-// USER
-
-model User {
-  id          String   @id @default(cuid())
-  clerkUserId String   @unique
-  email       String   @unique
-  firstName   String?
-  lastName    String?
-  phone       String?
-  imageUrl    String?
-  role        UserRole @default(UNASSIGNED)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // candidate only
-  credits                  Int       @default(0)
-  currentPlan              String    @default("free")
-  creditsLastAllocatedAt   DateTime?
-  lastProcessedPeriodStart DateTime?
-
-  // interviewer only
-  bio           String?
-  designation   String?
-  company       String?
-  experience    Int?
-  expertise     InterviewExpertise[]
-  creditRate    Int                  @default(1)
-  creditBalance Int                  @default(0)
-  averageRating Float?
-  totalRatings  Int                  @default(0)
-
-  availabilities        Availability[]
-  bookingsAsCandidate   Booking[]           @relation("CandidateBookings")
-  bookingsAsInterviewer Booking[]           @relation("InterviewerBookings")
-  transactions          CreditTransaction[]
-  payouts               Payout[]
-  subscriptions         Subscription[]
+enum UserStatus {
+  ACTIVE
+  BANNED
 }
-
-// SUBSCRIPTION (Cashfree Mandates)
-
-model Subscription {
-  id                 String             @id @default(cuid())
-  userId             String
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cashfreeSubId      String             @unique
-  cashfreePlanId     String
-  planSlug           String
-  status             SubscriptionStatus @default(INITIALIZED)
-  currentPeriodStart DateTime?
-  currentPeriodEnd   DateTime?
-  customerPhone      String?
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-
-  @@index([userId, status])
-  @@index([cashfreeSubId])
-}
-
-// AVAILABILITY
-
-model Availability {
-  id            String             @id @default(uuid())
-  interviewerId String
-  interviewer   User               @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
-  startTime     DateTime
-  endTime       DateTime
-  status        AvailabilityStatus @default(AVAILABLE)
-
-  @@index([interviewerId, startTime])
-}
-
-// BOOKINGS
-
-model Booking {
-  id             String              @id @default(uuid())
-  candidateId    String
-  candidate      User                @relation("CandidateBookings", fields: [candidateId], references: [id])
-  interviewerId  String
-  interviewer    User                @relation("InterviewerBookings", fields: [interviewerId], references: [id])
-  startTime      DateTime
-  endTime        DateTime
-  status           BookingStatus       @default(SCHEDULED)
-  completionReason CompletionReason?
-  streamStatus     StreamStatus        @default(READY)
-  creditsCharged Int
-  streamCallId   String?             @unique
-  recordingUrl   String?
-  isRefunded     Boolean             @default(false)
-  feedback       Feedback?
-  review         Review?
-  transactions   CreditTransaction[]
-  sessions       BookingSession[]
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-
-  @@index([status, createdAt])
-  @@index([interviewerId, status])
-  @@index([candidateId, status])
-}
-
-// FEEDBACK (Gemini AI Evaluation)
-
-model Feedback {
-  id             String         @id @default(uuid())
-  bookingId      String         @unique
-  booking        Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  summary        String         @db.Text
-  technical      String         @db.Text
-  communication  String         @db.Text
-  problemSolving String         @db.Text
-  recommendation String
-  strengths      String[]
-  improvements   String[]
-  overallRating  FeedbackRating
-  createdAt      DateTime       @default(now())
-}
-
-// REVIEWS (Candidate review/rating of Interviewer)
-
-model Review {
-  id        String   @id @default(uuid())
-  bookingId String   @unique
-  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  rating    Int
-  comment   String?  @db.Text
-  createdAt DateTime @default(now())
-}
-
-// CREDIT TRANSACTIONS
-
-model CreditTransaction {
-  id        String          @id @default(uuid())
-  userId    String
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amount    Int
-  type      TransactionType
-  reason    CompletionReason?
-  bookingId String?
-  booking   Booking?        @relation(fields: [bookingId], references: [id])
-  createdAt DateTime        @default(now())
-}
-
-// PAYOUTS
-
-model Payout {
-  id            String       @id @default(uuid())
-  interviewerId String
-  interviewer   User         @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
-  credits       Int
-  platformFee   Float
-  netAmount     Float
-  status        PayoutStatus @default(PROCESSING)
-  adminNote     String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  processedAt   DateTime?
-  processedBy   String?
-
-  @@index([status, createdAt])
-  @@index([interviewerId, status])
-}
-
-// BOOKING SESSIONS
-
-model BookingSession {
-  id                String   @id @default(uuid())
-  bookingId         String
-  booking           Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  streamSessionId   String
-  coPresenceSeconds          Int      @default(0)
-  interviewerPresenceSeconds Int      @default(0)
-  candidatePresenceSeconds   Int      @default(0)
-  createdAt                  DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  @@unique([bookingId, streamSessionId])
-  @@index([bookingId])
-}
-
-// PLATFORM CONFIG
-
-model PlatformConfig {
-  id                 String   @id @default(uuid())
-  creditPayoutRate   Float
-  platformFeePercent Float
-  minPayoutCredits   Int
-  currency           String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-}
-

@@ -290,10 +290,10 @@ export type BookingWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   candidate?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   interviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  sessions?: Prisma.BookingSessionListRelationFilter
+  transactions?: Prisma.CreditTransactionListRelationFilter
   feedback?: Prisma.XOR<Prisma.FeedbackNullableScalarRelationFilter, Prisma.FeedbackWhereInput> | null
   review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
-  transactions?: Prisma.CreditTransactionListRelationFilter
-  sessions?: Prisma.BookingSessionListRelationFilter
 }
 
 export type BookingOrderByWithRelationInput = {
@@ -313,10 +313,10 @@ export type BookingOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   candidate?: Prisma.UserOrderByWithRelationInput
   interviewer?: Prisma.UserOrderByWithRelationInput
+  sessions?: Prisma.BookingSessionOrderByRelationAggregateInput
+  transactions?: Prisma.CreditTransactionOrderByRelationAggregateInput
   feedback?: Prisma.FeedbackOrderByWithRelationInput
   review?: Prisma.ReviewOrderByWithRelationInput
-  transactions?: Prisma.CreditTransactionOrderByRelationAggregateInput
-  sessions?: Prisma.BookingSessionOrderByRelationAggregateInput
 }
 
 export type BookingWhereUniqueInput = Prisma.AtLeast<{
@@ -339,10 +339,10 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   candidate?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   interviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  sessions?: Prisma.BookingSessionListRelationFilter
+  transactions?: Prisma.CreditTransactionListRelationFilter
   feedback?: Prisma.XOR<Prisma.FeedbackNullableScalarRelationFilter, Prisma.FeedbackWhereInput> | null
   review?: Prisma.XOR<Prisma.ReviewNullableScalarRelationFilter, Prisma.ReviewWhereInput> | null
-  transactions?: Prisma.CreditTransactionListRelationFilter
-  sessions?: Prisma.BookingSessionListRelationFilter
 }, "id" | "streamCallId">
 
 export type BookingOrderByWithAggregationInput = {
@@ -402,10 +402,10 @@ export type BookingCreateInput = {
   updatedAt?: Date | string
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
+  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
-  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateInput = {
@@ -423,10 +423,10 @@ export type BookingUncheckedCreateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
-  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUpdateInput = {
@@ -444,10 +444,10 @@ export type BookingUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
+  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateInput = {
@@ -465,10 +465,10 @@ export type BookingUncheckedUpdateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingCreateManyInput = {
@@ -771,10 +771,10 @@ export type BookingCreateWithoutCandidateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
+  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
-  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutCandidateInput = {
@@ -791,10 +791,10 @@ export type BookingUncheckedCreateWithoutCandidateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
-  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutCandidateInput = {
@@ -821,10 +821,10 @@ export type BookingCreateWithoutInterviewerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
+  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
-  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutInterviewerInput = {
@@ -841,10 +841,10 @@ export type BookingUncheckedCreateWithoutInterviewerInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
-  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutInterviewerInput = {
@@ -924,9 +924,9 @@ export type BookingCreateWithoutFeedbackInput = {
   updatedAt?: Date | string
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
-  review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
+  review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutFeedbackInput = {
@@ -944,9 +944,9 @@ export type BookingUncheckedCreateWithoutFeedbackInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
+  review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutFeedbackInput = {
@@ -980,9 +980,9 @@ export type BookingUpdateWithoutFeedbackInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
-  review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
+  review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutFeedbackInput = {
@@ -1000,9 +1000,9 @@ export type BookingUncheckedUpdateWithoutFeedbackInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
+  review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
 }
 
 export type BookingCreateWithoutReviewInput = {
@@ -1020,9 +1020,9 @@ export type BookingCreateWithoutReviewInput = {
   updatedAt?: Date | string
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
-  feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
+  feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutReviewInput = {
@@ -1040,9 +1040,9 @@ export type BookingUncheckedCreateWithoutReviewInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
+  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
+  feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutReviewInput = {
@@ -1076,9 +1076,9 @@ export type BookingUpdateWithoutReviewInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
-  feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
+  feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutReviewInput = {
@@ -1096,9 +1096,9 @@ export type BookingUncheckedUpdateWithoutReviewInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
+  feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
 }
 
 export type BookingCreateWithoutTransactionsInput = {
@@ -1116,9 +1116,9 @@ export type BookingCreateWithoutTransactionsInput = {
   updatedAt?: Date | string
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
+  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
-  sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutTransactionsInput = {
@@ -1136,9 +1136,9 @@ export type BookingUncheckedCreateWithoutTransactionsInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
-  sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutTransactionsInput = {
@@ -1172,9 +1172,9 @@ export type BookingUpdateWithoutTransactionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
+  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutTransactionsInput = {
@@ -1192,9 +1192,9 @@ export type BookingUncheckedUpdateWithoutTransactionsInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingCreateWithoutSessionsInput = {
@@ -1212,9 +1212,9 @@ export type BookingCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
+  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutSessionsInput = {
@@ -1232,9 +1232,9 @@ export type BookingUncheckedCreateWithoutSessionsInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
-  transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutSessionsInput = {
@@ -1268,9 +1268,9 @@ export type BookingUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
+  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutSessionsInput = {
@@ -1288,9 +1288,9 @@ export type BookingUncheckedUpdateWithoutSessionsInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingCreateManyCandidateInput = {
@@ -1339,10 +1339,10 @@ export type BookingUpdateWithoutCandidateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
+  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutCandidateInput = {
@@ -1359,10 +1359,10 @@ export type BookingUncheckedUpdateWithoutCandidateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateManyWithoutCandidateInput = {
@@ -1395,10 +1395,10 @@ export type BookingUpdateWithoutInterviewerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
+  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutInterviewerInput = {
@@ -1415,10 +1415,10 @@ export type BookingUncheckedUpdateWithoutInterviewerInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
+  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
-  transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
-  sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateManyWithoutInterviewerInput = {
@@ -1443,13 +1443,13 @@ export type BookingUncheckedUpdateManyWithoutInterviewerInput = {
  */
 
 export type BookingCountOutputType = {
-  transactions: number
   sessions: number
+  transactions: number
 }
 
 export type BookingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  transactions?: boolean | BookingCountOutputTypeCountTransactionsArgs
   sessions?: boolean | BookingCountOutputTypeCountSessionsArgs
+  transactions?: boolean | BookingCountOutputTypeCountTransactionsArgs
 }
 
 /**
@@ -1465,15 +1465,15 @@ export type BookingCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
 /**
  * BookingCountOutputType without action
  */
-export type BookingCountOutputTypeCountTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CreditTransactionWhereInput
+export type BookingCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingSessionWhereInput
 }
 
 /**
  * BookingCountOutputType without action
  */
-export type BookingCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.BookingSessionWhereInput
+export type BookingCountOutputTypeCountTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CreditTransactionWhereInput
 }
 
 
@@ -1494,10 +1494,10 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sessions?: boolean | Prisma.Booking$sessionsArgs<ExtArgs>
+  transactions?: boolean | Prisma.Booking$transactionsArgs<ExtArgs>
   feedback?: boolean | Prisma.Booking$feedbackArgs<ExtArgs>
   review?: boolean | Prisma.Booking$reviewArgs<ExtArgs>
-  transactions?: boolean | Prisma.Booking$transactionsArgs<ExtArgs>
-  sessions?: boolean | Prisma.Booking$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.BookingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
@@ -1560,10 +1560,10 @@ export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  sessions?: boolean | Prisma.Booking$sessionsArgs<ExtArgs>
+  transactions?: boolean | Prisma.Booking$transactionsArgs<ExtArgs>
   feedback?: boolean | Prisma.Booking$feedbackArgs<ExtArgs>
   review?: boolean | Prisma.Booking$reviewArgs<ExtArgs>
-  transactions?: boolean | Prisma.Booking$transactionsArgs<ExtArgs>
-  sessions?: boolean | Prisma.Booking$sessionsArgs<ExtArgs>
   _count?: boolean | Prisma.BookingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BookingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1580,10 +1580,10 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     candidate: Prisma.$UserPayload<ExtArgs>
     interviewer: Prisma.$UserPayload<ExtArgs>
+    sessions: Prisma.$BookingSessionPayload<ExtArgs>[]
+    transactions: Prisma.$CreditTransactionPayload<ExtArgs>[]
     feedback: Prisma.$FeedbackPayload<ExtArgs> | null
     review: Prisma.$ReviewPayload<ExtArgs> | null
-    transactions: Prisma.$CreditTransactionPayload<ExtArgs>[]
-    sessions: Prisma.$BookingSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1996,10 +1996,10 @@ export interface Prisma__BookingClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   candidate<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   interviewer<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  sessions<T extends Prisma.Booking$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  transactions<T extends Prisma.Booking$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedback<T extends Prisma.Booking$feedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$feedbackArgs<ExtArgs>>): Prisma.Prisma__FeedbackClient<runtime.Types.Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   review<T extends Prisma.Booking$reviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$reviewArgs<ExtArgs>>): Prisma.Prisma__ReviewClient<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  transactions<T extends Prisma.Booking$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  sessions<T extends Prisma.Booking$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2444,6 +2444,54 @@ export type BookingDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Booking.sessions
+ */
+export type Booking$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingSession
+   */
+  select?: Prisma.BookingSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingSession
+   */
+  omit?: Prisma.BookingSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingSessionInclude<ExtArgs> | null
+  where?: Prisma.BookingSessionWhereInput
+  orderBy?: Prisma.BookingSessionOrderByWithRelationInput | Prisma.BookingSessionOrderByWithRelationInput[]
+  cursor?: Prisma.BookingSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingSessionScalarFieldEnum | Prisma.BookingSessionScalarFieldEnum[]
+}
+
+/**
+ * Booking.transactions
+ */
+export type Booking$transactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CreditTransaction
+   */
+  select?: Prisma.CreditTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CreditTransaction
+   */
+  omit?: Prisma.CreditTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CreditTransactionInclude<ExtArgs> | null
+  where?: Prisma.CreditTransactionWhereInput
+  orderBy?: Prisma.CreditTransactionOrderByWithRelationInput | Prisma.CreditTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.CreditTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CreditTransactionScalarFieldEnum | Prisma.CreditTransactionScalarFieldEnum[]
+}
+
+/**
  * Booking.feedback
  */
 export type Booking$feedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2479,54 +2527,6 @@ export type Booking$reviewArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.ReviewInclude<ExtArgs> | null
   where?: Prisma.ReviewWhereInput
-}
-
-/**
- * Booking.transactions
- */
-export type Booking$transactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the CreditTransaction
-   */
-  select?: Prisma.CreditTransactionSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the CreditTransaction
-   */
-  omit?: Prisma.CreditTransactionOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CreditTransactionInclude<ExtArgs> | null
-  where?: Prisma.CreditTransactionWhereInput
-  orderBy?: Prisma.CreditTransactionOrderByWithRelationInput | Prisma.CreditTransactionOrderByWithRelationInput[]
-  cursor?: Prisma.CreditTransactionWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CreditTransactionScalarFieldEnum | Prisma.CreditTransactionScalarFieldEnum[]
-}
-
-/**
- * Booking.sessions
- */
-export type Booking$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the BookingSession
-   */
-  select?: Prisma.BookingSessionSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the BookingSession
-   */
-  omit?: Prisma.BookingSessionOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.BookingSessionInclude<ExtArgs> | null
-  where?: Prisma.BookingSessionWhereInput
-  orderBy?: Prisma.BookingSessionOrderByWithRelationInput | Prisma.BookingSessionOrderByWithRelationInput[]
-  cursor?: Prisma.BookingSessionWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.BookingSessionScalarFieldEnum | Prisma.BookingSessionScalarFieldEnum[]
 }
 
 /**

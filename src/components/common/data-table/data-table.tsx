@@ -9,43 +9,94 @@ import ErrorCard from '../error-card';
 import NoDataCard from '../no-data-card';
 import { globalData } from '@/data/global/global.data';
 import DataTableHeader from './table-header';
+import { DateRange } from 'react-day-picker';
+import { UserRole, UserStatus } from '@/generated/prisma/enums';
 
 export const features = tableFeatures({
    columnSizingFeature
 });
 
+interface TableHeader {
+   title: string;
+   description?: string;
+}
+
+export interface Search {
+   value: string | undefined;
+   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+   onClear: () => void;
+   placeholder: string;
+}
+
+export interface Date {
+   label: string;
+   value: DateRange | undefined;
+   setValue: (range: DateRange | undefined) => void;
+}
+
+export interface Role {
+   label: string;
+   value: UserRole | undefined;
+   setValue: (value: string | null) => void;
+   options: {
+      label: string;
+      value: string;
+   }[];
+}
+
+export interface Status {
+   label: string;
+   value: UserStatus | undefined;
+   setValue: (value: string | null) => void;
+   options: {
+      label: string;
+      value: string;
+   }[];
+}
+
+export interface Filters {
+   value: boolean;
+   setValue: () => void;
+   date?: Date;
+   role?: Role;
+   status?: Status;
+   resetFilters: () => void;
+}
+
 interface DataTableProps<TData extends RowData> {
    columns: ColumnDef<typeof features, TData>[];
    data: TData[];
    isLoading?: boolean;
+   skeletonRows?: number;
    hasNextPage?: boolean;
    isFetchingNextPage?: boolean;
    fetchNextPage?: () => void;
    pageSize: number;
    contentType: string;
    error: string | null;
-   showTableHeader?: boolean;
-   headerTitle?: string;
-   headerDesc?: string;
+   tableHeader?: TableHeader;
    secondaryTitle?: boolean;
    viewAllLink?: string;
+   search?: Search;
+   filters?: Filters;
 }
 
 export function DataTable<TData extends RowData>({
    columns,
    data,
    isLoading,
+   skeletonRows,
    hasNextPage,
    isFetchingNextPage,
    fetchNextPage,
    pageSize,
    contentType,
    error,
-   showTableHeader,
-   headerTitle,
-   headerDesc,
+   tableHeader,
    secondaryTitle,
-   viewAllLink
+   viewAllLink,
+   search,
+   filters
 }: DataTableProps<TData>) {
    const table = useTable({ features, columns, data });
 
@@ -58,12 +109,14 @@ export function DataTable<TData extends RowData>({
    return (
       <div>
          {
-            showTableHeader &&
+            tableHeader &&
             <DataTableHeader
-               headerTitle={headerTitle}
-               headerDesc={headerDesc}
+               title={tableHeader.title}
+               description={tableHeader.description}
                viewAllLink={viewAllLink}
                secondaryTitle={secondaryTitle}
+               search={search}
+               filters={filters}
             />
          }
          <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300">
@@ -92,7 +145,10 @@ export function DataTable<TData extends RowData>({
                <TableBody className="divide-y divide-white/5">
                   {
                      isLoading ? (
-                        <TableSkeleton columns={columns.length} />
+                        <TableSkeleton
+                           columns={columns.length}
+                           rows={skeletonRows}
+                        />
                      ) : error ? (
                         <TableRow>
                            <TableCell colSpan={columns.length}>
