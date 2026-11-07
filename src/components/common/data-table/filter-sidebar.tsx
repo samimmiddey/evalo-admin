@@ -1,6 +1,5 @@
 "use client";
 
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
    Drawer,
@@ -15,6 +14,7 @@ import DateRangePicker from "../date-range-picker";
 import { Label } from "@/components/ui/label";
 import { Date, Role, Status } from "./data-table";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import useMediaQuery from "@/hooks/use-media-query";
 
 interface FilterSidebarProps {
    open: boolean;
@@ -26,14 +26,14 @@ interface FilterSidebarProps {
 }
 
 export function FilterSidebar({ open, setOpen, date, role, status, onResetFilters }: FilterSidebarProps) {
-   const isMobile = useIsMobile();
+   const smWidth = useMediaQuery(768);
 
    return (
       <Drawer
          open={open}
          onOpenChange={setOpen}
-         showSwipeHandle={isMobile}
-         swipeDirection={isMobile ? "down" : "right"}
+         showSwipeHandle={Boolean(smWidth)}
+         swipeDirection={smWidth ? "down" : "right"}
       >
          <DrawerContent className='border-white/5 bg-zinc-900'>
             <DrawerHeader>

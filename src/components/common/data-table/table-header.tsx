@@ -11,6 +11,7 @@ import { Filters, Search } from './data-table';
 import { FilterSidebar } from './filter-sidebar';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import useMediaQuery from '@/hooks/use-media-query';
 
 interface DataTableHeaderProps {
    title: string;
@@ -22,6 +23,8 @@ interface DataTableHeaderProps {
 }
 
 const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLink, search, filters }: DataTableHeaderProps) => {
+   const mdWidth = useMediaQuery(768);
+
    return (
       <div className={secondaryTitle ? 'mb-4! 2xl:mb-5!' : 'mb-7 lg:mb-8 2xl:mb-9'}>
          <PageHeaderLayout className='mb-0!'>
@@ -57,7 +60,7 @@ const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLi
             </div>
             {
                (search || filters) &&
-               <div className="flex sm:items-center gap-3 max-sm:flex-col">
+               <div className="flex sm:items-center gap-2.5 2xl:gap-3">
                   {
                      search && (
                         <SearchBar
@@ -77,7 +80,7 @@ const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLi
                            className='text-zinc-400 text-sm! px-3 h-10 relative'
                            onClick={filters.setValue}
                         >
-                           <Filter /> Filters
+                           <Filter /> {!mdWidth && 'Filters'}
                            {
                               ((filters.date?.value?.from && filters.date?.value?.to) || filters.role?.value || filters.status?.value) &&
                               <div className="absolute -right-1 -top-1 size-2 bg-red-500 rounded-full" />
