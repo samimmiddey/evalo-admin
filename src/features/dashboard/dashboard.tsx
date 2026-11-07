@@ -8,17 +8,13 @@ import DashboardStats from './dashboard-stats';
 import DateRangePicker from '@/components/common/date-range-picker';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
-import { endOfMonth, startOfMonth } from 'date-fns';
 import { dashboardData } from '@/data/dashboard/dashboard.data';
 import ExperienceMetrics from './experience-metrics';
 import InterviewTrends from './interview-trends';
 import RecentSessions from './recent-sessions';
 
 const Dashboard = () => {
-   const [date, setDate] = useState<DateRange | undefined>({
-      from: startOfMonth(new Date()),
-      to: endOfMonth(new Date()),
-   });
+   const [date, setDate] = useState<DateRange | undefined>(undefined);
    const [appliedDate, setAppliedDate] = useState<DateRange | undefined>(date);
 
    const handleDateChange = (newRange: DateRange | undefined) => {
