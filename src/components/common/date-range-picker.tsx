@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { DATE_PRESETS } from "@/data/global/global.data";
+import useMediaQuery from "@/hooks/use-media-query";
 
 interface DatePickerProps {
    date: DateRange | undefined;
@@ -28,7 +29,7 @@ const checkIsThisYear = (date: Date) => {
 const DateRangePicker = ({
    date,
    setDate,
-   className,
+   className
 }: DatePickerProps) => {
    const [activePreset, setActivePreset] = useState<string | null>(
       date === undefined ? "All Time" : "This Month"
@@ -60,6 +61,8 @@ const DateRangePicker = ({
       return `${dateRangeStr} | ${label}`;
    };
 
+   const mdWidth = useMediaQuery(768);
+
    return (
       <Field className={cn("w-auto", className)}>
          <Popover>
@@ -77,7 +80,15 @@ const DateRangePicker = ({
                   </Button>
                }
             />
-            <PopoverContent className="w-[calc(100vw-2rem)] sm:w-auto p-0" align="end">
+            <PopoverContent
+               side="bottom"
+               className={cn(
+                  "w-[calc(100vw-2rem)] sm:w-auto p-0",
+                  mdWidth && "max-h-(--available-height) overflow-y-auto overscroll-contain"
+               )}
+               align="end"
+               collisionAvoidance={{ side: 'none' }}
+            >
                <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-zinc-800">
 
                   {/* Presets Sidebar */}
@@ -110,7 +121,7 @@ const DateRangePicker = ({
                         onMonthChange={setMonth}
                         selected={date}
                         onSelect={handleCalendarSelect}
-                        numberOfMonths={2}
+                        numberOfMonths={mdWidth ? 1 : 2}
                         className="w-full"
                      />
                   </div>

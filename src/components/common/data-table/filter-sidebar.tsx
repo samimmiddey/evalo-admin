@@ -85,7 +85,7 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
          showSwipeHandle={Boolean(mdWidth)}
          swipeDirection={mdWidth ? "down" : "right"}
       >
-         <DrawerContent className='border-white/5 bg-zinc-900'>
+         <DrawerContent className={`border-white/5 bg-zinc-900 ${mdWidth ? 'h-150' : ''}`}>
             <DrawerHeader>
                <div className="flex items-start gap-4 justify-between">
                   <div className="flex flex-col gap-1 w-full">
