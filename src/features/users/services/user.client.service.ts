@@ -1,9 +1,10 @@
 "use client";
 
 import { apiError } from "@/lib/api-error";
-import { PaginatedUsers, UsersFilter, UsersResponse } from "../types/users.types";
+import { PaginatedUsers, UserResponse, UsersFilter, UsersResponse } from "../types/users.types";
 import { api } from "@/lib/api";
-import { GET_USERS } from "@/constants/query-urls";
+import { TOGGLE_USER_STATUS, GET_USERS } from "@/constants/query-urls";
+import { User } from "@/generated/prisma/client";
 
 export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> => {
    try {
@@ -28,6 +29,28 @@ export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> =
       return apiError({
          error,
          fallbackMessage: 'Failed to get users'
+      });
+   }
+};
+
+// Ban user
+export const toggleUserStatus = async (userId: string): Promise<User> => {
+   try {
+      const searchParams = new URLSearchParams();
+
+      if (userId) searchParams.set('userId', userId);
+
+      const res = await api.post(TOGGLE_USER_STATUS, { searchParams }).json<UserResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to update user status'
       });
    }
 };

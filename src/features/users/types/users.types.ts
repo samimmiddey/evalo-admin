@@ -1,5 +1,6 @@
 import { BaseResponse } from "@/types/api.types";
 import { UserRole } from "@/generated/prisma/enums";
+import { User } from "@/generated/prisma/client";
 
 export interface UsersFilter {
    search?: string;
@@ -35,4 +36,6 @@ export interface PaginatedUsers {
 }
 
 export type UsersResponse = BaseResponse<PaginatedUsers>;
+
+export type UserResponse = BaseResponse<User>;
 

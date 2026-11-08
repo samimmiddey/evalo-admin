@@ -4,7 +4,8 @@ import { getAuthenticatedUser } from "@/services/global.server.service";
 import { PaginatedUsers, UserItem, UsersFilter } from "../types/users.types";
 import { endOfDay, startOfDay } from "date-fns";
 import { clerkClient } from "@clerk/nextjs/server";
-import { Prisma, UserStatus } from "@/generated/prisma/client";
+import { Prisma, User, UserStatus } from "@/generated/prisma/client";
+import { NotFoundError } from "@/lib/app-error";
 
 export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> => {
    try {
@@ -126,3 +127,44 @@ export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> =
    }
 };
 
+export const toggleUserStatus = async (userId: string): Promise<User> => {
+   try {
+      await getAuthenticatedUser();
+
+      const user = await db.user.findFirst({
+         where: {
+            OR: [
+               { id: userId },
+               { clerkUserId: userId },
+            ],
+         },
+      });
+
+      if (!user) {
+         throw new NotFoundError("User not found");
+      }
+
+      // If targetStatus is provided, use it; otherwise, toggle the current status
+      const nextStatus = user.status === UserStatus.BANNED ? UserStatus.ACTIVE : UserStatus.BANNED;
+      const isBanning = nextStatus === UserStatus.BANNED;
+
+      const client = await clerkClient();
+      if (isBanning) {
+         await client.users.banUser(user.clerkUserId);
+      } else {
+         await client.users.unbanUser(user.clerkUserId);
+      }
+
+      const updatedUser = await db.user.update({
+         where: { id: user.id },
+         data: { status: nextStatus },
+      });
+
+      return updatedUser;
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to update user status",
+      });
+   }
+};

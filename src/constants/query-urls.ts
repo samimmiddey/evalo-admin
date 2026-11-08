@@ -6,3 +6,4 @@ export const GET_RECENT_SESSIONS = '/dashboard/recent-sessions';
 
 // Users
 export const GET_USERS = '/users/list';
+export const TOGGLE_USER_STATUS = '/users/toggle-user-status';
