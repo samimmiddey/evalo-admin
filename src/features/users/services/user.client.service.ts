@@ -1,9 +1,28 @@
 "use client";
 
 import { apiError } from "@/lib/api-error";
-import { PaginatedUsers, SignOutUser, SignOutUserResponse, ToggleUserStatus, ToggleUserStatusResponse, UserDetails, UserDetailsResponse, UsersFilter, UsersResponse } from "../types/users.types";
+import {
+   ExportUsersCsv,
+   ExportUsersCsvFilter,
+   ExportUsersCsvResponse,
+   PaginatedUsers,
+   SignOutUser,
+   SignOutUserResponse,
+   ToggleUserStatus,
+   ToggleUserStatusResponse,
+   UserDetails,
+   UserDetailsResponse,
+   UsersFilter,
+   UsersResponse,
+} from "../types/users.types";
 import { api } from "@/lib/api";
-import { TOGGLE_USER_STATUS, GET_USERS, SIGN_OUT_USER, GET_USER_DETAILS } from "@/constants/query-urls";
+import {
+   TOGGLE_USER_STATUS,
+   GET_USERS,
+   SIGN_OUT_USER,
+   GET_USER_DETAILS,
+   EXPORT_USERS_CSV,
+} from "@/constants/query-urls";
 
 export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> => {
    try {
@@ -92,6 +111,35 @@ export const getUserDetails = async (userId: string): Promise<UserDetails> => {
       return apiError({
          error,
          fallbackMessage: 'Failed to fetch user details'
+      });
+   }
+};
+
+export const exportUsersCsv = async (filters?: ExportUsersCsvFilter): Promise<ExportUsersCsv> => {
+   try {
+      const searchParams = new URLSearchParams();
+
+      if (filters?.startDate) {
+         searchParams.set('startDate', filters.startDate instanceof Date ? filters.startDate.toISOString() : String(filters.startDate));
+      }
+      if (filters?.endDate) {
+         searchParams.set('endDate', filters.endDate instanceof Date ? filters.endDate.toISOString() : String(filters.endDate));
+      }
+      if (filters?.search) searchParams.set('search', filters.search);
+      if (filters?.role) searchParams.set('role', filters.role);
+      if (filters?.status) searchParams.set('status', filters.status);
+
+      const res = await api.get(EXPORT_USERS_CSV, { searchParams }).json<ExportUsersCsvResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to export users to CSV',
       });
    }
 };

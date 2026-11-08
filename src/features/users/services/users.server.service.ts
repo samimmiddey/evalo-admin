@@ -1,7 +1,16 @@
 import { db } from "@/lib/prisma";
 import { serverError } from "@/lib/server-error";
 import { getAuthenticatedUser } from "@/services/global.server.service";
-import { PaginatedUsers, SignOutUser, ToggleUserStatus, UserDetails, UserItem, UsersFilter } from "../types/users.types";
+import {
+   ExportUsersCsv,
+   ExportUsersCsvFilter,
+   PaginatedUsers,
+   SignOutUser,
+   ToggleUserStatus,
+   UserDetails,
+   UserItem,
+   UsersFilter,
+} from "../types/users.types";
 import { endOfDay, startOfDay } from "date-fns";
 import { clerkClient } from "@clerk/nextjs/server";
 import { Prisma, UserStatus } from "@/generated/prisma/client";
@@ -344,6 +353,143 @@ export const getUserDetails = async (userId: string): Promise<UserDetails> => {
       return serverError({
          error,
          fallbackMessage: "Failed to fetch user details",
+      });
+   }
+};
+
+export const exportUsersCsv = async (filters?: ExportUsersCsvFilter): Promise<ExportUsersCsv> => {
+   try {
+      await getAuthenticatedUser();
+
+      const normalizedStartDate = filters?.startDate ? startOfDay(filters.startDate) : undefined;
+      const normalizedEndDate = filters?.endDate ? endOfDay(filters.endDate) : undefined;
+
+      const where: Prisma.UserWhereInput = {
+         ...(filters?.role ? { role: filters.role } : {}),
+         ...(filters?.status ? { status: filters.status as UserStatus } : {}),
+         ...(normalizedStartDate || normalizedEndDate
+            ? {
+               createdAt: {
+                  ...(normalizedStartDate ? { gte: normalizedStartDate } : {}),
+                  ...(normalizedEndDate ? { lte: normalizedEndDate } : {}),
+               },
+            }
+            : {}),
+         ...(filters?.search
+            ? {
+               OR: [
+                  { email: { contains: filters.search.trim(), mode: "insensitive" } },
+                  { firstName: { contains: filters.search.trim(), mode: "insensitive" } },
+                  { lastName: { contains: filters.search.trim(), mode: "insensitive" } },
+               ],
+            }
+            : {}),
+      };
+
+      const users = await db.user.findMany({
+         where,
+         orderBy: {
+            createdAt: "desc",
+         },
+         select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            role: true,
+            status: true,
+            currentPlan: true,
+            credits: true,
+            creditBalance: true,
+            creditRate: true,
+            designation: true,
+            company: true,
+            experience: true,
+            averageRating: true,
+            totalRatings: true,
+            createdAt: true,
+            _count: {
+               select: {
+                  bookingsAsCandidate: true,
+                  bookingsAsInterviewer: true,
+                  transactions: true,
+                  payouts: true,
+               },
+            },
+         },
+      });
+
+      const headers = [
+         "User ID",
+         "Name",
+         "Email",
+         "Phone",
+         "Role",
+         "Status",
+         "Current Plan",
+         "Credits",
+         "Credit Balance",
+         "Credit Rate",
+         "Designation",
+         "Company",
+         "Experience (Years)",
+         "Average Rating",
+         "Total Ratings",
+         "Bookings (Candidate)",
+         "Bookings (Interviewer)",
+         "Transactions",
+         "Payouts",
+         "Joined At",
+      ];
+
+      const escapeCsvField = (field?: string | number | boolean | null): string => {
+         if (field === null || field === undefined) return '""';
+         const str = String(field);
+         return `"${str.replace(/"/g, '""')}"`;
+      };
+
+      const rows = users.map((user) => {
+         const name =
+            [user.firstName, user.lastName].filter(Boolean).join(" ").trim() ||
+            "Unknown User";
+
+         return [
+            escapeCsvField(user.id),
+            escapeCsvField(name),
+            escapeCsvField(user.email),
+            escapeCsvField(user.phone ?? ""),
+            escapeCsvField(user.role),
+            escapeCsvField(user.status),
+            escapeCsvField(user.currentPlan),
+            escapeCsvField(user.credits),
+            escapeCsvField(user.creditBalance),
+            escapeCsvField(user.creditRate),
+            escapeCsvField(user.designation ?? ""),
+            escapeCsvField(user.company ?? ""),
+            escapeCsvField(user.experience ?? ""),
+            escapeCsvField(user.averageRating !== null ? user.averageRating.toFixed(1) : ""),
+            escapeCsvField(user.totalRatings),
+            escapeCsvField(user._count.bookingsAsCandidate),
+            escapeCsvField(user._count.bookingsAsInterviewer),
+            escapeCsvField(user._count.transactions),
+            escapeCsvField(user._count.payouts),
+            escapeCsvField(user.createdAt.toISOString()),
+         ].join(",");
+      });
+
+      const csv = [headers.join(","), ...rows].join("\n");
+      const filename = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
+
+      return {
+         csv,
+         filename,
+         totalRecords: users.length,
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to export users to CSV",
       });
    }
 };

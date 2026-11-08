@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { toggleUserStatus, getUsers, signOutUser } from './services/user.client.service';
+import { toggleUserStatus, getUsers, signOutUser, exportUsersCsv } from './services/user.client.service';
 import { DataTable, features } from '@/components/common/data-table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { UserItem } from './types/users.types';
@@ -122,6 +122,33 @@ const Users = () => {
       }
    };
 
+   // CSV Downlaod mutation
+   const { isPending: isExportCSVPending, error: exportCSVError, mutate: exportCSVMutation } = useMutation(exportUsersCsv);
+
+   // Handle export CSV
+   const handleExportCSV = async () => {
+      const res = await exportCSVMutation({
+         search,
+         role: filters?.role,
+         status: filters?.status,
+         startDate: filters?.appliedDate?.from,
+         endDate: filters?.appliedDate?.to
+      });
+
+      if (res?.csv) {
+         const blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8;' });
+         const url = URL.createObjectURL(blob);
+         const link = document.createElement('a');
+         link.href = url;
+         link.setAttribute('download', res.filename || 'users.csv');
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+         URL.revokeObjectURL(url);
+         toast.success('CSV file downloaded successfully');
+      }
+   };
+
    // Show mutation error toast
    useEffect(() => {
       if (toggleUserStatusError) {
@@ -131,7 +158,11 @@ const Users = () => {
       if (signOutUserError) {
          toast.error('Failed to sign out user');
       }
-   }, [toggleUserStatusError, signOutUserError]);
+
+      if (exportCSVError) {
+         toast.error('Failed to export the CSV');
+      }
+   }, [toggleUserStatusError, signOutUserError, exportCSVError]);
 
    const columns: ColumnDef<typeof features, UserItem>[] = [
       {
@@ -372,6 +403,12 @@ const Users = () => {
                resetFilters: () => {
                   setFilters(INITIAL_FILTERS);
                   setFilterButton(false);
+               }
+            }}
+            onExportCSV={{
+               isPending: isExportCSVPending,
+               onDownload: () => {
+                  void handleExportCSV();
                }
             }}
          />

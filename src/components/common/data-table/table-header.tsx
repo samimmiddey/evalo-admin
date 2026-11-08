@@ -1,17 +1,18 @@
 import SecondaryTitle from '../secondary-title';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Filter, X } from 'lucide-react';
+import { ArrowRight, Filter, Table, X } from 'lucide-react';
 import PageHeaderLayout from '@/components/layouts/page-header-layout';
 import HeaderLayout from '@/components/layouts/header-layout';
 import PrimaryTitle from '../primary-title';
 import PrimaryBody from '../primary-body';
 import SearchBar from '../search-bar';
-import { Filters, Search } from './data-table';
+import { ExportCSV, Filters, Search } from './data-table';
 import { FilterSidebar } from './filter-sidebar';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import useMediaQuery from '@/hooks/use-media-query';
+import { Spinner } from '@/components/ui/spinner';
 
 interface DataTableHeaderProps {
    title: string;
@@ -20,9 +21,10 @@ interface DataTableHeaderProps {
    viewAllLink?: string;
    search?: Search;
    filters?: Filters;
+   onExportCSV?: ExportCSV;
 }
 
-const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLink, search, filters }: DataTableHeaderProps) => {
+const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLink, search, filters, onExportCSV }: DataTableHeaderProps) => {
    const mdWidth = useMediaQuery(768);
 
    return (
@@ -95,6 +97,18 @@ const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLi
                            onResetFilters={filters.resetFilters}
                         />
                      </>
+                  }
+                  {
+                     onExportCSV &&
+                     <Button
+                        variant='outline'
+                        className='text-zinc-400 text-sm! px-3 h-10 relative'
+                        onClick={onExportCSV.onDownload}
+                        disabled={onExportCSV.isPending}
+                     >
+                        {onExportCSV.isPending ? <Spinner /> : <Table />}
+                        {!mdWidth && 'Export CSV'}
+                     </Button>
                   }
                </div>
             }

@@ -101,5 +101,21 @@ export interface UserDetails {
 
 export type UserDetailsResponse = BaseResponse<UserDetails>;
 
+export interface ExportUsersCsvFilter {
+   search?: string;
+   role?: UserRole;
+   status?: string;
+   startDate?: Date;
+   endDate?: Date;
+}
+
+export interface ExportUsersCsv {
+   csv: string;
+   filename: string;
+   totalRecords: number;
+}
+
+export type ExportUsersCsvResponse = BaseResponse<ExportUsersCsv>;
+
 
 

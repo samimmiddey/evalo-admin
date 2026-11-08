@@ -63,6 +63,11 @@ export interface Filters {
    resetFilters: () => void;
 }
 
+export interface ExportCSV {
+   isPending: boolean;
+   onDownload: () => void;
+}
+
 interface DataTableProps<TData extends RowData> {
    columns: ColumnDef<typeof features, TData>[];
    data: TData[];
@@ -79,6 +84,7 @@ interface DataTableProps<TData extends RowData> {
    viewAllLink?: string;
    search?: Search;
    filters?: Filters;
+   onExportCSV?: ExportCSV;
 }
 
 export function DataTable<TData extends RowData>({
@@ -96,7 +102,8 @@ export function DataTable<TData extends RowData>({
    secondaryTitle,
    viewAllLink,
    search,
-   filters
+   filters,
+   onExportCSV
 }: DataTableProps<TData>) {
    const table = useTable({ features, columns, data });
 
@@ -117,6 +124,7 @@ export function DataTable<TData extends RowData>({
                secondaryTitle={secondaryTitle}
                search={search}
                filters={filters}
+               onExportCSV={onExportCSV}
             />
          }
          <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300">
