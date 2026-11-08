@@ -1,10 +1,10 @@
 import { db } from "@/lib/prisma";
 import { serverError } from "@/lib/server-error";
 import { getAuthenticatedUser } from "@/services/global.server.service";
-import { PaginatedUsers, UserItem, UsersFilter } from "../types/users.types";
+import { PaginatedUsers, SignOutUser, ToggleUserStatus, UserItem, UsersFilter } from "../types/users.types";
 import { endOfDay, startOfDay } from "date-fns";
 import { clerkClient } from "@clerk/nextjs/server";
-import { Prisma, User, UserStatus } from "@/generated/prisma/client";
+import { Prisma, UserStatus } from "@/generated/prisma/client";
 import { NotFoundError } from "@/lib/app-error";
 
 export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> => {
@@ -67,10 +67,12 @@ export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> =
 
       const clerkUserIds = users.map((u) => u.clerkUserId).filter(Boolean);
       const clerkMetadataMap = new Map<string, { isBanned: boolean; lastActive: Date | null; }>();
+      const activeSessionUserIds = new Set<string>();
 
       if (clerkUserIds.length > 0) {
+         const client = await clerkClient();
+
          try {
-            const client = await clerkClient();
             const { data: clerkUsers } = await client.users.getUserList({
                userId: clerkUserIds,
                limit: clerkUserIds.length,
@@ -81,8 +83,29 @@ export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> =
                   lastActive: cu.lastActiveAt ? new Date(cu.lastActiveAt) : null,
                });
             }
-         } catch {
-            // Graceful fallback if Clerk request fails
+         } catch (error: unknown) {
+            // eslint-disable-next-line no-console
+            console.error("Failed to fetch Clerk users:", error);
+         }
+
+         // Sessions: must be queried per user
+         const results = await Promise.allSettled(
+            clerkUserIds.map(async (userId) => {
+               const { data: sessions } = await client.sessions.getSessionList({
+                  userId,
+                  status: "active",
+               });
+               return { userId, hasSession: sessions.length > 0 };
+            })
+         );
+
+         for (const result of results) {
+            if (result.status === "fulfilled") {
+               if (result.value.hasSession) activeSessionUserIds.add(result.value.userId);
+            } else {
+               // eslint-disable-next-line no-console
+               console.error("Failed to fetch Clerk sessions:", result.reason);
+            }
          }
       }
 
@@ -107,6 +130,7 @@ export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> =
             joined: user.createdAt,
             lastActive,
             credits: user.role === "INTERVIEWER" ? user.creditBalance : user.credits,
+            hasActiveSession: activeSessionUserIds.has(user.clerkUserId)
          };
       });
 
@@ -127,7 +151,7 @@ export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> =
    }
 };
 
-export const toggleUserStatus = async (userId: string): Promise<User> => {
+export const toggleUserStatus = async (userId: string): Promise<ToggleUserStatus> => {
    try {
       await getAuthenticatedUser();
 
@@ -160,11 +184,54 @@ export const toggleUserStatus = async (userId: string): Promise<User> => {
          data: { status: nextStatus },
       });
 
-      return updatedUser;
+      return {
+         success: true,
+         id: updatedUser.id,
+         status: updatedUser.status
+      };
    } catch (error: unknown) {
       return serverError({
          error,
          fallbackMessage: "Failed to update user status",
+      });
+   }
+};
+
+export const signOutUser = async (userId: string): Promise<SignOutUser> => {
+   try {
+      await getAuthenticatedUser();
+
+      const user = await db.user.findFirst({
+         where: {
+            OR: [
+               { id: userId },
+               { clerkUserId: userId },
+            ],
+         },
+      });
+
+      if (!user) {
+         throw new NotFoundError("User not found");
+      }
+
+      const client = await clerkClient();
+      const { data: sessions } = await client.sessions.getSessionList({
+         userId: user.clerkUserId,
+         status: "active",
+      });
+
+      await Promise.all(
+         sessions.map((session) => client.sessions.revokeSession(session.id))
+      );
+
+      return {
+         success: true,
+         revokedSessionsCount: sessions.length,
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to sign out user",
       });
    }
 };

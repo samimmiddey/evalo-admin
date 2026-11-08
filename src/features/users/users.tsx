@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { toggleUserStatus, getUsers } from './services/user.client.service';
+import { toggleUserStatus, getUsers, signOutUser } from './services/user.client.service';
 import { DataTable, features } from '@/components/common/data-table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { UserItem } from './types/users.types';
@@ -38,6 +38,7 @@ const INITIAL_FILTERS: Filters = {
 interface ConfirmationDialogue {
    user: UserItem | null;
    value: boolean;
+   type: 'AUTH' | 'STATUS' | null;
 }
 
 const Users = () => {
@@ -46,7 +47,8 @@ const Users = () => {
    const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
    const [confirmDialogue, setConfirmDialogue] = useState<ConfirmationDialogue>({
       user: null,
-      value: false
+      value: false,
+      type: null
    });
 
    const handleDateChange = (newRange: DateRange | undefined) => {
@@ -85,15 +87,34 @@ const Users = () => {
    // Handle toggle user status
    const handleToggleUserStatus = async () => {
       if (!confirmDialogue.user) {
-         toast.error('User ID not found');
+         toast.error('User not found');
          return;
       }
 
       const res = await mutateToggleUserStatus(confirmDialogue.user?.id ?? '');
 
-      if (res) {
+      if (res?.success) {
          toast.success('Successfully updated user status');
-         setConfirmDialogue({ user: null, value: false });
+         setConfirmDialogue({ user: null, value: false, type: null });
+         refetchUserList();
+      }
+   };
+
+   // Sign out user mutation
+   const { isPending: isSignOutUserPending, error: signOutUserError, mutate: signOutUserMutation } = useMutation(signOutUser);
+
+   // Handle sign out user
+   const handleSignOutUser = async () => {
+      if (!confirmDialogue.user) {
+         toast.error('User not found');
+         return;
+      }
+
+      const res = await signOutUserMutation(confirmDialogue.user?.id ?? '');
+
+      if (res?.success) {
+         toast.success('Successfully signed user out');
+         setConfirmDialogue({ user: null, value: false, type: null });
          refetchUserList();
       }
    };
@@ -103,15 +124,19 @@ const Users = () => {
       if (toggleUserStatusError) {
          toast.error('Failed to update user status');
       }
-   }, [toggleUserStatusError]);
+
+      if (signOutUserError) {
+         toast.error('Failed to sign out user');
+      }
+   }, [toggleUserStatusError, signOutUserError]);
 
    const columns: ColumnDef<typeof features, UserItem>[] = [
       {
          accessorKey: 'name',
          header: 'Full Name',
-         size: 200,
+         size: 275,
          cell: ({ row }) => {
-            const { name, image } = row.original;
+            const { name, image, email } = row.original;
 
             return (
                <div className="flex items-center gap-3">
@@ -122,43 +147,17 @@ const Users = () => {
                      width={50}
                      className='rounded-lg'
                   />
-                  <SecondaryTitle
-                     text={name ?? '-'}
-                     className="text-xs! 2xl:text-sm! truncate"
-                  />
+                  <div className="flex flex-col items-start gap-0.5">
+                     <SecondaryTitle
+                        text={name ?? '-'}
+                        className="text-xs! 2xl:text-sm! truncate"
+                     />
+                     <PrimaryBody
+                        text={email ?? '-'}
+                        className="text-[13px]! truncate"
+                     />
+                  </div>
                </div>
-            );
-         }
-      },
-      {
-         accessorKey: 'email',
-         header: 'Email',
-         size: 200,
-         cell: ({ row }) => {
-            const { email } = row.original;
-
-            return (
-               <div className="flex items-center">
-                  <PrimaryBody
-                     text={email ?? '-'}
-                     className="text-[13px]! truncate"
-                  />
-               </div>
-            );
-         }
-      },
-      {
-         accessorKey: 'credits',
-         header: 'Credits',
-         size: 100,
-         cell: ({ row }) => {
-            const { credits } = row.original;
-
-            return (
-               <SecondaryTitle
-                  text={credits.toString() ?? '-'}
-                  className="text-xs! 2xl:text-sm!"
-               />
             );
          }
       },
@@ -178,8 +177,23 @@ const Users = () => {
          }
       },
       {
+         accessorKey: 'credits',
+         header: 'Credits',
+         size: 100,
+         cell: ({ row }) => {
+            const { credits } = row.original;
+
+            return (
+               <SecondaryTitle
+                  text={credits.toString() ?? '-'}
+                  className="text-xs! 2xl:text-sm!"
+               />
+            );
+         }
+      },
+      {
          accessorKey: 'status',
-         header: 'Session Status',
+         header: 'Account Status',
          size: 150,
          cell: (info) => (
             getStatusBadge(info.getValue<string>())
@@ -228,19 +242,36 @@ const Users = () => {
          }
       },
       {
+         accessorKey: 'sessionStatus',
+         header: 'Session Status',
+         size: 150,
+         cell: ({ row }) => {
+            const { hasActiveSession } = row.original;
+
+            return (
+               <PrimaryBody
+                  text={hasActiveSession.toString() === 'true' ? 'Signed In' : 'Signed Out'}
+                  className={`text-xs! font-medium ${hasActiveSession ? 'text-emerald-400' : 'text-rose-400'}`}
+               />
+            );
+         }
+      },
+      {
          accessorKey: 'actions',
          header: 'Actions',
-         size: 150,
+         size: 100,
          cell: ({ row }) => {
             return (
                <DropdownMenu>
-                  <DropdownMenuTrigger render={
-                     <Button
-                        variant="outline"
-                        className='rounded-full p-0! h-8! w-8!'
-                     >
-                        <EllipsisVertical className='h-4 w-4' />
-                     </Button>}
+                  <DropdownMenuTrigger
+                     render={
+                        <Button
+                           variant="outline"
+                           className='rounded-full p-0! h-7.5! w-7.5!'
+                        >
+                           <EllipsisVertical className='h-3.5 w-3.5' />
+                        </Button>
+                     }
                   >
                      Open
                   </DropdownMenuTrigger>
@@ -251,13 +282,27 @@ const Users = () => {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                            className='h-8 cursor-pointer'
-                           onClick={() => setConfirmDialogue({ user: row.original, value: true })}
+                           onClick={() => setConfirmDialogue({
+                              user: row.original,
+                              value: true,
+                              type: 'STATUS'
+                           })}
                         >
                            {row.original.status === 'ACTIVE' ? 'Ban' : 'Unban'}
                         </DropdownMenuItem>
-                        <DropdownMenuItem className='h-8 cursor-pointer text-red-300 hover:text-red-400 hover:bg-red-500/15'>
-                           Sign Out
-                        </DropdownMenuItem>
+                        {
+                           row.original.hasActiveSession &&
+                           <DropdownMenuItem
+                              className='h-8 cursor-pointer text-red-300 hover:text-red-400 hover:bg-red-500/15'
+                              onClick={() => setConfirmDialogue({
+                                 user: row.original,
+                                 value: true,
+                                 type: 'AUTH'
+                              })}
+                           >
+                              Sign Out
+                           </DropdownMenuItem>
+                        }
                      </DropdownMenuGroup>
                   </DropdownMenuContent>
                </DropdownMenu>
@@ -326,13 +371,13 @@ const Users = () => {
          />
          <ConfirmDialog
             open={confirmDialogue.value}
-            onClose={() => setConfirmDialogue({ user: null, value: false })}
-            onConfirm={handleToggleUserStatus}
-            title={`${confirmDialogue.user?.status === 'ACTIVE' ? 'Ban' : 'Unban'} User`}
-            description={`Are you sure you want to ${confirmDialogue.user?.status === 'ACTIVE' ? 'ban' : 'unban'} the user? This action is not permanent and is reversible.`}
+            onClose={() => setConfirmDialogue({ user: null, value: false, type: null })}
+            onConfirm={confirmDialogue.type === 'STATUS' ? handleToggleUserStatus : handleSignOutUser}
+            title={confirmDialogue.type === 'STATUS' ? `${confirmDialogue.user?.status === 'ACTIVE' ? 'Ban' : 'Unban'} User` : 'Sign Out User'}
+            description={confirmDialogue.type === 'STATUS' ? `Are you sure you want to ${confirmDialogue.user?.status === 'ACTIVE' ? 'ban' : 'unban'} the user? This action is not permanent and is reversible.` : 'Are you sure you want to sign this user out? This action will sign out the user everywhere and the user need to sign in again to access their account.'}
             confirmText='Confirm'
             variant='destructive'
-            isLoading={isToggleUserStatusPending}
+            isLoading={confirmDialogue.type === 'STATUS' ? isToggleUserStatusPending : isSignOutUserPending}
          />
       </div>
    );

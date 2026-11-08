@@ -1,6 +1,5 @@
 import { BaseResponse } from "@/types/api.types";
-import { UserRole } from "@/generated/prisma/enums";
-import { User } from "@/generated/prisma/client";
+import { UserRole, UserStatus } from "@/generated/prisma/enums";
 
 export interface UsersFilter {
    search?: string;
@@ -23,6 +22,7 @@ export interface UserItem {
    joined: Date;
    lastActive: Date | null;
    credits: number;
+   hasActiveSession: boolean;
 }
 
 export interface PaginatedUsers {
@@ -37,5 +37,19 @@ export interface PaginatedUsers {
 
 export type UsersResponse = BaseResponse<PaginatedUsers>;
 
-export type UserResponse = BaseResponse<User>;
+export interface ToggleUserStatus {
+   id: string;
+   success: boolean;
+   status: UserStatus;
+}
+
+export type ToggleUserStatusResponse = BaseResponse<ToggleUserStatus>;
+
+export interface SignOutUser {
+   success: boolean;
+   revokedSessionsCount: number;
+}
+
+export type SignOutUserResponse = BaseResponse<SignOutUser>;
+
 
