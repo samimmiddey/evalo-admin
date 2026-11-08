@@ -1,7 +1,7 @@
 import { db } from "@/lib/prisma";
 import { serverError } from "@/lib/server-error";
 import { getAuthenticatedUser } from "@/services/global.server.service";
-import { PaginatedUsers, SignOutUser, ToggleUserStatus, UserItem, UsersFilter } from "../types/users.types";
+import { PaginatedUsers, SignOutUser, ToggleUserStatus, UserDetails, UserItem, UsersFilter } from "../types/users.types";
 import { endOfDay, startOfDay } from "date-fns";
 import { clerkClient } from "@clerk/nextjs/server";
 import { Prisma, UserStatus } from "@/generated/prisma/client";
@@ -232,6 +232,118 @@ export const signOutUser = async (userId: string): Promise<SignOutUser> => {
       return serverError({
          error,
          fallbackMessage: "Failed to sign out user",
+      });
+   }
+};
+
+export const getUserDetails = async (userId: string): Promise<UserDetails> => {
+   try {
+      await getAuthenticatedUser();
+
+      const user = await db.user.findFirst({
+         where: {
+            OR: [
+               { id: userId },
+               { clerkUserId: userId },
+            ],
+         },
+         include: {
+            subscriptions: {
+               orderBy: { createdAt: "desc" },
+               select: {
+                  id: true,
+                  cashfreeSubId: true,
+                  planSlug: true,
+                  status: true,
+                  currentPeriodStart: true,
+                  currentPeriodEnd: true,
+                  createdAt: true,
+               },
+            },
+            _count: {
+               select: {
+                  bookingsAsCandidate: true,
+                  bookingsAsInterviewer: true,
+                  transactions: true,
+                  payouts: true,
+                  availabilities: true,
+               },
+            },
+         },
+      });
+
+      if (!user) {
+         throw new NotFoundError("User not found");
+      }
+
+      let lastActive: Date | null = null;
+      let hasActiveSession = false;
+
+      try {
+         const client = await clerkClient();
+         const [clerkUser, { data: activeSessions }] = await Promise.all([
+            client.users.getUser(user.clerkUserId),
+            client.sessions.getSessionList({
+               userId: user.clerkUserId,
+               status: "active",
+               limit: 1,
+            }),
+         ]);
+
+         if (clerkUser?.lastActiveAt) {
+            lastActive = new Date(clerkUser.lastActiveAt);
+         }
+
+         hasActiveSession = activeSessions.length > 0;
+      } catch (error: unknown) {
+         // eslint-disable-next-line no-console
+         console.error("Failed to fetch Clerk last active time and session status:", error);
+      }
+
+      const name =
+         [user.firstName, user.lastName].filter(Boolean).join(" ").trim() ||
+         "Unknown User";
+
+      return {
+         id: user.id,
+         clerkUserId: user.clerkUserId,
+         firstName: user.firstName,
+         lastName: user.lastName,
+         name,
+         email: user.email,
+         phone: user.phone,
+         image: user.imageUrl,
+         role: user.role,
+         status: user.status,
+         joined: user.createdAt,
+         updatedAt: user.updatedAt,
+         credits: user.credits,
+         creditBalance: user.creditBalance,
+         currentPlan: user.currentPlan,
+         creditsLastAllocatedAt: user.creditsLastAllocatedAt,
+         bio: user.bio,
+         designation: user.designation,
+         company: user.company,
+         experience: user.experience,
+         expertise: user.expertise,
+         creditRate: user.creditRate,
+         averageRating: user.averageRating,
+         totalRatings: user.totalRatings,
+         lastActive,
+         hasActiveSession,
+         subscriptions: user.subscriptions,
+         counts: {
+            bookingsAsCandidate: user._count.bookingsAsCandidate,
+            bookingsAsInterviewer: user._count.bookingsAsInterviewer,
+            transactions: user._count.transactions,
+            payouts: user._count.payouts,
+            availabilities: user._count.availabilities,
+         },
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to fetch user details",
       });
    }
 };

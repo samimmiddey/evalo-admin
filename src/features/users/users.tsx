@@ -20,6 +20,8 @@ import { EllipsisVertical } from 'lucide-react';
 import { useMutation } from '@/hooks/use-mutation';
 import { toast } from 'sonner';
 import ConfirmDialog from '@/components/common/confirm-dialog';
+import { UserDetailsModal } from './components/user-details-modal';
+import { usersData } from '@/data/users/users.data';
 
 interface Filters {
    date?: DateRange;
@@ -45,6 +47,7 @@ const Users = () => {
    const [search, setSearch] = useState<string>('');
    const [filterButton, setFilterButton] = useState<boolean>(false);
    const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
+   const [viewUserId, setViewUserId] = useState<string | null>(null);
    const [confirmDialogue, setConfirmDialogue] = useState<ConfirmationDialogue>({
       user: null,
       value: false,
@@ -277,7 +280,10 @@ const Users = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                      <DropdownMenuGroup>
-                        <DropdownMenuItem className='h-8 cursor-pointer'>
+                        <DropdownMenuItem
+                           className='h-8 cursor-pointer'
+                           onClick={() => setViewUserId(row.original.id)}
+                        >
                            View
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -325,8 +331,8 @@ const Users = () => {
             pageSize={params.pageSize}
             contentType='Users'
             tableHeader={{
-               title: 'All Users',
-               description: 'View and manage all registered users, their roles, and status.'
+               title: usersData.header.title,
+               description: usersData.header.description
             }}
             search={{
                value: search,
@@ -378,6 +384,11 @@ const Users = () => {
             confirmText='Confirm'
             variant='destructive'
             isLoading={confirmDialogue.type === 'STATUS' ? isToggleUserStatusPending : isSignOutUserPending}
+         />
+         <UserDetailsModal
+            userId={viewUserId}
+            open={Boolean(viewUserId)}
+            onClose={() => setViewUserId(null)}
          />
       </div>
    );

@@ -1,0 +1,51 @@
+import { UsersData } from "./users.types";
+
+export const usersData: UsersData = {
+   header: {
+      title: "All Users",
+      description: "View and manage all registered users, their roles, and status.",
+   },
+   detailsModal: {
+      title: "User Details",
+      description: "Detailed account, profile, and platform activity information.",
+      loadingText: "Loading user details...",
+      errorTitle: "Failed to load user details",
+      noDataTitle: "No user found",
+      noDataBody: "The requested user details could not be found.",
+      sections: {
+         overview: "Account Overview",
+         professional: "Professional Profile",
+         activity: "Platform Activity",
+         subscriptions: "Subscriptions",
+      },
+      labels: {
+         userId: "User ID",
+         email: "Email Address",
+         phone: "Phone Number",
+         role: "Role",
+         status: "Status",
+         joined: "Joined Date",
+         lastActive: "Last Active",
+         sessionStatus: "Session Status",
+         credits: "Credits",
+         creditBalance: "Credit Balance",
+         currentPlan: "Current Plan",
+         designation: "Designation",
+         company: "Company",
+         experience: "Experience",
+         expertise: "Expertise Domains",
+         creditRate: "Credit Rate",
+         rating: "Average Rating",
+         bio: "Bio",
+         bookingsAsCandidate: "Appointments",
+         bookingsAsInterviewer: "Sessions",
+         transactions: "Transactions",
+         payouts: "Payouts",
+         activeNow: "Session Active",
+         offline: "No Session",
+         noBio: "No bio provided.",
+         noSubscriptions: "No active or past subscriptions.",
+      },
+   },
+};
+

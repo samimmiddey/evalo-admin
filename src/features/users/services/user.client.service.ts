@@ -1,9 +1,9 @@
 "use client";
 
 import { apiError } from "@/lib/api-error";
-import { PaginatedUsers, SignOutUser, SignOutUserResponse, ToggleUserStatus, ToggleUserStatusResponse, UsersFilter, UsersResponse } from "../types/users.types";
+import { PaginatedUsers, SignOutUser, SignOutUserResponse, ToggleUserStatus, ToggleUserStatusResponse, UserDetails, UserDetailsResponse, UsersFilter, UsersResponse } from "../types/users.types";
 import { api } from "@/lib/api";
-import { TOGGLE_USER_STATUS, GET_USERS, SIGN_OUT_USER } from "@/constants/query-urls";
+import { TOGGLE_USER_STATUS, GET_USERS, SIGN_OUT_USER, GET_USER_DETAILS } from "@/constants/query-urls";
 
 export const getUsers = async (filters?: UsersFilter): Promise<PaginatedUsers> => {
    try {
@@ -71,6 +71,27 @@ export const signOutUser = async (userId: string): Promise<SignOutUser> => {
       return apiError({
          error,
          fallbackMessage: 'Failed to sign out user'
+      });
+   }
+};
+
+export const getUserDetails = async (userId: string): Promise<UserDetails> => {
+   try {
+      const searchParams = new URLSearchParams();
+
+      if (userId) searchParams.set('userId', userId);
+
+      const res = await api.get(GET_USER_DETAILS, { searchParams }).json<UserDetailsResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to fetch user details'
       });
    }
 };

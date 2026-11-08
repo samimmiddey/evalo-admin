@@ -8,3 +8,4 @@ export const GET_RECENT_SESSIONS = '/dashboard/recent-sessions';
 export const GET_USERS = '/users/list';
 export const TOGGLE_USER_STATUS = '/users/toggle-user-status';
 export const SIGN_OUT_USER = '/users/sign-out-user';
+export const GET_USER_DETAILS = '/users/details';

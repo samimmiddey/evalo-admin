@@ -1,5 +1,5 @@
 import { BaseResponse } from "@/types/api.types";
-import { UserRole, UserStatus } from "@/generated/prisma/enums";
+import { InterviewExpertise, SubscriptionStatus, UserRole, UserStatus } from "@/generated/prisma/enums";
 
 export interface UsersFilter {
    search?: string;
@@ -51,5 +51,55 @@ export interface SignOutUser {
 }
 
 export type SignOutUserResponse = BaseResponse<SignOutUser>;
+
+export interface UserSubscriptionItem {
+   id: string;
+   cashfreeSubId: string;
+   planSlug: string;
+   status: SubscriptionStatus;
+   currentPeriodStart: Date | null;
+   currentPeriodEnd: Date | null;
+   createdAt: Date;
+}
+
+export interface UserDetails {
+   id: string;
+   clerkUserId: string;
+   firstName: string | null;
+   lastName: string | null;
+   name: string;
+   email: string;
+   phone: string | null;
+   image: string | null;
+   role: UserRole;
+   status: UserStatus;
+   joined: Date;
+   updatedAt: Date;
+   credits: number;
+   creditBalance: number;
+   currentPlan: string;
+   creditsLastAllocatedAt: Date | null;
+   bio: string | null;
+   designation: string | null;
+   company: string | null;
+   experience: number | null;
+   expertise: InterviewExpertise[];
+   creditRate: number;
+   averageRating: number | null;
+   totalRatings: number;
+   lastActive: Date | null;
+   hasActiveSession: boolean;
+   subscriptions: UserSubscriptionItem[];
+   counts: {
+      bookingsAsCandidate: number;
+      bookingsAsInterviewer: number;
+      transactions: number;
+      payouts: number;
+      availabilities: number;
+   };
+}
+
+export type UserDetailsResponse = BaseResponse<UserDetails>;
+
 
 
