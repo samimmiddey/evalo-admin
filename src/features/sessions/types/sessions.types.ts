@@ -1,0 +1,47 @@
+import { BaseResponse } from "@/types/api.types";
+import {
+   BookingStatus,
+   CompletionReason,
+} from "@/generated/prisma/enums";
+
+export interface SessionParticipant {
+   id: string;
+   name: string;
+   email: string;
+   image: string | null;
+}
+
+export interface SessionItem {
+   id: string;
+   startTime: Date;
+   endTime: Date;
+   status: BookingStatus;
+   completionReason: CompletionReason | null;
+   creditsCharged: number;
+   isRefunded: boolean;
+   createdAt: Date;
+   candidate: SessionParticipant;
+   interviewer: SessionParticipant;
+}
+
+export interface SessionsFilter {
+   search?: string;
+   status?: BookingStatus;
+   completionReason?: CompletionReason;
+   startDate?: Date;
+   endDate?: Date;
+   page?: number;
+   pageSize?: number;
+}
+
+export interface Sessions {
+   data: SessionItem[];
+   page: number;
+   pageSize: number;
+   totalCount: number;
+   totalPages: number;
+   hasNextPage: boolean;
+   hasPrevPage: boolean;
+}
+
+export type SessionsResponse = BaseResponse<Sessions>;
