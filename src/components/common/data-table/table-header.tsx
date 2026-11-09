@@ -24,6 +24,13 @@ interface DataTableHeaderProps {
 }
 
 const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLink, search, filters, onExportCSV }: DataTableHeaderProps) => {
+   const hasActiveFilters = filters?.items?.some(item => {
+      if (item.type === 'date') return Boolean(item.value?.from && item.value?.to);
+      if (item.type === 'select') return Boolean(item.value);
+
+      return false;
+   });
+
    return (
       <>
          <div className={secondaryTitle ? 'mb-4! 2xl:mb-5!' : 'mb-7 lg:mb-8 2xl:mb-9'}>
@@ -84,7 +91,7 @@ const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLi
                                  >
                                     <Filter /> Filters
                                     {
-                                       ((filters.date?.value?.from && filters.date?.value?.to) || filters.role?.value || filters.status?.value) &&
+                                       hasActiveFilters &&
                                        <div className="absolute -right-1 -top-1 size-2 bg-red-500 rounded-full" />
                                     }
                                  </Button>
@@ -107,46 +114,48 @@ const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLi
                }
             </PageHeaderLayout>
             {
-               (filters && ((filters.date?.value?.from && filters.date?.value?.to) || filters.role?.value || filters.status?.value)) &&
+               hasActiveFilters &&
                <div className='flex items-center gap-2 flex-wrap mt-4'>
                   {
-                     filters.date?.value?.from && filters.date?.value?.to &&
-                     <Badge className="bg-violet-500/15 text-violet-300 border border-violet-500/15 py-3 px-2.5 pr-0.5 gap-1.5">
-                        {format(filters.date?.value.from, "PP")} - {format(filters.date?.value.to, "PP")}
-                        <button
-                           type="button"
-                           onClick={() => filters.date?.setValue(undefined)}
-                           className="rounded-full shrink-0 h-5 w-5 flex items-center justify-center hover:bg-violet-500/25 text-violet-300 hover:text-violet-100 transition-colors cursor-pointer"
-                        >
-                           <X className="h-3.5 w-3.5" />
-                        </button>
-                     </Badge>
-                  }
-                  {
-                     filters.role?.value &&
-                     <Badge className="bg-violet-500/15 text-violet-300 border border-violet-500/15 py-3 px-2.5 pr-0.5 gap-1.5">
-                        {filters.role?.value.slice(0, 1) + filters.role?.value.slice(1).toLowerCase()}
-                        <button
-                           type="button"
-                           onClick={() => filters.role?.setValue(null)}
-                           className="rounded-full shrink-0 h-5 w-5 flex items-center justify-center hover:bg-violet-500/25 text-violet-300 hover:text-violet-100 transition-colors cursor-pointer"
-                        >
-                           <X className="h-3.5 w-3.5" />
-                        </button>
-                     </Badge>
-                  }
-                  {
-                     filters.status?.value &&
-                     <Badge className="bg-violet-500/15 text-violet-300 border border-violet-500/15 py-3 px-2.5 pr-0.5 gap-1.5">
-                        {filters.status?.value.slice(0, 1) + filters.status?.value.slice(1).toLowerCase()}
-                        <button
-                           type="button"
-                           onClick={() => filters.status?.setValue(null)}
-                           className="rounded-full shrink-0 h-5 w-5 flex items-center justify-center hover:bg-violet-500/25 text-violet-300 hover:text-violet-100 transition-colors cursor-pointer"
-                        >
-                           <X className="h-3.5 w-3.5" />
-                        </button>
-                     </Badge>
+                     filters?.items?.map(item => {
+                        if (item.type === 'date' && item.value?.from && item.value?.to) {
+                           return (
+                              <Badge
+                                 key={item.id}
+                                 className="bg-violet-500/15 text-violet-300 border border-violet-500/15 py-3 px-2.5 pr-0.5 gap-1.5"
+                              >
+                                 {format(item.value?.from, "PP")} - {format(item.value?.to, "PP")}
+                                 <button
+                                    type="button"
+                                    onClick={() => item.setValue(undefined)}
+                                    className="rounded-full shrink-0 h-5 w-5 flex items-center justify-center hover:bg-violet-500/25 text-violet-300 hover:text-violet-100 transition-colors cursor-pointer"
+                                 >
+                                    <X className="h-3.5 w-3.5" />
+                                 </button>
+                              </Badge>
+                           );
+                        }
+
+                        if (item.type === 'select' && item.value) {
+                           const label = item.options.find(opt => opt.value === item.value)?.label ?? item.value;
+
+                           return (
+                              <Badge
+                                 key={item.id}
+                                 className="bg-violet-500/15 text-violet-300 border border-violet-500/15 py-3 px-2.5 pr-0.5 gap-1.5"
+                              >
+                                 {label}
+                                 <button
+                                    type="button"
+                                    onClick={() => item.setValue(null)}
+                                    className="rounded-full shrink-0 h-5 w-5 flex items-center justify-center hover:bg-violet-500/25 text-violet-300 hover:text-violet-100 transition-colors cursor-pointer"
+                                 >
+                                    <X className="h-3.5 w-3.5" />
+                                 </button>
+                              </Badge>
+                           );
+                        }
+                     })
                   }
                </div>
             }
@@ -156,9 +165,7 @@ const DataTableHeader = ({ title, description, secondaryTitle = false, viewAllLi
             <FilterSidebar
                open={filters.value}
                setOpen={filters.setValue}
-               date={filters.date}
-               role={filters.role}
-               status={filters.status}
+               items={filters.items}
                onResetFilters={filters.resetFilters}
             />
          }

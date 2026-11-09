@@ -374,32 +374,40 @@ const Users = () => {
             filters={{
                value: filterButton,
                setValue: () => setFilterButton(prevState => !prevState),
-               date: {
-                  label: 'Select Date Range',
-                  value: filters.date,
-                  setValue: handleDateChange
-               },
-               role: {
-                  label: 'Select Role',
-                  value: filters.role,
-                  setValue: (value) => setFilters(prev => ({ ...prev, role: (value as UserRole) || undefined })),
-                  options: [
-                     { label: 'None', value: 'NONE' },
-                     { label: 'Interviewer', value: 'INTERVIEWER' },
-                     { label: 'Candidate', value: 'CANDIDATE' },
-                     { label: 'Unassigned', value: 'UNASSIGNED' }
-                  ]
-               },
-               status: {
-                  label: 'Select Status',
-                  value: filters.status,
-                  setValue: (value) => setFilters(prev => ({ ...prev, status: value as UserStatus || undefined })),
-                  options: [
-                     { label: 'None', value: 'NONE' },
-                     { label: 'Active', value: 'ACTIVE' },
-                     { label: 'Banned', value: 'BANNED' }
-                  ]
-               },
+               items: [
+                  {
+                     type: 'date',
+                     id: 'date',
+                     label: 'Select Date Range',
+                     value: filters.date,
+                     setValue: handleDateChange
+                  },
+                  {
+                     type: 'select',
+                     id: 'role',
+                     label: 'Select Role',
+                     value: filters.role,
+                     setValue: (value) => setFilters(prev => ({ ...prev, role: (value as UserRole) || undefined })),
+                     options: [
+                        { label: 'None', value: 'NONE' },
+                        { label: 'Interviewer', value: 'INTERVIEWER' },
+                        { label: 'Candidate', value: 'CANDIDATE' },
+                        { label: 'Unassigned', value: 'UNASSIGNED' }
+                     ]
+                  },
+                  {
+                     type: 'select',
+                     id: 'status',
+                     label: 'Select Status',
+                     value: filters.status,
+                     setValue: (value) => setFilters(prev => ({ ...prev, status: value as UserStatus || undefined })),
+                     options: [
+                        { label: 'None', value: 'NONE' },
+                        { label: 'Active', value: 'ACTIVE' },
+                        { label: 'Banned', value: 'BANNED' }
+                     ]
+                  }
+               ],
                resetFilters: () => {
                   setFilters(INITIAL_FILTERS);
                   setFilterButton(false);

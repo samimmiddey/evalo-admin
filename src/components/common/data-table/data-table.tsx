@@ -10,7 +10,6 @@ import NoDataCard from '../no-data-card';
 import { globalData } from '@/data/global/global.data';
 import DataTableHeader from './table-header';
 import { DateRange } from 'react-day-picker';
-import { UserRole, UserStatus } from '@/generated/prisma/enums';
 
 export const features = tableFeatures({
    columnSizingFeature
@@ -28,38 +27,34 @@ export interface Search {
    placeholder: string;
 }
 
-export interface Date {
+export interface DateFilter {
+   type: 'date';
+   id: string;
    label: string;
    value: DateRange | undefined;
    setValue: (range: DateRange | undefined) => void;
 }
 
-export interface Role {
+export interface SelectItem {
    label: string;
-   value: UserRole | undefined;
-   setValue: (value: string | null) => void;
-   options: {
-      label: string;
-      value: string;
-   }[];
+   value: string;
 }
 
-export interface Status {
+export interface SelectFilter {
+   type: 'select';
+   id: string;
    label: string;
-   value: UserStatus | undefined;
-   setValue: (value: string | null) => void;
-   options: {
-      label: string;
-      value: string;
-   }[];
+   value: string | undefined;
+   setValue: (range: string | null) => void;
+   options: SelectItem[];
 }
+
+export type FilterItem = DateFilter | SelectFilter;
 
 export interface Filters {
    value: boolean;
    setValue: () => void;
-   date?: Date;
-   role?: Role;
-   status?: Status;
+   items?: FilterItem[];
    resetFilters: () => void;
 }
 

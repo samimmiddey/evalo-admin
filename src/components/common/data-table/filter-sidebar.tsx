@@ -11,59 +11,48 @@ import SecondaryTitle from "../secondary-title";
 import PrimaryBody from "../primary-body";
 import DateRangePicker from "../date-range-picker";
 import { Label } from "@/components/ui/label";
-import { Date, Role, Status } from "./data-table";
+import { FilterItem } from "./data-table";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useMediaQuery from "@/hooks/use-media-query";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { UserRole, UserStatus } from "@/generated/prisma/enums";
 import { X } from "lucide-react";
 
 interface FilterSidebarProps {
    open: boolean;
    setOpen: () => void;
-   date?: Date;
-   role?: Role;
-   status?: Status;
+   items?: FilterItem[];
    onResetFilters?: () => void;
 }
 
-export function FilterSidebar({ open, setOpen, date, role, status, onResetFilters }: FilterSidebarProps) {
-   const [draftDate, setDraftDate] = useState<DateRange | undefined>(date?.value);
-   const [draftRole, setDraftRole] = useState<UserRole | undefined>(role?.value);
-   const [draftStatus, setDraftStatus] = useState<UserStatus | undefined>(status?.value);
+export function FilterSidebar({ open, setOpen, items, onResetFilters }: FilterSidebarProps) {
+   const [draftValues, setDraftValues] = useState<Record<string, unknown>>({});
 
    const mdWidth = useMediaQuery(768);
 
    // Sync draft with parent props whenever drawer opens
    useEffect(() => {
-      if (open) {
-         setDraftDate(date?.value);
-         setDraftRole(role?.value);
-         setDraftStatus(status?.value);
+      if (open && items) {
+         const initial: Record<string, unknown> = {};
+
+         items.forEach(item => {
+            initial[item.id] = item.value;
+         });
+
+         setDraftValues(initial);
       }
-   }, [open, date?.value, role?.value, status?.value]);
+   }, [open, items]);
 
-   // Handle date change
-   const handleDateChange = (val: DateRange | undefined) => {
-      setDraftDate(val);
-   };
-
-   // Handle role change
-   const handleRoleChange = (val: UserRole | null) => {
-      setDraftRole(val ?? undefined);
-   };
-
-   // Handle status change
-   const handleStatusChange = (val: UserStatus | null) => {
-      setDraftStatus(val ?? undefined);
-   };
-
-   // Apply button
+   // Apply change
    const handleApply = () => {
-      date?.setValue(draftDate);
-      role?.setValue(draftRole ?? null);
-      status?.setValue(draftStatus ?? null);
+      items?.forEach(item => {
+         if (item.type === 'date') {
+            item.setValue(draftValues[item.id] as DateRange | undefined);
+         } else if (item.type === 'select') {
+            item.setValue((draftValues[item.id] as string) ?? null);
+         }
+      });
+
       setOpen();
    };
 
@@ -73,10 +62,16 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
          onResetFilters();
       }
 
-      setDraftDate(undefined);
-      setDraftRole(undefined);
-      setDraftStatus(undefined);
+      setDraftValues({});
    };
+
+   const hasActiveDraft = Object.values(draftValues).some((val) => {
+      if (!val) return false;
+      if (typeof val === 'object' && 'from' in (val as Record<string, unknown>)) {
+         return Boolean((val as DateRange).from && (val as DateRange).to);
+      }
+      return true;
+   });
 
    return (
       <Drawer
@@ -111,82 +106,64 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
             </DrawerHeader>
             <div className="p-4 flex flex-col gap-6 my-4">
                {
-                  date &&
-                  <div>
-                     <Label className="text-[13px] 2xl:text-sm font-medium text-zinc-300 mb-2">
-                        {date.label}
-                     </Label>
-                     <DateRangePicker
-                        date={draftDate}
-                        setDate={handleDateChange}
-                     />
-                  </div>
-               }
-               {
-                  role &&
-                  <div>
-                     <Label className="text-[13px] 2xl:text-sm font-medium text-zinc-300 mb-2">
-                        {role.label}
-                     </Label>
-                     <Select
-                        value={draftRole ?? 'NONE'}
-                        onValueChange={(value) => handleRoleChange(value as UserRole)}
-                     >
-                        <SelectTrigger className="w-full h-10! border-white/10">
-                           <SelectValue placeholder="None">
-                              {(val) => role.options.find((opt) => opt.value === val)?.label}
-                           </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                           <SelectGroup>
-                              {
-                                 role.options.map((item) => (
-                                    <SelectItem
-                                       key={item.value}
-                                       value={item.value}
-                                       className='h-10!'
-                                    >
-                                       {item.label}
-                                    </SelectItem>
-                                 ))
-                              }
-                           </SelectGroup>
-                        </SelectContent>
-                     </Select>
-                  </div>
-               }
-               {
-                  status &&
-                  <div>
-                     <Label className="text-[13px] 2xl:text-sm font-medium text-zinc-300 mb-2">
-                        {status.label}
-                     </Label>
-                     <Select
-                        value={draftStatus ?? 'NONE'}
-                        onValueChange={(value) => handleStatusChange(value as UserStatus)}
-                     >
-                        <SelectTrigger className="w-full h-10! border-white/10">
-                           <SelectValue placeholder="None">
-                              {(val) => status.options.find((opt) => opt.value === val)?.label}
-                           </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                           <SelectGroup>
-                              {
-                                 status.options.map((item) => (
-                                    <SelectItem
-                                       key={item.value}
-                                       value={item.value}
-                                       className='h-10!'
-                                    >
-                                       {item.label}
-                                    </SelectItem>
-                                 ))
-                              }
-                           </SelectGroup>
-                        </SelectContent>
-                     </Select>
-                  </div>
+                  items?.map(item => {
+                     if (item.type === 'date') {
+                        return (
+                           <div key={item.id}>
+                              <Label className="text-[13px] 2xl:text-sm font-medium text-zinc-300 mb-2">
+                                 {item.label}
+                              </Label>
+                              <DateRangePicker
+                                 date={draftValues[item.id] as DateRange | undefined}
+                                 setDate={val => setDraftValues(prev => ({
+                                    ...prev, [item.id]: val
+                                 }))}
+                              />
+                           </div>
+                        );
+                     }
+
+                     if (item.type === 'select') {
+                        const currentValue = (draftValues[item.id] as string | undefined) ?? 'NONE';
+
+                        return (
+                           <div key={item.id}>
+                              <Label className="text-[13px] 2xl:text-sm font-medium text-zinc-300 mb-2">
+                                 {item.label}
+                              </Label>
+                              <Select
+                                 value={currentValue}
+                                 onValueChange={val => setDraftValues(prev => ({
+                                    ...prev,
+                                    [item.id]: val === 'NONE' ? undefined : val
+                                 }))}
+                              >
+                                 <SelectTrigger className="w-full h-10! border-white/10">
+                                    <SelectValue placeholder="None">
+                                       {(val) => item.options.find((opt) => opt.value === val)?.label}
+                                    </SelectValue>
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    <SelectGroup>
+                                       {
+                                          item.options.map((opt) => (
+                                             <SelectItem
+                                                key={opt.value}
+                                                value={opt.value}
+                                                className='h-10!'
+                                             >
+                                                {opt.label}
+                                             </SelectItem>
+                                          ))
+                                       }
+                                    </SelectGroup>
+                                 </SelectContent>
+                              </Select>
+                           </div>
+
+                        );
+                     }
+                  })
                }
             </div>
             <DrawerFooter className='flex flex-row items-center gap-2.5'>
@@ -194,7 +171,7 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                   size='xl'
                   variant='ghost'
                   onClick={handleClear}
-                  disabled={!Boolean(draftDate || draftRole || draftStatus)}
+                  disabled={!Boolean(hasActiveDraft)}
                   className='bg-red-500/10! text-red-400! w-1/2'
                >
                   clear
@@ -203,7 +180,7 @@ export function FilterSidebar({ open, setOpen, date, role, status, onResetFilter
                   size="xl"
                   onClick={handleApply}
                   className='w-1/2'
-                  disabled={!Boolean(draftDate || draftRole || draftStatus)}
+                  disabled={!Boolean(hasActiveDraft)}
                >
                   Apply Filters
                </Button>
