@@ -119,9 +119,9 @@ const Sessions = () => {
                   <Image
                      src={image ?? '/user.png'}
                      alt='Image'
-                     height={50}
-                     width={50}
-                     className='rounded-lg'
+                     height={40}
+                     width={40}
+                     className='rounded-full'
                   />
                   <div className="flex flex-col items-start gap-0.5">
                      <SecondaryTitle
@@ -130,7 +130,7 @@ const Sessions = () => {
                      />
                      <PrimaryBody
                         text={email ?? '-'}
-                        className="text-[13px]! truncate"
+                        className="text-xs! truncate"
                      />
                   </div>
                </div>
@@ -140,20 +140,29 @@ const Sessions = () => {
       {
          accessorKey: 'interviewer',
          header: 'Interviewer',
-         size: 250,
+         size: 275,
          cell: ({ row }) => {
-            const { name, email } = row.original.interviewer;
+            const { name, email, image } = row.original.interviewer;
 
             return (
-               <div className="flex flex-col items-start gap-0.5">
-                  <SecondaryTitle
-                     text={name ?? '-'}
-                     className="text-xs! 2xl:text-sm! truncate"
+               <div className="flex items-center gap-3">
+                  <Image
+                     src={image ?? '/user.png'}
+                     alt='Image'
+                     height={40}
+                     width={40}
+                     className='rounded-full'
                   />
-                  <PrimaryBody
-                     text={email ?? '-'}
-                     className="text-[13px]! truncate"
-                  />
+                  <div className="flex flex-col items-start gap-0.5">
+                     <SecondaryTitle
+                        text={name ?? '-'}
+                        className="text-xs! 2xl:text-sm! truncate"
+                     />
+                     <PrimaryBody
+                        text={email ?? '-'}
+                        className="text-xs! truncate"
+                     />
+                  </div>
                </div>
             );
          }
@@ -190,7 +199,7 @@ const Sessions = () => {
       {
          accessorKey: 'completionReason',
          header: 'Completion Reason',
-         size: 150,
+         size: 160,
          cell: ({ row }) => {
             const { completionReason } = row.original;
 
@@ -218,7 +227,7 @@ const Sessions = () => {
       {
          accessorKey: 'isRefunded',
          header: 'Refund Status',
-         size: 150,
+         size: 140,
          cell: ({ row }) => {
             const { isRefunded } = row.original;
 
@@ -250,7 +259,7 @@ const Sessions = () => {
                            <EllipsisVertical className='h-3.5 w-3.5' />
                         </Button>
                      }
-                   />
+                  />
                   <DropdownMenuContent>
                      <DropdownMenuGroup>
                         <DropdownMenuItem className='h-8 cursor-pointer'>

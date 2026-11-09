@@ -6,16 +6,12 @@ import {
    ExpertiseDemandItem,
    ExpertiseDemandResponse,
    InterviewVolumeTrendItem,
-   InterviewVolumeTrendsResponse,
-   PaginatedRecentSessions,
-   RecentSessionsFilter,
-   RecentSessionsResponse,
+   InterviewVolumeTrendsResponse
 } from "../types/dashboard.types";
 import {
    GET_DASHBOARD_METRICS,
    GET_EXPERTISE_METRICS,
-   GET_INTERVIEW_TRENDS,
-   GET_RECENT_SESSIONS,
+   GET_INTERVIEW_TRENDS
 } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
@@ -90,37 +86,6 @@ export const getInterviewVolumeTrends = async (params: DashboardMetricsFilter): 
       return apiError({
          error,
          fallbackMessage: 'Failed to fetch interview volume trends'
-      });
-   }
-};
-
-// Get recent sessions
-export const getRecentSessions = async (
-   params: RecentSessionsFilter
-): Promise<PaginatedRecentSessions> => {
-   try {
-      const { startDate, endDate, page, pageSize } = params;
-
-      const searchParams = new URLSearchParams();
-
-      if (startDate) searchParams.set('startDate', startDate.toISOString());
-      if (endDate) searchParams.set('endDate', endDate.toISOString());
-      if (page) searchParams.set('page', page.toString());
-      if (pageSize) searchParams.set('pageSize', pageSize.toString());
-
-      const res = await api
-         .get(`${GET_RECENT_SESSIONS}?${searchParams.toString()}`)
-         .json<RecentSessionsResponse>();
-
-      if (!res.success) {
-         throw new Error(res.error);
-      }
-
-      return res.data;
-   } catch (error: unknown) {
-      return apiError({
-         error,
-         fallbackMessage: 'Failed to fetch recent sessions',
       });
    }
 };

@@ -1,13 +1,13 @@
 import SecondaryTitle from '@/components/common/secondary-title';
-import { useFetch } from '@/hooks/use-fetch';
-import { getRecentSessions } from './services/dashboard.client.service';
 import { DataTable, features } from '@/components/common/data-table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { PaginatedRecentSessions, RecentSessionItem } from './types/dashboard.types';
 import PrimaryBody from '@/components/common/primary-body';
 import getStatusBadge from '@/components/common/get-status-badge';
-import { formatDate } from '@/utils/format-date';
 import Image from 'next/image';
+import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
+import { SessionItem } from '../sessions/types/sessions.types';
+import { getSessions } from '../sessions/services/sessions.client.service';
+import { format } from 'date-fns';
 
 interface RecentSessionsProps {
    startDate: Date | undefined;
@@ -22,64 +22,87 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
       endDate
    };
 
-   const { isLoading, data, error } = useFetch<PaginatedRecentSessions>(
-      () => getRecentSessions(params),
+   const { isLoading, data, error } = useInfiniteFetch<SessionItem>(
+      () => getSessions(params),
       [startDate, endDate]
    );
 
-   const columns: ColumnDef<typeof features, RecentSessionItem>[] = [
+   const columns: ColumnDef<typeof features, SessionItem>[] = [
       {
-         accessorKey: 'name',
-         header: 'Full Name',
-         size: 250,
+         accessorKey: 'candidate',
+         header: 'Candidate',
+         size: 275,
          cell: ({ row }) => {
-            const { name, image } = row.original;
+            const { name, image, email } = row.original.candidate;
 
             return (
                <div className="flex items-center gap-3">
                   <Image
                      src={image ?? '/user.png'}
                      alt='Image'
-                     height={50}
-                     width={50}
-                     className='rounded-lg'
+                     height={40}
+                     width={40}
+                     className='rounded-full'
                   />
-                  <SecondaryTitle
-                     text={name ?? '-'}
-                     className="text-xs! 2xl:text-sm! truncate"
-                  />
-               </div>
-            );
-         },
-      },
-      {
-         accessorKey: 'email',
-         header: 'Email',
-         size: 150,
-         cell: ({ row }) => {
-            const { email } = row.original;
-
-            return (
-               <div className="flex items-center">
-                  <PrimaryBody
-                     text={email ?? '-'}
-                     className="text-xs!"
-                  />
+                  <div className="flex flex-col items-start gap-0.5">
+                     <SecondaryTitle
+                        text={name ?? '-'}
+                        className="text-xs! 2xl:text-sm! truncate"
+                     />
+                     <PrimaryBody
+                        text={email ?? '-'}
+                        className="text-xs! truncate"
+                     />
+                  </div>
                </div>
             );
          }
       },
       {
-         accessorKey: 'userCredit',
-         header: 'Credits',
-         size: 100,
+         accessorKey: 'interviewer',
+         header: 'Interviewer',
+         size: 275,
          cell: ({ row }) => {
-            const { userCredit } = row.original;
+            const { name, email, image } = row.original.interviewer;
 
             return (
-               <div className="flex items-center">
+               <div className="flex items-center gap-3">
+                  <Image
+                     src={image ?? '/user.png'}
+                     alt='Image'
+                     height={40}
+                     width={40}
+                     className='rounded-full'
+                  />
+                  <div className="flex flex-col items-start gap-0.5">
+                     <SecondaryTitle
+                        text={name ?? '-'}
+                        className="text-xs! 2xl:text-sm! truncate"
+                     />
+                     <PrimaryBody
+                        text={email ?? '-'}
+                        className="text-xs! truncate"
+                     />
+                  </div>
+               </div>
+            );
+         }
+      },
+      {
+         accessorKey: 'time',
+         header: 'Time',
+         size: 175,
+         cell: ({ row }) => {
+            const { startTime, endTime } = row.original;
+
+            return (
+               <div className="flex flex-col gap-0.5">
                   <PrimaryBody
-                     text={userCredit.toString() ?? '-'}
+                     text={`${format(startTime, 'PP') ?? '-'}`}
+                     className="text-xs!"
+                  />
+                  <PrimaryBody
+                     text={`${format(startTime, 'p')} - ${format(endTime, 'p')}`}
                      className="text-xs!"
                   />
                </div>
@@ -88,26 +111,54 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
       },
       {
          accessorKey: 'status',
-         header: 'Session Status',
+         header: 'Account Status',
          size: 150,
          cell: (info) => (
             getStatusBadge(info.getValue<string>())
-         ),
+         )
       },
       {
-         accessorKey: 'dateTime',
-         header: 'Date',
-         size: 150,
+         accessorKey: 'completionReason',
+         header: 'Completion Reason',
+         size: 160,
          cell: ({ row }) => {
-            const { dateTime } = row.original;
+            const { completionReason } = row.original;
+
+            let message = '';
+
+            switch (completionReason) {
+               case 'CANDIDATE_NO_SHOW':
+                  message = 'Candidate No-Show';
+                  break;
+               case 'MUTUAL':
+                  message = 'Mutual';
+                  break;
+               default:
+                  message = '-';
+            }
 
             return (
                <PrimaryBody
-                  text={formatDate(dateTime) ?? '-'}
+                  text={message}
                   className="text-xs!"
                />
             );
-         },
+         }
+      },
+      {
+         accessorKey: 'isRefunded',
+         header: 'Refund Status',
+         size: 140,
+         cell: ({ row }) => {
+            const { isRefunded } = row.original;
+
+            return (
+               <PrimaryBody
+                  text={isRefunded ? 'Refunded' : '-'}
+                  className={`text-xs! ${isRefunded ? 'text-emerald-400' : ''}`}
+               />
+            );
+         }
       }
    ];
 
@@ -117,7 +168,7 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
          contentType='Recent Sessions'
          pageSize={params.pageSize}
          columns={columns}
-         data={data?.data ?? []}
+         data={data}
          error={error}
          tableHeader={{
             title: 'Recent Interview Sessions'
