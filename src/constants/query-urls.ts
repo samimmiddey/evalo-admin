@@ -10,3 +10,7 @@ export const TOGGLE_USER_STATUS = '/users/toggle-user-status';
 export const SIGN_OUT_USER = '/users/sign-out-user';
 export const GET_USER_DETAILS = '/users/details';
 export const EXPORT_USERS_CSV = '/users/export-csv';
+
+// Settings
+export const GET_PLATFORM_CONFIG = '/settings';
+export const UPDATE_PLATFORM_CONFIG = '/settings';
