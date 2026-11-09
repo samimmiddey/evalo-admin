@@ -3,7 +3,7 @@ import { SettingsData } from "./settings.types";
 export const settingsData: SettingsData = {
    header: {
       title: "Settings",
-      description: "Manage global platform configurations, system preferences, and administrative controls.",
+      description: "Manage global platform configurations, system preferences, and administrative controls",
    },
    fields: {
       creditPayoutRate: {

@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
-import { Sessions, SessionsFilter, SessionsResponse } from "../types/sessions.types";
-import { GET_SESSIONS } from "@/constants/query-urls";
+import { CancelBooking, CancelBookingResponse, Sessions, SessionsFilter, SessionsResponse } from "../types/sessions.types";
+import { GET_SESSIONS, CANCEL_BOOKING } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 export const getSessions = async (filters?: SessionsFilter): Promise<Sessions> => {
@@ -26,6 +26,29 @@ export const getSessions = async (filters?: SessionsFilter): Promise<Sessions> =
       return apiError({
          error,
          fallbackMessage: 'Failed to fetch sessions'
+      });
+   }
+};
+
+export const cancelBooking = async (bookingId: string): Promise<CancelBooking> => {
+   try {
+      const searchParams = new URLSearchParams();
+
+      if (bookingId) searchParams.set('bookingId', bookingId);
+
+      const res = await api.post(CANCEL_BOOKING, { searchParams }).json<CancelBookingResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return {
+         success: true
+      };
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to cancel booking'
       });
    }
 };

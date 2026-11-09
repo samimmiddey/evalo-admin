@@ -3,11 +3,11 @@ import { UsersData } from "./users.types";
 export const usersData: UsersData = {
    header: {
       title: "All Users",
-      description: "View and manage all registered users, their roles, and status.",
+      description: "View and manage all registered users, their roles, and status",
    },
    detailsModal: {
       title: "User Details",
-      description: "Detailed account, profile, and platform activity information.",
+      description: "Detailed account, profile, and platform activity information",
       loadingText: "Loading user details...",
       errorTitle: "Failed to load user details",
       noDataTitle: "No user found",

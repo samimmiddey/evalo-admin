@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { getSessions } from './services/sessions.client.service';
+import { cancelBooking, getSessions } from './services/sessions.client.service';
 import { DataTable, features } from '@/components/common/data-table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { SessionItem } from './types/sessions.types';
@@ -13,10 +13,13 @@ import getStatusBadge from '@/components/common/get-status-badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { EllipsisVertical } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useDebounce from '@/hooks/use-debounce';
 import { DateRange } from 'react-day-picker';
 import { BookingStatus, CompletionReason } from '@/generated/prisma/enums';
+import { useMutation } from '@/hooks/use-mutation';
+import { toast } from 'sonner';
+import ConfirmDialog from '@/components/common/confirm-dialog';
 
 interface Filters {
    date?: DateRange;
@@ -32,10 +35,21 @@ const INITIAL_FILTERS: Filters = {
    completionReason: undefined
 };
 
+interface ConfirmDialogue {
+   id: string | null;
+   value: boolean;
+}
+
+const INITIAL_CONFIRM_DIALOGUE: ConfirmDialogue = {
+   id: null,
+   value: false
+};
+
 const Sessions = () => {
    const [search, setSearch] = useState<string>('');
    const [filterButton, setFilterButton] = useState<boolean>(false);
    const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
+   const [confirmDialogue, setConfirmDialogue] = useState<ConfirmDialogue>(INITIAL_CONFIRM_DIALOGUE);
 
    const debouncedSearch = useDebounce(search);
 
@@ -53,7 +67,7 @@ const Sessions = () => {
       pageSize: 10
    };
 
-   const { isLoading: isSessionsLoading, data: sessionData, error: sessionError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteFetch<SessionItem>(
+   const { isLoading: isSessionsLoading, data: sessionData, error: sessionError, hasNextPage, fetchNextPage, isFetchingNextPage, refetch: refetchSessionList } = useInfiniteFetch<SessionItem>(
       (page) => getSessions({
          ...params,
          page,
@@ -65,6 +79,32 @@ const Sessions = () => {
       }),
       [debouncedSearch, filters.appliedDate, filters.status, filters.completionReason]
    );
+
+   // Cancel booking mutation
+   const { isPending: isCancelBookingPending, error: cancelBookingError, mutate: cancelBookingMutation } = useMutation(cancelBooking);
+
+   // Handle cancel booking
+   const handleCancelBooking = async () => {
+      if (!confirmDialogue.id) {
+         toast.error('Booking ID not found');
+         return;
+      }
+
+      const res = await cancelBookingMutation(confirmDialogue.id ?? '');
+
+      if (res?.success) {
+         toast.success('Booking successfully cancelled');
+         setConfirmDialogue(INITIAL_CONFIRM_DIALOGUE);
+         refetchSessionList();
+      }
+   };
+
+   // Handle mutation error
+   useEffect(() => {
+      if (cancelBookingError) {
+         toast.error(cancelBookingError);
+      }
+   }, [cancelBookingError]);
 
    const columns: ColumnDef<typeof features, SessionItem>[] = [
       {
@@ -121,18 +161,18 @@ const Sessions = () => {
       {
          accessorKey: 'time',
          header: 'Time',
-         size: 200,
+         size: 175,
          cell: ({ row }) => {
             const { startTime, endTime } = row.original;
 
             return (
                <div className="flex flex-col gap-0.5">
                   <PrimaryBody
-                     text={`Start: ${format(startTime, 'PPp') ?? '-'}`}
+                     text={`${format(startTime, 'PP') ?? '-'}`}
                      className="text-xs!"
                   />
                   <PrimaryBody
-                     text={`End: ${format(endTime, 'PPp') ?? '-'}`}
+                     text={`${format(startTime, 'p')} - ${format(endTime, 'p')}`}
                      className="text-xs!"
                   />
                </div>
@@ -194,7 +234,11 @@ const Sessions = () => {
          accessorKey: 'actions',
          header: 'Actions',
          size: 100,
-         cell: () => {
+         cell: ({ row }) => {
+            const { id, status, endTime, isRefunded } = row.original;
+
+            const canCancel = status === 'SCHEDULED' && new Date(endTime) > new Date() && !isRefunded;
+
             return (
                <DropdownMenu>
                   <DropdownMenuTrigger
@@ -206,17 +250,21 @@ const Sessions = () => {
                            <EllipsisVertical className='h-3.5 w-3.5' />
                         </Button>
                      }
-                  >
-                     Open
-                  </DropdownMenuTrigger>
+                   />
                   <DropdownMenuContent>
                      <DropdownMenuGroup>
                         <DropdownMenuItem className='h-8 cursor-pointer'>
                            Issue Refund
                         </DropdownMenuItem>
-                        <DropdownMenuItem className='h-8 cursor-pointer'>
-                           Cancel Session
-                        </DropdownMenuItem>
+                        {
+                           canCancel &&
+                           <DropdownMenuItem
+                              className='h-8 cursor-pointer text-red-300 hover:text-red-400 hover:bg-red-500/15'
+                              onClick={() => setConfirmDialogue({ id, value: true })}
+                           >
+                              Cancel Session
+                           </DropdownMenuItem>
+                        }
                      </DropdownMenuGroup>
                   </DropdownMenuContent>
                </DropdownMenu>
@@ -230,7 +278,7 @@ const Sessions = () => {
          <DataTable
             tableHeader={{
                title: 'Sessions',
-               description: 'Manage all your sessions here'
+               description: 'Monitor and manage all mock interview sessions across the platform'
             }}
             isLoading={isSessionsLoading}
             data={sessionData}
@@ -291,6 +339,16 @@ const Sessions = () => {
                   setFilterButton(false);
                }
             }}
+         />
+         <ConfirmDialog
+            open={confirmDialogue.value}
+            onClose={() => setConfirmDialogue(INITIAL_CONFIRM_DIALOGUE)}
+            onConfirm={handleCancelBooking}
+            title='Cancel Booking'
+            description='Are you sure you want to do this? This action is permanent and cannot be undone.'
+            confirmText='Confirm'
+            variant='warning'
+            isLoading={isCancelBookingPending}
          />
       </div>
    );

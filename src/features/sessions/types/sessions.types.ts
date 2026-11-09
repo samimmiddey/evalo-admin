@@ -3,6 +3,7 @@ import {
    BookingStatus,
    CompletionReason,
 } from "@/generated/prisma/enums";
+import { Prisma } from "@/generated/prisma/client";
 
 export interface SessionParticipant {
    id: string;
@@ -45,3 +46,13 @@ export interface Sessions {
 }
 
 export type SessionsResponse = BaseResponse<Sessions>;
+
+export type BookingWithParties = Prisma.BookingGetPayload<{
+   include: { candidate: true; interviewer: true; };
+}>;
+
+export interface CancelBooking {
+   success: boolean;
+}
+
+export type CancelBookingResponse = BaseResponse<null>;
