@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import ConfirmDialog from '@/components/common/confirm-dialog';
 import { GRACE_PERIOD_MS } from '@/constants/interview';
 import { Textarea } from '@/components/ui/textarea';
+import { sessionData as sessionStaticData } from '@/data/sessions/session.data';
 
 interface Filters {
    date?: DateRange;
@@ -338,8 +339,8 @@ const Sessions = () => {
       <div className="container s-margin-t">
          <DataTable
             tableHeader={{
-               title: 'Sessions',
-               description: 'Monitor and manage all mock interview sessions across the platform'
+               title: sessionStaticData.header.title,
+               description: sessionStaticData.header.description
             }}
             isLoading={isSessionsLoading}
             data={sessionData}
