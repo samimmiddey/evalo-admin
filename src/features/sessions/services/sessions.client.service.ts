@@ -1,6 +1,15 @@
 import { api } from "@/lib/api";
-import { CancelBooking, CancelBookingResponse, Sessions, SessionsFilter, SessionsResponse } from "../types/sessions.types";
-import { GET_SESSIONS, CANCEL_BOOKING } from "@/constants/query-urls";
+import {
+   CancelBooking,
+   CancelBookingResponse,
+   IssueRefund,
+   IssueRefundParams,
+   IssueRefundResponse,
+   Sessions,
+   SessionsFilter,
+   SessionsResponse,
+} from "../types/sessions.types";
+import { GET_SESSIONS, CANCEL_BOOKING, ISSUE_REFUND } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 export const getSessions = async (filters?: SessionsFilter): Promise<Sessions> => {
@@ -52,3 +61,30 @@ export const cancelBooking = async (bookingId: string): Promise<CancelBooking> =
       });
    }
 };
+
+export const issueRefund = async ({ bookingId, adminNote }: IssueRefundParams): Promise<IssueRefund> => {
+   try {
+      const res = await api
+         .post(ISSUE_REFUND, {
+            json: {
+               bookingId,
+               adminNote: adminNote,
+            },
+         })
+         .json<IssueRefundResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return {
+         success: true,
+      };
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to issue refund',
+      });
+   }
+};
+

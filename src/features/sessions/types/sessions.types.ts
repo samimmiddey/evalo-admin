@@ -56,3 +56,14 @@ export interface CancelBooking {
 }
 
 export type CancelBookingResponse = BaseResponse<null>;
+
+export interface IssueRefundParams {
+   bookingId: string;
+   adminNote: string;
+}
+
+export interface IssueRefund {
+   success: boolean;
+}
+
+export type IssueRefundResponse = BaseResponse<null>;

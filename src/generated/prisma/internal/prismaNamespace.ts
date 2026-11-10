@@ -1264,7 +1264,8 @@ export const BookingScalarFieldEnum = {
   recordingUrl: 'recordingUrl',
   isRefunded: 'isRefunded',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  adminNote: 'adminNote'
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]

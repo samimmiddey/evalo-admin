@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { cancelBooking, getSessions } from './services/sessions.client.service';
+import { cancelBooking, getSessions, issueRefund } from './services/sessions.client.service';
 import { DataTable, features } from '@/components/common/data-table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { SessionItem } from './types/sessions.types';
@@ -13,13 +13,15 @@ import getStatusBadge from '@/components/common/get-status-badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { EllipsisVertical } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useDebounce from '@/hooks/use-debounce';
 import { DateRange } from 'react-day-picker';
 import { BookingStatus, CompletionReason } from '@/generated/prisma/enums';
 import { useMutation } from '@/hooks/use-mutation';
 import { toast } from 'sonner';
 import ConfirmDialog from '@/components/common/confirm-dialog';
+import { GRACE_PERIOD_MS } from '@/constants/interview';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Filters {
    date?: DateRange;
@@ -49,7 +51,9 @@ const Sessions = () => {
    const [search, setSearch] = useState<string>('');
    const [filterButton, setFilterButton] = useState<boolean>(false);
    const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
-   const [confirmDialogue, setConfirmDialogue] = useState<ConfirmDialogue>(INITIAL_CONFIRM_DIALOGUE);
+   const [cancelDialogue, setCancelDialogue] = useState<ConfirmDialogue>(INITIAL_CONFIRM_DIALOGUE);
+   const [refundDialogue, setRefundDialogue] = useState<ConfirmDialogue>(INITIAL_CONFIRM_DIALOGUE);
+   const adminNoteRef = useRef<HTMLTextAreaElement>(null);
 
    const debouncedSearch = useDebounce(search);
 
@@ -85,16 +89,35 @@ const Sessions = () => {
 
    // Handle cancel booking
    const handleCancelBooking = async () => {
-      if (!confirmDialogue.id) {
+      if (!cancelDialogue.id) {
          toast.error('Booking ID not found');
          return;
       }
 
-      const res = await cancelBookingMutation(confirmDialogue.id ?? '');
+      const res = await cancelBookingMutation(cancelDialogue.id ?? '');
 
       if (res?.success) {
          toast.success('Booking successfully cancelled');
-         setConfirmDialogue(INITIAL_CONFIRM_DIALOGUE);
+         setCancelDialogue(INITIAL_CONFIRM_DIALOGUE);
+         refetchSessionList();
+      }
+   };
+
+   // Issue refund mutation
+   const { isPending: isRefundPending, error: isRefundError, mutate: refundMutation } = useMutation(issueRefund);
+
+   // Handle issue refund
+   const handleIssueRefund = async () => {
+      if (!refundDialogue.id || !adminNoteRef.current?.value) {
+         toast.error('Booking ID and admin note are required');
+         return;
+      }
+
+      const res = await refundMutation({ bookingId: refundDialogue.id ?? '', adminNote: adminNoteRef.current?.value ?? '' });
+
+      if (res?.success) {
+         toast.success('Successfully refunded');
+         setRefundDialogue(INITIAL_CONFIRM_DIALOGUE);
          refetchSessionList();
       }
    };
@@ -104,7 +127,10 @@ const Sessions = () => {
       if (cancelBookingError) {
          toast.error(cancelBookingError);
       }
-   }, [cancelBookingError]);
+      if (isRefundError) {
+         toast.error(isRefundError);
+      }
+   }, [cancelBookingError, isRefundError]);
 
    const columns: ColumnDef<typeof features, SessionItem>[] = [
       {
@@ -244,9 +270,29 @@ const Sessions = () => {
          header: 'Actions',
          size: 100,
          cell: ({ row }) => {
-            const { id, status, endTime, isRefunded } = row.original;
+            const { id, status, startTime, endTime, isRefunded, completionReason, creditsCharged } = row.original;
 
             const canCancel = status === 'SCHEDULED' && new Date(endTime) > new Date() && !isRefunded;
+
+            const now = Date.now();
+            const startMs = new Date(startTime).getTime();
+            const endMs = new Date(endTime).getTime();
+            const settlementEndMs = endMs + GRACE_PERIOD_MS;
+
+            const canIssueRefund =
+               !isRefunded &&
+               creditsCharged > 0 &&
+               completionReason === null &&
+               status !== 'COMPLETED' &&
+               status !== 'CANCELLED' &&
+               (
+                  status === 'EXPIRED' ||
+                  (status === 'SCHEDULED' && (now < startMs || now > settlementEndMs))
+               );
+
+            if (!canCancel && !canIssueRefund) {
+               return <PrimaryBody text="-" className="text-xs!" />;
+            }
 
             return (
                <DropdownMenu>
@@ -262,14 +308,20 @@ const Sessions = () => {
                   />
                   <DropdownMenuContent>
                      <DropdownMenuGroup>
-                        <DropdownMenuItem className='h-8 cursor-pointer'>
-                           Issue Refund
-                        </DropdownMenuItem>
+                        {
+                           canIssueRefund &&
+                           <DropdownMenuItem
+                              className='h-8 cursor-pointer'
+                              onClick={() => setRefundDialogue({ id, value: true })}
+                           >
+                              Issue Refund
+                           </DropdownMenuItem>
+                        }
                         {
                            canCancel &&
                            <DropdownMenuItem
                               className='h-8 cursor-pointer text-red-300 hover:text-red-400 hover:bg-red-500/15'
-                              onClick={() => setConfirmDialogue({ id, value: true })}
+                              onClick={() => setCancelDialogue({ id, value: true })}
                            >
                               Cancel Session
                            </DropdownMenuItem>
@@ -349,9 +401,11 @@ const Sessions = () => {
                }
             }}
          />
+
+         {/* Cancel booking dialogue */}
          <ConfirmDialog
-            open={confirmDialogue.value}
-            onClose={() => setConfirmDialogue(INITIAL_CONFIRM_DIALOGUE)}
+            open={cancelDialogue.value}
+            onClose={() => setCancelDialogue(INITIAL_CONFIRM_DIALOGUE)}
             onConfirm={handleCancelBooking}
             title='Cancel Booking'
             description='Are you sure you want to do this? This action is permanent and cannot be undone.'
@@ -359,6 +413,25 @@ const Sessions = () => {
             variant='warning'
             isLoading={isCancelBookingPending}
          />
+
+         {/* Issue refund dialogue */}
+         <ConfirmDialog
+            open={refundDialogue.value}
+            onClose={() => setRefundDialogue(INITIAL_CONFIRM_DIALOGUE)}
+            onConfirm={handleIssueRefund}
+            title='Issue Refund'
+            description='Are you sure you want to do this? This action is permanent and cannot be undone.'
+            confirmText='Refund'
+            variant='warning'
+            isLoading={isRefundPending}
+         >
+            <Textarea
+               className='w-full h-20 text-sm! placeholder:text-zinc-400/50'
+               ref={adminNoteRef}
+               placeholder='Refund note'
+            />
+         </ConfirmDialog>
+
       </div>
    );
 };

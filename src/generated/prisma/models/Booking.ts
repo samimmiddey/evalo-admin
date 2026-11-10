@@ -49,6 +49,7 @@ export type BookingMinAggregateOutputType = {
   isRefunded: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  adminNote: string | null
 }
 
 export type BookingMaxAggregateOutputType = {
@@ -66,6 +67,7 @@ export type BookingMaxAggregateOutputType = {
   isRefunded: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  adminNote: string | null
 }
 
 export type BookingCountAggregateOutputType = {
@@ -83,6 +85,7 @@ export type BookingCountAggregateOutputType = {
   isRefunded: number
   createdAt: number
   updatedAt: number
+  adminNote: number
   _all: number
 }
 
@@ -110,6 +113,7 @@ export type BookingMinAggregateInputType = {
   isRefunded?: true
   createdAt?: true
   updatedAt?: true
+  adminNote?: true
 }
 
 export type BookingMaxAggregateInputType = {
@@ -127,6 +131,7 @@ export type BookingMaxAggregateInputType = {
   isRefunded?: true
   createdAt?: true
   updatedAt?: true
+  adminNote?: true
 }
 
 export type BookingCountAggregateInputType = {
@@ -144,6 +149,7 @@ export type BookingCountAggregateInputType = {
   isRefunded?: true
   createdAt?: true
   updatedAt?: true
+  adminNote?: true
   _all?: true
 }
 
@@ -248,6 +254,7 @@ export type BookingGroupByOutputType = {
   isRefunded: boolean
   createdAt: Date
   updatedAt: Date
+  adminNote: string | null
   _count: BookingCountAggregateOutputType | null
   _avg: BookingAvgAggregateOutputType | null
   _sum: BookingSumAggregateOutputType | null
@@ -288,6 +295,7 @@ export type BookingWhereInput = {
   isRefunded?: Prisma.BoolFilter<"Booking"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  adminNote?: Prisma.StringNullableFilter<"Booking"> | string | null
   candidate?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   interviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   sessions?: Prisma.BookingSessionListRelationFilter
@@ -311,6 +319,7 @@ export type BookingOrderByWithRelationInput = {
   isRefunded?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrderInput | Prisma.SortOrder
   candidate?: Prisma.UserOrderByWithRelationInput
   interviewer?: Prisma.UserOrderByWithRelationInput
   sessions?: Prisma.BookingSessionOrderByRelationAggregateInput
@@ -337,6 +346,7 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   isRefunded?: Prisma.BoolFilter<"Booking"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  adminNote?: Prisma.StringNullableFilter<"Booking"> | string | null
   candidate?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   interviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   sessions?: Prisma.BookingSessionListRelationFilter
@@ -360,6 +370,7 @@ export type BookingOrderByWithAggregationInput = {
   isRefunded?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
   _avg?: Prisma.BookingAvgOrderByAggregateInput
   _max?: Prisma.BookingMaxOrderByAggregateInput
@@ -385,6 +396,7 @@ export type BookingScalarWhereWithAggregatesInput = {
   isRefunded?: Prisma.BoolWithAggregatesFilter<"Booking"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
+  adminNote?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
 }
 
 export type BookingCreateInput = {
@@ -400,6 +412,7 @@ export type BookingCreateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
@@ -423,6 +436,7 @@ export type BookingUncheckedCreateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
@@ -442,6 +456,7 @@ export type BookingUpdateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
@@ -465,6 +480,7 @@ export type BookingUncheckedUpdateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
@@ -486,6 +502,7 @@ export type BookingCreateManyInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
 }
 
 export type BookingUpdateManyMutationInput = {
@@ -501,6 +518,7 @@ export type BookingUpdateManyMutationInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BookingUncheckedUpdateManyInput = {
@@ -518,6 +536,7 @@ export type BookingUncheckedUpdateManyInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BookingListRelationFilter = {
@@ -545,6 +564,7 @@ export type BookingCountOrderByAggregateInput = {
   isRefunded?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
 }
 
 export type BookingAvgOrderByAggregateInput = {
@@ -566,6 +586,7 @@ export type BookingMaxOrderByAggregateInput = {
   isRefunded?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
 }
 
 export type BookingMinOrderByAggregateInput = {
@@ -583,6 +604,7 @@ export type BookingMinOrderByAggregateInput = {
   isRefunded?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
 }
 
 export type BookingSumOrderByAggregateInput = {
@@ -770,6 +792,7 @@ export type BookingCreateWithoutCandidateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
@@ -791,6 +814,7 @@ export type BookingUncheckedCreateWithoutCandidateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
@@ -820,6 +844,7 @@ export type BookingCreateWithoutInterviewerInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
@@ -841,6 +866,7 @@ export type BookingUncheckedCreateWithoutInterviewerInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
@@ -891,6 +917,7 @@ export type BookingScalarWhereInput = {
   isRefunded?: Prisma.BoolFilter<"Booking"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
+  adminNote?: Prisma.StringNullableFilter<"Booking"> | string | null
 }
 
 export type BookingUpsertWithWhereUniqueWithoutInterviewerInput = {
@@ -922,6 +949,7 @@ export type BookingCreateWithoutFeedbackInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
@@ -944,6 +972,7 @@ export type BookingUncheckedCreateWithoutFeedbackInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
@@ -978,6 +1007,7 @@ export type BookingUpdateWithoutFeedbackInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
@@ -1000,6 +1030,7 @@ export type BookingUncheckedUpdateWithoutFeedbackInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
@@ -1018,6 +1049,7 @@ export type BookingCreateWithoutReviewInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
@@ -1040,6 +1072,7 @@ export type BookingUncheckedCreateWithoutReviewInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
@@ -1074,6 +1107,7 @@ export type BookingUpdateWithoutReviewInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
@@ -1096,6 +1130,7 @@ export type BookingUncheckedUpdateWithoutReviewInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
@@ -1114,6 +1149,7 @@ export type BookingCreateWithoutTransactionsInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
   sessions?: Prisma.BookingSessionCreateNestedManyWithoutBookingInput
@@ -1136,6 +1172,7 @@ export type BookingUncheckedCreateWithoutTransactionsInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   sessions?: Prisma.BookingSessionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
@@ -1170,6 +1207,7 @@ export type BookingUpdateWithoutTransactionsInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
@@ -1192,6 +1230,7 @@ export type BookingUncheckedUpdateWithoutTransactionsInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
@@ -1210,6 +1249,7 @@ export type BookingCreateWithoutSessionsInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   candidate: Prisma.UserCreateNestedOneWithoutBookingsAsCandidateInput
   interviewer: Prisma.UserCreateNestedOneWithoutBookingsAsInterviewerInput
   transactions?: Prisma.CreditTransactionCreateNestedManyWithoutBookingInput
@@ -1232,6 +1272,7 @@ export type BookingUncheckedCreateWithoutSessionsInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
   transactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutBookingInput
   feedback?: Prisma.FeedbackUncheckedCreateNestedOneWithoutBookingInput
   review?: Prisma.ReviewUncheckedCreateNestedOneWithoutBookingInput
@@ -1266,6 +1307,7 @@ export type BookingUpdateWithoutSessionsInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
   transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
@@ -1288,6 +1330,7 @@ export type BookingUncheckedUpdateWithoutSessionsInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
   review?: Prisma.ReviewUncheckedUpdateOneWithoutBookingNestedInput
@@ -1307,6 +1350,7 @@ export type BookingCreateManyCandidateInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
 }
 
 export type BookingCreateManyInterviewerInput = {
@@ -1323,6 +1367,7 @@ export type BookingCreateManyInterviewerInput = {
   isRefunded?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminNote?: string | null
 }
 
 export type BookingUpdateWithoutCandidateInput = {
@@ -1338,6 +1383,7 @@ export type BookingUpdateWithoutCandidateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   interviewer?: Prisma.UserUpdateOneRequiredWithoutBookingsAsInterviewerNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
@@ -1359,6 +1405,7 @@ export type BookingUncheckedUpdateWithoutCandidateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
@@ -1379,6 +1426,7 @@ export type BookingUncheckedUpdateManyWithoutCandidateInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BookingUpdateWithoutInterviewerInput = {
@@ -1394,6 +1442,7 @@ export type BookingUpdateWithoutInterviewerInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   candidate?: Prisma.UserUpdateOneRequiredWithoutBookingsAsCandidateNestedInput
   sessions?: Prisma.BookingSessionUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUpdateManyWithoutBookingNestedInput
@@ -1415,6 +1464,7 @@ export type BookingUncheckedUpdateWithoutInterviewerInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.BookingSessionUncheckedUpdateManyWithoutBookingNestedInput
   transactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutBookingNestedInput
   feedback?: Prisma.FeedbackUncheckedUpdateOneWithoutBookingNestedInput
@@ -1435,6 +1485,7 @@ export type BookingUncheckedUpdateManyWithoutInterviewerInput = {
   isRefunded?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1492,6 +1543,7 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   isRefunded?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminNote?: boolean
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   sessions?: boolean | Prisma.Booking$sessionsArgs<ExtArgs>
@@ -1516,6 +1568,7 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isRefunded?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminNote?: boolean
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
@@ -1535,6 +1588,7 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isRefunded?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminNote?: boolean
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
@@ -1554,9 +1608,10 @@ export type BookingSelectScalar = {
   isRefunded?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminNote?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "candidateId" | "interviewerId" | "startTime" | "endTime" | "status" | "completionReason" | "streamStatus" | "creditsCharged" | "streamCallId" | "recordingUrl" | "isRefunded" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "candidateId" | "interviewerId" | "startTime" | "endTime" | "status" | "completionReason" | "streamStatus" | "creditsCharged" | "streamCallId" | "recordingUrl" | "isRefunded" | "createdAt" | "updatedAt" | "adminNote", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   candidate?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1600,6 +1655,7 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     isRefunded: boolean
     createdAt: Date
     updatedAt: Date
+    adminNote: string | null
   }, ExtArgs["result"]["booking"]>
   composites: {}
 }
@@ -2043,6 +2099,7 @@ export interface BookingFieldRefs {
   readonly isRefunded: Prisma.FieldRef<"Booking", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly adminNote: Prisma.FieldRef<"Booking", 'String'>
 }
     
 

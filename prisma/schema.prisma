@@ -84,6 +84,7 @@ model Booking {
   isRefunded       Boolean             @default(false)
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
+  adminNote        String?
   candidate        User                @relation("CandidateBookings", fields: [candidateId], references: [id])
   interviewer      User                @relation("InterviewerBookings", fields: [interviewerId], references: [id])
   sessions         BookingSession[]

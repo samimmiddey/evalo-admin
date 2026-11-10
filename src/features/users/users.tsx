@@ -430,11 +430,14 @@ const Users = () => {
             variant='destructive'
             isLoading={confirmDialogue.type === 'STATUS' ? isToggleUserStatusPending : isSignOutUserPending}
          />
-         <UserDetailsModal
-            userId={viewUserId}
-            open={Boolean(viewUserId)}
-            onClose={() => setViewUserId(null)}
-         />
+         {
+            viewUserId &&
+            <UserDetailsModal
+               userId={viewUserId}
+               open={Boolean(viewUserId)}
+               onClose={() => setViewUserId(null)}
+            />
+         }
       </div>
    );
 };

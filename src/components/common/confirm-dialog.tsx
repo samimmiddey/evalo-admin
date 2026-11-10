@@ -29,6 +29,8 @@ export interface ConfirmDialogProps {
    isLoading?: boolean;
    icon?: React.ReactNode;
    className?: string;
+   headerClassName?: string;
+   children?: React.ReactNode;
 }
 
 const variantStyles: Record<
@@ -76,6 +78,8 @@ export const ConfirmDialog = ({
    isLoading = false,
    icon,
    className,
+   headerClassName,
+   children
 }: ConfirmDialogProps) => {
    const [internalLoading, setInternalLoading] = useState(false);
    const loading = isLoading || internalLoading;
@@ -117,8 +121,8 @@ export const ConfirmDialog = ({
 
             <div className="relative z-10 px-6 2xl:px-7 py-7 2xl:py-8">
                {/* Icon & Title Row */}
-               <DialogHeader className="gap-3 sm:gap-3.5 text-center">
-                  <div className="flex flex-col items-center gap-3.5">
+               <DialogHeader>
+                  <div className={cn("flex flex-col items-center gap-3.5 text-center", headerClassName)}>
                      <div
                         className={cn(
                            "flex size-10 shrink-0 items-center justify-center rounded-xl border shadow-sm transition-transform",
@@ -140,8 +144,10 @@ export const ConfirmDialog = ({
                </DialogHeader>
             </div>
 
+            {children && <div className="px-4 pb-4">{children}</div>}
+
             {/* Action Buttons Footer */}
-            <DialogFooter className="z-10 flex items-center justify-end gap-2.5 bg-surface-dark border-t border-white/5 mx-0! mb-0!">
+            <DialogFooter className="z-10 flex items-center justify-end gap-2.5 bg-surface-dark border-t border-white/10 mx-0! mb-0!">
                <Button
                   type="button"
                   variant="outline"
