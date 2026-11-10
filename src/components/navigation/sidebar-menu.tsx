@@ -45,29 +45,29 @@ export function DashboardSidebarMenu({ items }: DashboardSidebarMenuProps) {
                            tooltip={item.name}
                            isActive={isActive}
                            className={cn(
-                              "h-10 px-3 rounded-lg text-sm font-medium transition-all duration-150 cursor-pointer group",
+                              "h-10 px-3 gap-3 rounded-lg text-sm font-medium transition-all duration-150 cursor-pointer group",
                               isActive
                                  ? "relative bg-violet-500/25! bg-linear-to-r! from-violet-500/30! via-violet-500/15! to-transparent! text-violet-200! before:absolute before:left-0 before:top-1/2 before:h-5 before:w-0.75 before:-translate-y-1/2 before:rounded-r-full before:bg-violet-400"
                                  : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
                            )}
+                           render={
+                              <Link
+                                 href={item.href}
+                                 onClick={() => {
+                                    if (isMobile) setOpenMobile(false);
+                                 }}
+                              />
+                           }
                         >
-                           <Link
-                              href={item.href}
-                              onClick={() => {
-                                 if (isMobile) setOpenMobile(false);
-                              }}
-                              className="flex items-center gap-3 w-full"
-                           >
-                              {Icon && (
-                                 <Icon
-                                    className={cn(
-                                       "size-4 shrink-0 transition-colors",
-                                       isActive ? "text-violet-300" : "text-zinc-400 group-hover/menu-button:text-zinc-300"
-                                    )}
-                                 />
-                              )}
-                              <span className="truncate">{item.name}</span>
-                           </Link>
+                           {Icon && (
+                              <Icon
+                                 className={cn(
+                                    "size-4 shrink-0 transition-colors",
+                                    isActive ? "text-violet-300" : "text-zinc-400 group-hover/menu-button:text-zinc-300"
+                                 )}
+                              />
+                           )}
+                           <span className="truncate">{item.name}</span>
                         </SidebarMenuButton>
                      </SidebarMenuItem>
                   );
