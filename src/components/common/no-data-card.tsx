@@ -25,13 +25,13 @@ const NoDataCard = ({ title, body, showButton = false, buttonText, buttonLink, c
 
          {/* Title */}
          <SecondaryTitle
-            text={title || "No data available"}
+            text={title}
             className='mb-2'
          />
 
          {/* Body */}
          <PrimaryBody
-            text={body || "There's nothing to show here yet. Once data is available, it will appear here."}
+            text={body}
             className='max-w-lg text-sm!'
          />
 

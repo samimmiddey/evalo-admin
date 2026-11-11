@@ -25,7 +25,7 @@ const ErrorCard = ({ text, className }: ErrorCardProps) => {
 
          {/* Description */}
          <PrimaryBody
-            text={text || "An unexpected error occurred. Please try again later."}
+            text={text}
             className='max-w-md text-sm! leading-relaxed text-center'
          />
 
