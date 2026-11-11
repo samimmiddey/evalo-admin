@@ -15,6 +15,7 @@ import useDebounce from '@/hooks/use-debounce';
 import { DateRange } from 'react-day-picker';
 import { PayoutStatus } from '@/generated/prisma/enums';
 import { Button } from '@/components/ui/button';
+import { formatCurrency } from '@/utils/format-currency';
 
 interface Filters {
    date?: DateRange;
@@ -101,7 +102,7 @@ const Payouts = () => {
 
             return (
                <PrimaryBody
-                  text={netAmount.toString() ?? '-'}
+                  text={formatCurrency(netAmount) ?? '-'}
                   className="text-xs!"
                />
             );
@@ -109,7 +110,7 @@ const Payouts = () => {
       },
       {
          accessorKey: 'status',
-         header: 'Account Status',
+         header: 'Payout Status',
          size: 150,
          cell: (info) => (
             getStatusBadge(info.getValue<string>())
@@ -123,7 +124,7 @@ const Payouts = () => {
             const { createdAt } = row.original;
 
             return (
-               <div className='flex flex-col ga-0.5'>
+               <div className='flex flex-col gap-0.5'>
                   <PrimaryBody
                      text={format(createdAt, 'PP') ?? '-'}
                      className="text-xs!"
@@ -153,7 +154,7 @@ const Payouts = () => {
             }
 
             return (
-               <div className='flex flex-col ga-0.5'>
+               <div className='flex flex-col gap-0.5'>
                   <PrimaryBody
                      text={format(processedAt, 'PP') ?? '-'}
                      className="text-xs!"
