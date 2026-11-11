@@ -10,6 +10,8 @@ import {
    SessionsFilter,
    BookingWithParties,
    IssueRefundParams,
+   ExportSessionsCsv,
+   ExportSessionsCsvFilter,
 } from "../types/sessions.types";
 import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from "@/lib/app-error";
 import { StreamClient } from "@stream-io/node-sdk";
@@ -512,5 +514,218 @@ export async function issueRefund({ bookingId, adminNote }: IssueRefundParams): 
       } catch {
          // Silently handle stream cleanup failure; DB state is already committed
       }
+   }
+};
+
+export const exportSessionsCsv = async (filters?: ExportSessionsCsvFilter): Promise<ExportSessionsCsv> => {
+   try {
+      await getAuthenticatedUser();
+
+      const normalizedStartDate = filters?.startDate ? startOfDay(filters.startDate) : undefined;
+      const normalizedEndDate = filters?.endDate ? endOfDay(filters.endDate) : undefined;
+
+      const now = new Date();
+      const expiredThreshold = new Date(now.getTime() - GRACE_PERIOD_MS);
+
+      const where: Prisma.BookingWhereInput = {
+         ...(filters?.status
+            ? filters.status === "EXPIRED"
+               ? {
+                  OR: [
+                     { status: "EXPIRED" },
+                     {
+                        status: "SCHEDULED",
+                        endTime: { lt: expiredThreshold },
+                     },
+                  ],
+               }
+               : filters.status === "SCHEDULED"
+                  ? {
+                     status: "SCHEDULED",
+                     endTime: { gte: expiredThreshold },
+                  }
+                  : { status: filters.status }
+            : {}),
+         ...(filters?.completionReason
+            ? { completionReason: filters.completionReason }
+            : {}),
+         ...(normalizedStartDate || normalizedEndDate
+            ? {
+               startTime: {
+                  ...(normalizedStartDate ? { gte: normalizedStartDate } : {}),
+                  ...(normalizedEndDate ? { lte: normalizedEndDate } : {}),
+               },
+            }
+            : {}),
+         ...(filters?.search
+            ? {
+               OR: [
+                  {
+                     id: {
+                        contains: filters.search.trim(),
+                        mode: "insensitive",
+                     },
+                  },
+                  {
+                     candidate: {
+                        firstName: {
+                           contains: filters.search.trim(),
+                           mode: "insensitive",
+                        },
+                     },
+                  },
+                  {
+                     candidate: {
+                        lastName: {
+                           contains: filters.search.trim(),
+                           mode: "insensitive",
+                        },
+                     },
+                  },
+                  {
+                     candidate: {
+                        email: {
+                           contains: filters.search.trim(),
+                           mode: "insensitive",
+                        },
+                     },
+                  },
+                  {
+                     interviewer: {
+                        firstName: {
+                           contains: filters.search.trim(),
+                           mode: "insensitive",
+                        },
+                     },
+                  },
+                  {
+                     interviewer: {
+                        lastName: {
+                           contains: filters.search.trim(),
+                           mode: "insensitive",
+                        },
+                     },
+                  },
+                  {
+                     interviewer: {
+                        email: {
+                           contains: filters.search.trim(),
+                           mode: "insensitive",
+                        },
+                     },
+                  },
+               ],
+            }
+            : {}),
+      };
+
+      const bookings = await db.booking.findMany({
+         where,
+         orderBy: {
+            startTime: "desc",
+         },
+         select: {
+            id: true,
+            startTime: true,
+            endTime: true,
+            status: true,
+            completionReason: true,
+            creditsCharged: true,
+            isRefunded: true,
+            createdAt: true,
+            adminNote: true,
+            candidate: {
+               select: {
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+               },
+            },
+            interviewer: {
+               select: {
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+               },
+            },
+            review: {
+               select: {
+                  rating: true,
+                  comment: true,
+               },
+            },
+         },
+      });
+
+      const headers = [
+         "Session ID",
+         "Candidate Name",
+         "Candidate Email",
+         "Interviewer Name",
+         "Interviewer Email",
+         "Status",
+         "Completion Reason",
+         "Credits Charged",
+         "Is Refunded",
+         "Start Time",
+         "End Time",
+         "Rating",
+         "Review Comment",
+         "Admin Note",
+         "Created At",
+      ];
+
+      const escapeCsvField = (field?: string | number | boolean | null): string => {
+         if (field === null || field === undefined) return '""';
+         const str = String(field);
+         return `"${str.replace(/"/g, '""')}"`;
+      };
+
+      const rows = bookings.map((booking) => {
+         const candidateName =
+            [booking.candidate.firstName, booking.candidate.lastName].filter(Boolean).join(" ").trim() ||
+            "Unknown User";
+
+         const interviewerName =
+            [booking.interviewer.firstName, booking.interviewer.lastName].filter(Boolean).join(" ").trim() ||
+            "Unknown User";
+
+         let displayStatus: string = booking.status;
+         if (booking.status === "SCHEDULED" && booking.endTime < expiredThreshold) {
+            displayStatus = "EXPIRED";
+         }
+
+         return [
+            escapeCsvField(booking.id),
+            escapeCsvField(candidateName),
+            escapeCsvField(booking.candidate.email),
+            escapeCsvField(interviewerName),
+            escapeCsvField(booking.interviewer.email),
+            escapeCsvField(displayStatus),
+            escapeCsvField(booking.completionReason ?? ""),
+            escapeCsvField(booking.creditsCharged),
+            escapeCsvField(booking.isRefunded ? "Yes" : "No"),
+            escapeCsvField(booking.startTime.toISOString()),
+            escapeCsvField(booking.endTime.toISOString()),
+            escapeCsvField(booking.review?.rating ?? ""),
+            escapeCsvField(booking.review?.comment ?? ""),
+            escapeCsvField(booking.adminNote ?? ""),
+            escapeCsvField(booking.createdAt.toISOString()),
+         ].join(",");
+      });
+
+      const csv = [headers.join(","), ...rows].join("\n");
+      const filename = `sessions-export-${new Date().toISOString().split("T")[0]}.csv`;
+
+      return {
+         csv,
+         filename,
+         totalRecords: bookings.length,
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to export sessions to CSV",
+      });
    }
 };

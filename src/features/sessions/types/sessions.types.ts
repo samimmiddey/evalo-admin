@@ -67,3 +67,19 @@ export interface IssueRefund {
 }
 
 export type IssueRefundResponse = BaseResponse<null>;
+
+export interface ExportSessionsCsvFilter {
+   search?: string;
+   status?: BookingStatus;
+   completionReason?: CompletionReason;
+   startDate?: Date;
+   endDate?: Date;
+}
+
+export interface ExportSessionsCsv {
+   csv: string;
+   filename: string;
+   totalRecords: number;
+}
+
+export type ExportSessionsCsvResponse = BaseResponse<ExportSessionsCsv>;

@@ -14,6 +14,7 @@ export const EXPORT_USERS_CSV = '/users/export-csv';
 export const GET_SESSIONS = '/sessions/list';
 export const CANCEL_BOOKING = '/sessions/cancel-booking';
 export const ISSUE_REFUND = '/sessions/issue-refund';
+export const EXPORT_SESSIONS_CSV = '/sessions/export-csv';
 
 // Settings
 export const GET_PLATFORM_CONFIG = '/settings';

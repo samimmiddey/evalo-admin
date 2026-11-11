@@ -8,8 +8,11 @@ import {
    Sessions,
    SessionsFilter,
    SessionsResponse,
+   ExportSessionsCsv,
+   ExportSessionsCsvFilter,
+   ExportSessionsCsvResponse,
 } from "../types/sessions.types";
-import { GET_SESSIONS, CANCEL_BOOKING, ISSUE_REFUND } from "@/constants/query-urls";
+import { GET_SESSIONS, CANCEL_BOOKING, ISSUE_REFUND, EXPORT_SESSIONS_CSV } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 export const getSessions = async (filters?: SessionsFilter): Promise<Sessions> => {
@@ -84,6 +87,35 @@ export const issueRefund = async ({ bookingId, adminNote }: IssueRefundParams): 
       return apiError({
          error,
          fallbackMessage: 'Failed to issue refund',
+      });
+   }
+};
+
+export const exportSessionsCsv = async (filters?: ExportSessionsCsvFilter): Promise<ExportSessionsCsv> => {
+   try {
+      const searchParams = new URLSearchParams();
+
+      if (filters?.startDate) {
+         searchParams.set('startDate', filters.startDate instanceof Date ? filters.startDate.toISOString() : String(filters.startDate));
+      }
+      if (filters?.endDate) {
+         searchParams.set('endDate', filters.endDate instanceof Date ? filters.endDate.toISOString() : String(filters.endDate));
+      }
+      if (filters?.search) searchParams.set('search', filters.search);
+      if (filters?.status) searchParams.set('status', filters.status);
+      if (filters?.completionReason) searchParams.set('completionReason', filters.completionReason);
+
+      const res = await api.get(EXPORT_SESSIONS_CSV, { searchParams }).json<ExportSessionsCsvResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to export sessions to CSV',
       });
    }
 };

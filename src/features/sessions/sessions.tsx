@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { cancelBooking, getSessions, issueRefund } from './services/sessions.client.service';
+import { cancelBooking, exportSessionsCsv, getSessions, issueRefund } from './services/sessions.client.service';
 import { DataTable, features } from '@/components/common/data-table/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { SessionItem } from './types/sessions.types';
@@ -123,6 +123,33 @@ const Sessions = () => {
       }
    };
 
+   // CSV Download mutation
+   const { isPending: isExportCSVPending, error: exportCSVError, mutate: exportCSVMutation } = useMutation(exportSessionsCsv);
+
+   // Handle export CSV
+   const handleExportCSV = async () => {
+      const res = await exportCSVMutation({
+         search,
+         status: filters?.status,
+         completionReason: filters?.completionReason,
+         startDate: filters?.appliedDate?.from,
+         endDate: filters?.appliedDate?.to,
+      });
+
+      if (res?.csv) {
+         const blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8;' });
+         const url = URL.createObjectURL(blob);
+         const link = document.createElement('a');
+         link.href = url;
+         link.setAttribute('download', res.filename || 'sessions.csv');
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+         URL.revokeObjectURL(url);
+         toast.success('CSV file downloaded successfully');
+      }
+   };
+
    // Handle mutation error
    useEffect(() => {
       if (cancelBookingError) {
@@ -131,7 +158,10 @@ const Sessions = () => {
       if (isRefundError) {
          toast.error(isRefundError);
       }
-   }, [cancelBookingError, isRefundError]);
+      if (exportCSVError) {
+         toast.error('Failed to export the CSV');
+      }
+   }, [cancelBookingError, isRefundError, exportCSVError]);
 
    const columns: ColumnDef<typeof features, SessionItem>[] = [
       {
@@ -399,6 +429,12 @@ const Sessions = () => {
                resetFilters: () => {
                   setFilters(INITIAL_FILTERS);
                   setFilterButton(false);
+               }
+            }}
+            onExportCSV={{
+               isPending: isExportCSVPending,
+               onDownload: () => {
+                  void handleExportCSV();
                }
             }}
          />
