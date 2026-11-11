@@ -350,7 +350,7 @@ const Sessions = () => {
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
             isFetchingNextPage={isFetchingNextPage}
-            contentType='Sessions'
+            contentType='sessions'
             pageSize={params.pageSize}
             search={{
                value: search,

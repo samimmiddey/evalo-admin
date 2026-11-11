@@ -165,7 +165,7 @@ const RecentSessions = ({ startDate, endDate }: RecentSessionsProps) => {
    return (
       <DataTable
          isLoading={isLoading}
-         contentType='Recent Sessions'
+         contentType='recent sessions'
          pageSize={params.pageSize}
          columns={columns}
          data={data}

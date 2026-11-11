@@ -192,7 +192,7 @@ export function DataTable<TData extends RowData>({
                            }
                            {/* Bottom Loader: Render extra skeleton rows while fetching next page */}
                            {isFetchingNextPage && (
-                              <TableSkeleton rows={3} columns={columns.length} />
+                              <TableSkeleton rows={5} columns={columns.length} />
                            )}
                         </>
                      )

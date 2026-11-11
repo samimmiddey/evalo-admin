@@ -360,7 +360,7 @@ const Users = () => {
             data={userData ?? []}
             error={userError}
             pageSize={params.pageSize}
-            contentType='Users'
+            contentType='users'
             tableHeader={{
                title: usersData.header.title,
                description: usersData.header.description
