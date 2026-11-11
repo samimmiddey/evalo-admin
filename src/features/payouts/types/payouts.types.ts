@@ -43,3 +43,18 @@ export type Payouts = PaginatedPayouts;
 
 export type PayoutsResponse = BaseResponse<PaginatedPayouts>;
 
+export interface ExportPayoutsCsvFilter {
+   search?: string;
+   status?: PayoutStatus;
+   startDate?: Date;
+   endDate?: Date;
+}
+
+export interface ExportPayoutsCsv {
+   csv: string;
+   filename: string;
+   totalRecords: number;
+}
+
+export type ExportPayoutsCsvResponse = BaseResponse<ExportPayoutsCsv>;
+

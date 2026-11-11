@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { getPayouts } from './services/payouts.client.service';
+import { getPayouts, exportPayoutsCsv } from './services/payouts.client.service';
 import { PayoutItem } from './types/payouts.types';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable, features } from '@/components/common/data-table/data-table';
@@ -10,13 +10,15 @@ import SecondaryTitle from '@/components/common/secondary-title';
 import PrimaryBody from '@/components/common/primary-body';
 import getStatusBadge from '@/components/common/get-status-badge';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useDebounce from '@/hooks/use-debounce';
 import { DateRange } from 'react-day-picker';
 import { PayoutStatus } from '@/generated/prisma/enums';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/format-currency';
 import { payoutsData as payoutsStaticData } from '@/data/payouts/payouts.data';
+import { useMutation } from '@/hooks/use-mutation';
+import { toast } from 'sonner';
 
 interface Filters {
    date?: DateRange;
@@ -62,6 +64,39 @@ const Payouts = () => {
       }),
       [debouncedSearch, filters.appliedDate, filters.status]
    );
+
+   // CSV Download mutation
+   const { isPending: isExportCSVPending, error: exportCSVError, mutate: exportCSVMutation } = useMutation(exportPayoutsCsv);
+
+   // Handle export CSV
+   const handleExportCSV = async () => {
+      const res = await exportCSVMutation({
+         search,
+         status: filters?.status,
+         startDate: filters?.appliedDate?.from,
+         endDate: filters?.appliedDate?.to,
+      });
+
+      if (res?.csv) {
+         const blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8;' });
+         const url = URL.createObjectURL(blob);
+         const link = document.createElement('a');
+         link.href = url;
+         link.setAttribute('download', res.filename || 'payouts.csv');
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+         URL.revokeObjectURL(url);
+         toast.success('CSV file downloaded successfully');
+      }
+   };
+
+   // Handle mutation error
+   useEffect(() => {
+      if (exportCSVError) {
+         toast.error('Failed to export the CSV');
+      }
+   }, [exportCSVError]);
 
    const columns: ColumnDef<typeof features, PayoutItem>[] = [
       {
@@ -255,6 +290,12 @@ const Payouts = () => {
                resetFilters: () => {
                   setFilters(INITIAL_FILTERS);
                   setFilterButton(false);
+               }
+            }}
+            onExportCSV={{
+               isPending: isExportCSVPending,
+               onDownload: () => {
+                  void handleExportCSV();
                }
             }}
          />

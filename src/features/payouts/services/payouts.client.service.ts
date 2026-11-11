@@ -1,6 +1,13 @@
 import { api } from "@/lib/api";
-import { PaginatedPayouts, PayoutsFilter, PayoutsResponse } from "../types/payouts.types";
-import { GET_PAYOUTS } from "@/constants/query-urls";
+import {
+   PaginatedPayouts,
+   PayoutsFilter,
+   PayoutsResponse,
+   ExportPayoutsCsv,
+   ExportPayoutsCsvFilter,
+   ExportPayoutsCsvResponse,
+} from "../types/payouts.types";
+import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 // Get payouts list with filters and pagination
@@ -26,6 +33,35 @@ export const getPayouts = async (filters?: PayoutsFilter): Promise<PaginatedPayo
       return apiError({
          error,
          fallbackMessage: 'Failed to fetch payouts'
+      });
+   }
+};
+
+// Export payouts list to CSV
+export const exportPayoutsCsv = async (filters?: ExportPayoutsCsvFilter): Promise<ExportPayoutsCsv> => {
+   try {
+      const searchParams = new URLSearchParams();
+
+      if (filters?.startDate) {
+         searchParams.set('startDate', filters.startDate instanceof Date ? filters.startDate.toISOString() : String(filters.startDate));
+      }
+      if (filters?.endDate) {
+         searchParams.set('endDate', filters.endDate instanceof Date ? filters.endDate.toISOString() : String(filters.endDate));
+      }
+      if (filters?.search) searchParams.set('search', filters.search);
+      if (filters?.status) searchParams.set('status', filters.status);
+
+      const res = await api.get(EXPORT_PAYOUTS_CSV, { searchParams }).json<ExportPayoutsCsvResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to export payouts to CSV',
       });
    }
 };
