@@ -18,3 +18,6 @@ export const ISSUE_REFUND = '/sessions/issue-refund';
 // Settings
 export const GET_PLATFORM_CONFIG = '/settings';
 export const UPDATE_PLATFORM_CONFIG = '/settings';
+
+// Payouts
+export const GET_PAYOUTS = '/payouts/list';
