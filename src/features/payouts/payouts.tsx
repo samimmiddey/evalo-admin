@@ -16,6 +16,7 @@ import { DateRange } from 'react-day-picker';
 import { PayoutStatus } from '@/generated/prisma/enums';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/format-currency';
+import { payoutsData as payoutsStaticData } from '@/data/payouts/payouts.data';
 
 interface Filters {
    date?: DateRange;
@@ -207,8 +208,8 @@ const Payouts = () => {
       <div className='container s-margin-t'>
          <DataTable
             tableHeader={{
-               title: 'Payouts',
-               description: 'Review, track, and manage interviewer payout requests and disbursements'
+               title: payoutsStaticData.header.title,
+               description: payoutsStaticData.header.description
             }}
             isLoading={isPayoutsLoading}
             error={payoutsError}
