@@ -146,9 +146,9 @@ const Sessions = () => {
                   <Image
                      src={image ?? '/user.png'}
                      alt='Image'
-                     height={40}
-                     width={40}
-                     className='rounded-full'
+                     height={50}
+                     width={50}
+                     className='rounded-lg'
                   />
                   <div className="flex flex-col items-start gap-0.5">
                      <SecondaryTitle
@@ -176,9 +176,9 @@ const Sessions = () => {
                   <Image
                      src={image ?? '/user.png'}
                      alt='Image'
-                     height={40}
-                     width={40}
-                     className='rounded-full'
+                     height={50}
+                     width={50}
+                     className='rounded-lg'
                   />
                   <div className="flex flex-col items-start gap-0.5">
                      <SecondaryTitle
