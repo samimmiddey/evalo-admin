@@ -5,7 +5,7 @@ import ky from "ky";
 const appId = process.env.CASHFREE_PG_APP_KEY || "";
 const secretKey = process.env.CASHFREE_PG_SECRET_KEY || "";
 
-const baseURL = 'https://sandbox.cashfree.com/pg';
+const baseURL = process.env.CASHFREE_CASHGRAM_URL || "";
 
 export const apiCashfree = ky.create({
    prefix: baseURL,
