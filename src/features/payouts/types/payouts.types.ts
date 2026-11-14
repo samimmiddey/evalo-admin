@@ -68,6 +68,18 @@ export interface ApprovePayoutResult {
 
 export type ApprovePayoutResponse = BaseResponse<ApprovePayoutResult>;
 
+export interface RejectPayoutParams {
+   payoutId: string;
+   adminNote?: string;
+}
+
+export interface RejectPayoutResult {
+   success: boolean;
+   status: PayoutStatus;
+}
+
+export type RejectPayoutResponse = BaseResponse<RejectPayoutResult>;
+
 export interface CashfreeCashgramData {
    cashgramId?: string;
    cashgramUrl?: string;

@@ -15,6 +15,8 @@ import {
    ExportPayoutsCsvFilter,
    ApprovePayoutParams,
    ApprovePayoutResult,
+   RejectPayoutParams,
+   RejectPayoutResult,
    CashfreeCashgramResponse,
 } from "../types/payouts.types";
 
@@ -386,6 +388,67 @@ export const approvePayout = async ({
       return serverError({
          error,
          fallbackMessage: "Failed to approve payout and generate Cashgram",
+      });
+   }
+};
+
+// Reject a payout request and restore interviewer credits
+export const rejectPayout = async ({
+   payoutId,
+   adminNote,
+}: RejectPayoutParams): Promise<RejectPayoutResult> => {
+   try {
+      const admin = await getAuthenticatedUser();
+
+      const payout = await db.payout.findUnique({
+         where: { id: payoutId },
+         select: {
+            id: true,
+            status: true,
+            credits: true,
+            interviewerId: true,
+            adminNote: true,
+         },
+      });
+
+      if (!payout) {
+         throw new NotFoundError("Payout request not found");
+      }
+
+      if (payout.status !== PayoutStatus.PROCESSING) {
+         throw new ConflictError(
+            `Payout cannot be rejected because it is already marked as ${payout.status}`
+         );
+      }
+
+      const [updatedPayout] = await db.$transaction([
+         db.payout.update({
+            where: { id: payoutId },
+            data: {
+               status: PayoutStatus.REJECTED,
+               processedBy: admin.id,
+               processedAt: new Date(),
+               adminNote: adminNote?.trim() || payout.adminNote,
+            },
+         }),
+         db.user.update({
+            where: { id: payout.interviewerId },
+            data: {
+               creditBalance: {
+                  increment: payout.credits,
+               },
+            },
+         }),
+      ]);
+
+      return {
+         success: true,
+         status: updatedPayout.status,
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to reject payout request",
       });
    }
 };

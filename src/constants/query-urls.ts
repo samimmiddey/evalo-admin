@@ -23,4 +23,5 @@ export const UPDATE_PLATFORM_CONFIG = '/settings';
 // Payouts
 export const GET_PAYOUTS = '/payouts/list';
 export const APPROVE_PAYOUT = '/payouts/approve';
+export const REJECT_PAYOUT = '/payouts/reject';
 export const EXPORT_PAYOUTS_CSV = '/payouts/export-csv';

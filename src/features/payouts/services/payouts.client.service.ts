@@ -9,8 +9,11 @@ import {
    ApprovePayoutParams,
    ApprovePayoutResult,
    ApprovePayoutResponse,
+   RejectPayoutParams,
+   RejectPayoutResult,
+   RejectPayoutResponse,
 } from "../types/payouts.types";
-import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV, APPROVE_PAYOUT } from "@/constants/query-urls";
+import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV, APPROVE_PAYOUT, REJECT_PAYOUT } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 // Get payouts list with filters and pagination
@@ -87,6 +90,28 @@ export const approvePayout = async (params: ApprovePayoutParams): Promise<Approv
       return apiError({
          error,
          fallbackMessage: 'Failed to approve payout',
+      });
+   }
+};
+
+// Reject a payout request and restore credits
+export const rejectPayout = async (params: RejectPayoutParams): Promise<RejectPayoutResult> => {
+   try {
+      const res = await api
+         .post(REJECT_PAYOUT, {
+            json: params,
+         })
+         .json<RejectPayoutResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to reject payout',
       });
    }
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { getPayouts, exportPayoutsCsv, approvePayout } from './services/payouts.client.service';
+import { getPayouts, exportPayoutsCsv, approvePayout, rejectPayout } from './services/payouts.client.service';
 import { PayoutItem } from './types/payouts.types';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable, features } from '@/components/common/data-table/data-table';
@@ -19,7 +19,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { payoutsData as payoutsStaticData } from '@/data/payouts/payouts.data';
 import { useMutation } from '@/hooks/use-mutation';
 import { toast } from 'sonner';
-import ConfirmDialog from '@/components/common/confirm-dialog';
+import ConfirmDialog, { ConfirmDialogVariant } from '@/components/common/confirm-dialog';
 import { CircleCheckBig, Copy } from 'lucide-react';
 import { copyText } from '@/utils/copy-text';
 
@@ -35,18 +35,33 @@ const INITIAL_FILTERS: Filters = {
    appliedDate: undefined
 };
 
-interface ApproveDialogue {
+type ConfirmDialogueType = 'APPROVE' | 'REJECT' | null;
+
+interface ConfirmDialogue {
    id: string | null;
    value: boolean;
+   type: ConfirmDialogueType;
 }
+
+interface DialogueConfigOptions {
+   title: string;
+   description: string;
+   onConfirm: () => void;
+   confirmText: string;
+   variant: ConfirmDialogVariant;
+   isLoading: boolean;
+}
+
+type DialogueConfig = DialogueConfigOptions | null;
 
 const Payouts = () => {
    const [search, setSearch] = useState<string>('');
    const [filterButton, setFilterButton] = useState<boolean>(false);
    const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
-   const [approveDialogue, setApproveDialogue] = useState<ApproveDialogue>({
+   const [confirmDialogue, setConfirmDialogue] = useState<ConfirmDialogue>({
       id: null,
-      value: false
+      value: false,
+      type: null
    });
    const [copied, setCopied] = useState<boolean>(false);
 
@@ -109,16 +124,34 @@ const Payouts = () => {
    const { isPending: isApprovePayoutPending, error: isApprovePayoutError, mutate: approvePayoutMutation } = useMutation(approvePayout);
 
    // Handle approve payout request
-   const handlePayoutRequest = async () => {
-      if (!approveDialogue.id) {
+   const handleApprovePayoutRequest = async () => {
+      if (!confirmDialogue.id) {
          toast.error("Payout ID is required");
          return;
       }
 
-      const res = await approvePayoutMutation({ payoutId: approveDialogue.id });
+      const res = await approvePayoutMutation({ payoutId: confirmDialogue.id });
       if (res?.success) {
          toast.success("Payout request is approved");
-         setApproveDialogue({ id: null, value: false });
+         setConfirmDialogue({ id: null, value: false, type: null });
+         refecthPayouts();
+      }
+   };
+
+   // Reject payout request mutation
+   const { isPending: isRejectPayoutPending, error: isRejectPayoutError, mutate: rejectPayoutMutation } = useMutation(rejectPayout);
+
+   // Handle reject payout request
+   const handleRejectPayoutRequest = async () => {
+      if (!confirmDialogue.id) {
+         toast.error("Payout ID is required");
+         return;
+      }
+
+      const res = await rejectPayoutMutation({ payoutId: confirmDialogue.id });
+      if (res?.success) {
+         toast.success("Payout request is successfully rejected");
+         setConfirmDialogue({ id: null, value: false, type: null });
          refecthPayouts();
       }
    };
@@ -132,7 +165,11 @@ const Payouts = () => {
       if (isApprovePayoutError) {
          toast.error('Failed to approve payout request');
       }
-   }, [exportCSVError, isApprovePayoutError]);
+
+      if (isRejectPayoutError) {
+         toast.error('Failed to reject payout request');
+      }
+   }, [exportCSVError, isApprovePayoutError, isRejectPayoutError]);
 
    // Handle copy cashgram Url
    const handleCopyText = async (value: string) => {
@@ -142,6 +179,26 @@ const Payouts = () => {
          setTimeout(() => setCopied(false), 1500);
       }
    };
+
+   // Set the dialogue options
+   const dialogueConfig: DialogueConfig = confirmDialogue.type ? {
+      APPROVE: {
+         title: "Approve payout request",
+         description: "Are you sure you want to approve this payout request? This action is permanent and cannot be undone.",
+         onConfirm: handleApprovePayoutRequest,
+         confirmText: "Approve",
+         variant: "warning" as const,
+         isLoading: isApprovePayoutPending
+      },
+      REJECT: {
+         title: "Reject payout request",
+         description: "Are you sure you want to reject this payout request? This action is permanent and cannot be undone.",
+         onConfirm: handleRejectPayoutRequest,
+         confirmText: "Reject",
+         variant: "destructive" as const,
+         isLoading: isRejectPayoutPending,
+      }
+   }[confirmDialogue.type] : null;
 
    const columns: ColumnDef<typeof features, PayoutItem>[] = [
       {
@@ -301,15 +358,16 @@ const Payouts = () => {
                   <Button
                      variant='ghost'
                      className='bg-rose-500/30 hover:bg-rose-500/50! text-xs!'
+                     onClick={() => setConfirmDialogue({ id, value: true, type: 'REJECT' })}
                   >
                      Reject
                   </Button>
                   <Button
                      variant='ghost'
                      className='bg-emerald-500/30 hover:bg-emerald-500/50! text-xs!'
-                     onClick={() => setApproveDialogue({ id, value: true })}
+                     onClick={() => setConfirmDialogue({ id, value: true, type: 'APPROVE' })}
                   >
-                     Process
+                     Approve
                   </Button>
                </div>
             );
@@ -381,16 +439,19 @@ const Payouts = () => {
          />
 
          {/* Approve or reject payout request */}
-         <ConfirmDialog
-            open={approveDialogue.value}
-            onClose={() => setApproveDialogue({ id: null, value: false })}
-            title='Approve payout request'
-            description='Are you sure you want to approve this payout request? This action is permanent and cannot be undone.'
-            onConfirm={handlePayoutRequest}
-            confirmText='Approve'
-            variant='warning'
-            isLoading={isApprovePayoutPending}
-         />
+         {
+            dialogueConfig &&
+            <ConfirmDialog
+               open={confirmDialogue.value}
+               onClose={() => setConfirmDialogue({ id: null, value: false, type: null })}
+               title={dialogueConfig.title}
+               description={dialogueConfig.description}
+               onConfirm={dialogueConfig.onConfirm}
+               confirmText={dialogueConfig.confirmText}
+               variant={dialogueConfig.variant}
+               isLoading={dialogueConfig.isLoading}
+            />
+         }
 
       </div>
    );
