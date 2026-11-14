@@ -24,6 +24,12 @@ export const getStatusBadge = (status?: string | null, className?: string) => {
                {statusBadges.success}
             </Badge>
          );
+      case "APPROVED":
+         return (
+            <Badge className={cn(commonClasses.success, className)}>
+               {statusBadges.approved}
+            </Badge>
+         );
       case "PROCESSED":
          return (
             <Badge className={cn(commonClasses.success, className)}>

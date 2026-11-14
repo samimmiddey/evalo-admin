@@ -145,6 +145,8 @@ model Payout {
   updatedAt     DateTime     @updatedAt
   processedAt   DateTime?
   processedBy   String?
+  cashgramId    String?
+  cashgramUrl   String?
   interviewer   User         @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
 
   @@index([status, createdAt])
@@ -210,6 +212,8 @@ enum PayoutStatus {
   PROCESSING
   PROCESSED
   REJECTED
+  EXPIRED
+  APPROVED
 }
 
 enum InterviewExpertise {

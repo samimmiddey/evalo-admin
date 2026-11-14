@@ -2,7 +2,10 @@ import { db } from "@/lib/prisma";
 import { serverError } from "@/lib/server-error";
 import { getAuthenticatedUser } from "@/services/global.server.service";
 import { Prisma } from "@/generated/prisma/client";
-import { endOfDay, startOfDay } from "date-fns";
+import { PayoutStatus } from "@/generated/prisma/enums";
+import { apiCashfree } from "@/lib/api-cashfree";
+import { AppError, ConflictError, NotFoundError, ValidationError } from "@/lib/app-error";
+import { addDays, endOfDay, format, startOfDay } from "date-fns";
 import {
    PaginatedPayouts,
    PayoutInterviewer,
@@ -10,6 +13,9 @@ import {
    PayoutsFilter,
    ExportPayoutsCsv,
    ExportPayoutsCsvFilter,
+   ApprovePayoutParams,
+   ApprovePayoutResult,
+   CashfreeCashgramResponse,
 } from "../types/payouts.types";
 
 const formatInterviewer = (user: {
@@ -275,6 +281,110 @@ export const exportPayoutsCsv = async (filters?: ExportPayoutsCsvFilter): Promis
       return serverError({
          error,
          fallbackMessage: "Failed to export payouts to CSV",
+      });
+   }
+};
+
+export const approvePayout = async ({
+   payoutId,
+}: ApprovePayoutParams): Promise<ApprovePayoutResult> => {
+   try {
+      const admin = await getAuthenticatedUser();
+
+      const payout = await db.payout.findUnique({
+         where: { id: payoutId },
+         include: {
+            interviewer: {
+               select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  phone: true,
+                  imageUrl: true,
+               },
+            },
+         },
+      });
+
+      if (!payout) {
+         throw new NotFoundError("Payout request not found");
+      }
+
+      if (payout.status !== PayoutStatus.PROCESSING) {
+         throw new ConflictError(
+            `Payout cannot be approved because it is already marked as ${payout.status}`
+         );
+      }
+
+      const sanitizedPhone = (payout.interviewer.phone || "").replace(/\D/g, "").slice(-10);
+      if (sanitizedPhone.length !== 10) {
+         throw new ValidationError(
+            "Interviewer must have a valid 10-digit phone number to receive a Cashgram payout"
+         );
+      }
+
+      const rawName =
+         [payout.interviewer.firstName, payout.interviewer.lastName].filter(Boolean).join(" ").trim() ||
+         "Interviewer";
+      const sanitizedName = rawName.replace(/[^a-zA-Z\s]/g, "").trim().slice(0, 100) || "Interviewer";
+
+      const linkExpiry = format(addDays(new Date(), 7), "yyyy/MM/dd");
+      const cashgramId = `cg_${payout.id.replace(/-/g, "").slice(0, 32)}`;
+
+      const response = await apiCashfree.post("payout/v1/createCashgram", {
+         json: {
+            cashgramId,
+            amount: Number(payout.netAmount.toFixed(2)),
+            name: sanitizedName,
+            phone: sanitizedPhone,
+            email: payout.interviewer.email,
+            linkExpiry,
+            remarks: "Payout approval",
+            notifyCustomer: 1,
+         },
+      });
+
+      const result = await response.json<CashfreeCashgramResponse>();
+
+      if (result.status !== "SUCCESS" || (!result.data?.cashgramUrl && !result.data?.paymentUrl)) {
+         throw new AppError(
+            result.message || "Failed to create Cashfree Cashgram",
+            Number(result.subCode) || 400
+         );
+      }
+
+      const cashgramUrl = result.data.cashgramUrl || result.data.paymentUrl || "";
+
+      const updatedPayout = await db.payout.update({
+         where: { id: payoutId },
+         data: {
+            status: PayoutStatus.APPROVED,
+            processedBy: admin.id,
+            cashgramId,
+            cashgramUrl,
+         },
+         include: {
+            interviewer: {
+               select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  imageUrl: true,
+               },
+            },
+         },
+      });
+
+      return {
+         success: true,
+         status: updatedPayout.status
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to approve payout and generate Cashgram",
       });
    }
 };

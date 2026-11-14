@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { getPayouts, exportPayoutsCsv } from './services/payouts.client.service';
+import { getPayouts, exportPayoutsCsv, approvePayout } from './services/payouts.client.service';
 import { PayoutItem } from './types/payouts.types';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable, features } from '@/components/common/data-table/data-table';
@@ -19,6 +19,7 @@ import { formatCurrency } from '@/utils/format-currency';
 import { payoutsData as payoutsStaticData } from '@/data/payouts/payouts.data';
 import { useMutation } from '@/hooks/use-mutation';
 import { toast } from 'sonner';
+import ConfirmDialog from '@/components/common/confirm-dialog';
 
 interface Filters {
    date?: DateRange;
@@ -32,10 +33,19 @@ const INITIAL_FILTERS: Filters = {
    appliedDate: undefined
 };
 
+interface ApproveDialogue {
+   id: string | null;
+   value: boolean;
+}
+
 const Payouts = () => {
    const [search, setSearch] = useState<string>('');
    const [filterButton, setFilterButton] = useState<boolean>(false);
    const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
+   const [approveDialogue, setApproveDialogue] = useState<ApproveDialogue>({
+      id: null,
+      value: false
+   });
 
    const params = {
       page: 1,
@@ -53,7 +63,8 @@ const Payouts = () => {
       }));
    };
 
-   const { isLoading: isPayoutsLoading, data: payoutsData, error: payoutsError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteFetch<PayoutItem>(
+   // Payout request list
+   const { isLoading: isPayoutsLoading, data: payoutsData, error: payoutsError, hasNextPage, fetchNextPage, isFetchingNextPage, refetch: refecthPayouts } = useInfiniteFetch<PayoutItem>(
       page => getPayouts({
          ...params,
          page,
@@ -91,12 +102,34 @@ const Payouts = () => {
       }
    };
 
+   // Approve payout request mutation
+   const { isPending: isApprovePayoutPending, error: isApprovePayoutError, mutate: approvePayoutMutation } = useMutation(approvePayout);
+
+   // Handle approve payout request
+   const handlePayoutRequest = async () => {
+      if (!approveDialogue.id) {
+         toast.error("Payout ID is required");
+         return;
+      }
+
+      const res = await approvePayoutMutation({ payoutId: approveDialogue.id });
+      if (res?.success) {
+         toast.success("Payout request is approved");
+         setApproveDialogue({ id: null, value: false });
+         refecthPayouts();
+      }
+   };
+
    // Handle mutation error
    useEffect(() => {
       if (exportCSVError) {
          toast.error('Failed to export the CSV');
       }
-   }, [exportCSVError]);
+
+      if (isApprovePayoutError) {
+         toast.error('Failed to approve payout request');
+      }
+   }, [exportCSVError, isApprovePayoutError]);
 
    const columns: ColumnDef<typeof features, PayoutItem>[] = [
       {
@@ -208,7 +241,7 @@ const Payouts = () => {
          header: 'Actions',
          size: 150,
          cell: ({ row }) => {
-            const { status } = row.original;
+            const { status, id } = row.original;
 
             if (status !== 'PROCESSING') {
                return (
@@ -230,6 +263,7 @@ const Payouts = () => {
                   <Button
                      variant='ghost'
                      className='bg-emerald-500/30 hover:bg-emerald-500/50! text-xs!'
+                     onClick={() => setApproveDialogue({ id, value: true })}
                   >
                      Process
                   </Button>
@@ -299,6 +333,19 @@ const Payouts = () => {
                }
             }}
          />
+
+         {/* Approve or reject payout request */}
+         <ConfirmDialog
+            open={approveDialogue.value}
+            onClose={() => setApproveDialogue({ id: null, value: false })}
+            title='Approve payout request'
+            description='Are you sure you want to approve this payout request? This action is permanent and cannot be undone.'
+            onConfirm={handlePayoutRequest}
+            confirmText='Approve'
+            variant='warning'
+            isLoading={isApprovePayoutPending}
+         />
+
       </div>
    );
 };

@@ -6,8 +6,11 @@ import {
    ExportPayoutsCsv,
    ExportPayoutsCsvFilter,
    ExportPayoutsCsvResponse,
+   ApprovePayoutParams,
+   ApprovePayoutResult,
+   ApprovePayoutResponse,
 } from "../types/payouts.types";
-import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV } from "@/constants/query-urls";
+import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV, APPROVE_PAYOUT } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 // Get payouts list with filters and pagination
@@ -62,6 +65,28 @@ export const exportPayoutsCsv = async (filters?: ExportPayoutsCsvFilter): Promis
       return apiError({
          error,
          fallbackMessage: 'Failed to export payouts to CSV',
+      });
+   }
+};
+
+// Approve a payout request and generate Cashgram
+export const approvePayout = async (params: ApprovePayoutParams): Promise<ApprovePayoutResult> => {
+   try {
+      const res = await api
+         .post(APPROVE_PAYOUT, {
+            json: params,
+         })
+         .json<ApprovePayoutResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to approve payout',
       });
    }
 };

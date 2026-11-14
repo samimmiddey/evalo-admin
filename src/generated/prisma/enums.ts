@@ -57,7 +57,9 @@ export type AvailabilityStatus = (typeof AvailabilityStatus)[keyof typeof Availa
 export const PayoutStatus = {
   PROCESSING: 'PROCESSING',
   PROCESSED: 'PROCESSED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED',
+  APPROVED: 'APPROVED'
 } as const
 
 export type PayoutStatus = (typeof PayoutStatus)[keyof typeof PayoutStatus]

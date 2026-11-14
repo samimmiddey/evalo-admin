@@ -39,8 +39,6 @@ export interface PaginatedPayouts {
    hasPrevPage: boolean;
 }
 
-export type Payouts = PaginatedPayouts;
-
 export type PayoutsResponse = BaseResponse<PaginatedPayouts>;
 
 export interface ExportPayoutsCsvFilter {
@@ -57,4 +55,28 @@ export interface ExportPayoutsCsv {
 }
 
 export type ExportPayoutsCsvResponse = BaseResponse<ExportPayoutsCsv>;
+
+export interface ApprovePayoutParams {
+   payoutId: string;
+}
+
+export interface ApprovePayoutResult {
+   success: boolean;
+   status: PayoutStatus;
+}
+
+export type ApprovePayoutResponse = BaseResponse<ApprovePayoutResult>;
+
+export interface CashfreeCashgramData {
+   cashgramId?: string;
+   cashgramUrl?: string;
+   paymentUrl?: string;
+}
+
+export interface CashfreeCashgramResponse {
+   status: string;
+   subCode: string;
+   message: string;
+   data?: CashfreeCashgramData;
+}
 

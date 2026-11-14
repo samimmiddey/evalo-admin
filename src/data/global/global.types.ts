@@ -17,6 +17,7 @@ export interface StatusBadges {
    free: string;
    paused: string;
    banned: string;
+   approved: string;
 }
 
 export interface TableNoDataState {
