@@ -165,7 +165,7 @@ const Payouts = () => {
       {
          accessorKey: 'netAmount',
          header: 'Amount',
-         size: 120,
+         size: 110,
          cell: ({ row }) => {
             const { netAmount } = row.original;
 
@@ -188,7 +188,7 @@ const Payouts = () => {
       {
          accessorKey: 'createdAt',
          header: 'Creation Date',
-         size: 120,
+         size: 130,
          cell: ({ row }) => {
             const { createdAt } = row.original;
 
@@ -209,7 +209,7 @@ const Payouts = () => {
       {
          accessorKey: 'processedAt',
          header: 'Process Date',
-         size: 120,
+         size: 130,
          cell: ({ row }) => {
             const { processedAt } = row.original;
 
@@ -239,7 +239,7 @@ const Payouts = () => {
       {
          accessorKey: 'actions',
          header: 'Actions',
-         size: 150,
+         size: 175,
          cell: ({ row }) => {
             const { status, id } = row.original;
 

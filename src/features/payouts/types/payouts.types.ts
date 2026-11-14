@@ -71,6 +71,7 @@ export interface CashfreeCashgramData {
    cashgramId?: string;
    cashgramUrl?: string;
    paymentUrl?: string;
+   cashgramLink?: string;
 }
 
 export interface CashfreeCashgramResponse {

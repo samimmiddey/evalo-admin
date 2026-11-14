@@ -347,14 +347,14 @@ export const approvePayout = async ({
 
       const result = await response.json<CashfreeCashgramResponse>();
 
-      if (result.status !== "SUCCESS" || (!result.data?.cashgramUrl && !result.data?.paymentUrl)) {
+      const cashgramUrl = result.data?.cashgramLink || result.data?.cashgramUrl || result.data?.paymentUrl || "";
+
+      if (result.status !== "SUCCESS" || !cashgramUrl) {
          throw new AppError(
             result.message || "Failed to create Cashfree Cashgram",
             Number(result.subCode) || 400
          );
       }
-
-      const cashgramUrl = result.data.cashgramUrl || result.data.paymentUrl || "";
 
       const updatedPayout = await db.payout.update({
          where: { id: payoutId },
