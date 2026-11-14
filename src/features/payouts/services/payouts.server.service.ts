@@ -135,6 +135,7 @@ export const getPayouts = async (
          adminNote: payout.adminNote,
          createdAt: payout.createdAt,
          processedAt: payout.processedAt,
+         cashgramUrl: payout.cashgramUrl ?? ''
       }));
 
       const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));

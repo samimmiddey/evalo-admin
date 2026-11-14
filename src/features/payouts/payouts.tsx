@@ -20,6 +20,8 @@ import { payoutsData as payoutsStaticData } from '@/data/payouts/payouts.data';
 import { useMutation } from '@/hooks/use-mutation';
 import { toast } from 'sonner';
 import ConfirmDialog from '@/components/common/confirm-dialog';
+import { CircleCheckBig, Copy } from 'lucide-react';
+import { copyText } from '@/utils/copy-text';
 
 interface Filters {
    date?: DateRange;
@@ -46,6 +48,7 @@ const Payouts = () => {
       id: null,
       value: false
    });
+   const [copied, setCopied] = useState<boolean>(false);
 
    const params = {
       page: 1,
@@ -131,6 +134,15 @@ const Payouts = () => {
       }
    }, [exportCSVError, isApprovePayoutError]);
 
+   // Handle copy cashgram Url
+   const handleCopyText = async (value: string) => {
+      const ok = await copyText(value);
+      if (ok) {
+         setCopied(true);
+         setTimeout(() => setCopied(false), 1500);
+      }
+   };
+
    const columns: ColumnDef<typeof features, PayoutItem>[] = [
       {
          accessorKey: 'fullName',
@@ -180,10 +192,42 @@ const Payouts = () => {
       {
          accessorKey: 'status',
          header: 'Payout Status',
-         size: 150,
+         size: 130,
          cell: (info) => (
             getStatusBadge(info.getValue<string>())
          )
+      },
+      {
+         accessorKey: 'cashgramUrl',
+         header: 'Cashgram URL',
+         size: 150,
+         cell: ({ row }) => {
+            const { cashgramUrl } = row.original;
+
+            return (
+               <div className="flex items-center gap-2">
+                  <a
+                     className={`text-[13px] font-semibold block max-w-30 truncate ${cashgramUrl ? 'text-blue-500 hover:underline' : 'text-zinc-400'}`}
+                     target='_blank'
+                     rel='noreferrer'
+                     href={cashgramUrl || undefined}
+                  >
+                     {cashgramUrl || '-'}
+                  </a>
+                  {
+                     cashgramUrl &&
+                     (
+                        copied ?
+                           <CircleCheckBig className='h-3.5 w-3.5 text-emerald-400' /> :
+                           <Copy
+                              className='h-3.5 w-3.5 text-zinc-400 cursor-pointer'
+                              onClick={() => void handleCopyText(cashgramUrl)}
+                           />
+                     )
+                  }
+               </div>
+            );
+         }
       },
       {
          accessorKey: 'createdAt',
@@ -316,8 +360,10 @@ const Payouts = () => {
                      options: [
                         { label: 'None', value: 'NONE' },
                         { label: 'Processing', value: 'PROCESSING' },
+                        { label: 'Approved', value: 'APPROVED' },
                         { label: 'Processed', value: 'PROCESSED' },
-                        { label: 'Rejected', value: 'REJECTED' }
+                        { label: 'Rejected', value: 'REJECTED' },
+                        { label: 'Expired', value: 'EXPIRED' },
                      ]
                   }
                ],
