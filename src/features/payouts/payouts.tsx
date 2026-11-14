@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteFetch } from '@/hooks/use-infinite-fetch';
-import { getPayouts, exportPayoutsCsv, approvePayout, rejectPayout } from './services/payouts.client.service';
+import { getPayouts, exportPayoutsCsv, approvePayout, rejectPayout, deactivatePayout } from './services/payouts.client.service';
 import { PayoutItem } from './types/payouts.types';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable, features } from '@/components/common/data-table/data-table';
@@ -35,7 +35,7 @@ const INITIAL_FILTERS: Filters = {
    appliedDate: undefined
 };
 
-type ConfirmDialogueType = 'APPROVE' | 'REJECT' | null;
+type ConfirmDialogueType = 'APPROVED' | 'REJECT' | 'DEACTIVATE' | null;
 
 interface ConfirmDialogue {
    id: string | null;
@@ -156,6 +156,24 @@ const Payouts = () => {
       }
    };
 
+   // Deactivate cashgram payout mutation
+   const { isPending: isDeactivatePayoutPending, error: isDeactivatePayoutError, mutate: deactivatePayoutMutation } = useMutation(deactivatePayout);
+
+   // Handle reject cashgram payout
+   const handleDeactivatePayout = async () => {
+      if (!confirmDialogue.id) {
+         toast.error("Payout ID is required");
+         return;
+      }
+
+      const res = await deactivatePayoutMutation({ payoutId: confirmDialogue.id });
+      if (res?.success) {
+         toast.success("Cashgram payout is successfully deactivated");
+         setConfirmDialogue({ id: null, value: false, type: null });
+         refecthPayouts();
+      }
+   };
+
    // Handle mutation error
    useEffect(() => {
       if (exportCSVError) {
@@ -169,7 +187,11 @@ const Payouts = () => {
       if (isRejectPayoutError) {
          toast.error('Failed to reject payout request');
       }
-   }, [exportCSVError, isApprovePayoutError, isRejectPayoutError]);
+
+      if (isDeactivatePayoutError) {
+         toast.error('Failed to deactivate cashgram payout');
+      }
+   }, [exportCSVError, isApprovePayoutError, isRejectPayoutError, isDeactivatePayoutError]);
 
    // Handle copy cashgram Url
    const handleCopyText = async (value: string) => {
@@ -182,7 +204,7 @@ const Payouts = () => {
 
    // Set the dialogue options
    const dialogueConfig: DialogueConfig = confirmDialogue.type ? {
-      APPROVE: {
+      APPROVED: {
          title: "Approve payout request",
          description: "Are you sure you want to approve this payout request? This action is permanent and cannot be undone.",
          onConfirm: handleApprovePayoutRequest,
@@ -197,6 +219,14 @@ const Payouts = () => {
          confirmText: "Reject",
          variant: "destructive" as const,
          isLoading: isRejectPayoutPending,
+      },
+      DEACTIVATE: {
+         title: "Deactivate Cashgram",
+         description: "Are you sure you want to deactivate this Cashgram link? This action is permanent and cannot be undone.",
+         onConfirm: handleDeactivatePayout,
+         confirmText: "Deactivate",
+         variant: "destructive" as const,
+         isLoading: isDeactivatePayoutPending,
       }
    }[confirmDialogue.type] : null;
 
@@ -344,6 +374,18 @@ const Payouts = () => {
          cell: ({ row }) => {
             const { status, id } = row.original;
 
+            if (status === 'APPROVED') {
+               return (
+                  <Button
+                     variant='ghost'
+                     className='bg-rose-500/15 hover:bg-rose-500/25! border border-rose-500/30 hover:border-rose-500/50 text-xs! text-rose-300!'
+                     onClick={() => setConfirmDialogue({ id, value: true, type: 'DEACTIVATE' })}
+                  >
+                     Deactivate
+                  </Button>
+               );
+            }
+
             if (status !== 'PROCESSING') {
                return (
                   <PrimaryBody
@@ -357,15 +399,15 @@ const Payouts = () => {
                <div className='flex items-center gap-1.5'>
                   <Button
                      variant='ghost'
-                     className='bg-rose-500/30 hover:bg-rose-500/50! text-xs!'
+                     className='bg-rose-500/15 hover:bg-rose-500/25! border border-rose-500/30 hover:border-rose-500/50 text-rose-300! text-xs!'
                      onClick={() => setConfirmDialogue({ id, value: true, type: 'REJECT' })}
                   >
                      Reject
                   </Button>
                   <Button
                      variant='ghost'
-                     className='bg-emerald-500/30 hover:bg-emerald-500/50! text-xs!'
-                     onClick={() => setConfirmDialogue({ id, value: true, type: 'APPROVE' })}
+                     className='bg-emerald-500/15 hover:bg-emerald-500/25! border border-emerald-500/30 hover:border-emerald-500/50 text-emerald-300! text-xs!'
+                     onClick={() => setConfirmDialogue({ id, value: true, type: 'APPROVED' })}
                   >
                      Approve
                   </Button>

@@ -12,8 +12,11 @@ import {
    RejectPayoutParams,
    RejectPayoutResult,
    RejectPayoutResponse,
+   DeactivatePayoutParams,
+   DeactivatePayoutResult,
+   DeactivatePayoutResponse,
 } from "../types/payouts.types";
-import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV, APPROVE_PAYOUT, REJECT_PAYOUT } from "@/constants/query-urls";
+import { GET_PAYOUTS, EXPORT_PAYOUTS_CSV, APPROVE_PAYOUT, REJECT_PAYOUT, DEACTIVATE_PAYOUT } from "@/constants/query-urls";
 import { apiError } from "@/lib/api-error";
 
 // Get payouts list with filters and pagination
@@ -112,6 +115,30 @@ export const rejectPayout = async (params: RejectPayoutParams): Promise<RejectPa
       return apiError({
          error,
          fallbackMessage: 'Failed to reject payout',
+      });
+   }
+};
+
+// Deactivate an approved Cashgram and restore credits
+export const deactivatePayout = async (
+   params: DeactivatePayoutParams
+): Promise<DeactivatePayoutResult> => {
+   try {
+      const res = await api
+         .post(DEACTIVATE_PAYOUT, {
+            json: params,
+         })
+         .json<DeactivatePayoutResponse>();
+
+      if (!res.success) {
+         throw new Error(res.error);
+      }
+
+      return res.data;
+   } catch (error: unknown) {
+      return apiError({
+         error,
+         fallbackMessage: 'Failed to deactivate Cashgram payout',
       });
    }
 };

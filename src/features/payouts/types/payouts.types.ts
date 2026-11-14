@@ -18,7 +18,7 @@ export interface PayoutItem {
    adminNote: string | null;
    createdAt: Date;
    processedAt: Date | null;
-   cashgramUrl?: string;
+   cashgramUrl: string | null;
 }
 
 export interface PayoutsFilter {
@@ -79,6 +79,17 @@ export interface RejectPayoutResult {
 }
 
 export type RejectPayoutResponse = BaseResponse<RejectPayoutResult>;
+
+export interface DeactivatePayoutParams {
+   payoutId: string;
+}
+
+export interface DeactivatePayoutResult {
+   success: boolean;
+   status: PayoutStatus;
+}
+
+export type DeactivatePayoutResponse = BaseResponse<DeactivatePayoutResult>;
 
 export interface CashfreeCashgramData {
    cashgramId?: string;

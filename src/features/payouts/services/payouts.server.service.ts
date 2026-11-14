@@ -17,6 +17,8 @@ import {
    ApprovePayoutResult,
    RejectPayoutParams,
    RejectPayoutResult,
+   DeactivatePayoutParams,
+   DeactivatePayoutResult,
    CashfreeCashgramResponse,
 } from "../types/payouts.types";
 
@@ -137,7 +139,7 @@ export const getPayouts = async (
          adminNote: payout.adminNote,
          createdAt: payout.createdAt,
          processedAt: payout.processedAt,
-         cashgramUrl: payout.cashgramUrl ?? ''
+         cashgramUrl: payout.cashgramUrl ?? null
       }));
 
       const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -332,7 +334,7 @@ export const approvePayout = async ({
          "Interviewer";
       const sanitizedName = rawName.replace(/[^a-zA-Z\s]/g, "").trim().slice(0, 100) || "Interviewer";
 
-      const linkExpiry = format(addDays(new Date(), 7), "yyyy/MM/dd");
+      const linkExpiry = format(addDays(new Date(), 2), "yyyy/MM/dd");
       const cashgramId = `cg_${payout.id.replace(/-/g, "").slice(0, 32)}`;
 
       const response = await apiCashfree.post("payout/v1/createCashgram", {
@@ -449,6 +451,86 @@ export const rejectPayout = async ({
       return serverError({
          error,
          fallbackMessage: "Failed to reject payout request",
+      });
+   }
+};
+
+// Deactivate an approved Cashgram and restore interviewer credits
+export const deactivatePayout = async ({
+   payoutId,
+}: DeactivatePayoutParams): Promise<DeactivatePayoutResult> => {
+   try {
+      const admin = await getAuthenticatedUser();
+
+      const payout = await db.payout.findUnique({
+         where: { id: payoutId },
+         select: {
+            id: true,
+            status: true,
+            cashgramId: true,
+            credits: true,
+            interviewerId: true,
+            adminNote: true,
+         },
+      });
+
+      if (!payout) {
+         throw new NotFoundError("Payout request not found");
+      }
+
+      if (payout.status !== PayoutStatus.APPROVED) {
+         throw new ConflictError(
+            `Payout cannot be deactivated because its status is ${payout.status}`
+         );
+      }
+
+      if (!payout.cashgramId) {
+         throw new ValidationError("Cashgram ID is missing for this payout");
+      }
+
+      const response = await apiCashfree.post("payout/v1/deactivateCashgram", {
+         json: {
+            cashgramId: payout.cashgramId,
+         },
+      });
+
+      const result = await response.json<CashfreeCashgramResponse>();
+
+      if (result.status !== "SUCCESS") {
+         throw new AppError(
+            result.message || "Failed to deactivate Cashfree Cashgram",
+            Number(result.subCode) || 400
+         );
+      }
+
+      const [updatedPayout] = await db.$transaction([
+         db.payout.update({
+            where: { id: payoutId },
+            data: {
+               status: PayoutStatus.EXPIRED,
+               processedBy: admin.id,
+               processedAt: new Date(),
+               adminNote: "Cashgram deactivated by admin",
+            },
+         }),
+         db.user.update({
+            where: { id: payout.interviewerId },
+            data: {
+               creditBalance: {
+                  increment: payout.credits,
+               },
+            },
+         }),
+      ]);
+
+      return {
+         success: true,
+         status: updatedPayout.status,
+      };
+   } catch (error: unknown) {
+      return serverError({
+         error,
+         fallbackMessage: "Failed to deactivate Cashgram payout",
       });
    }
 };
