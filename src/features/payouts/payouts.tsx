@@ -205,26 +205,26 @@ const Payouts = () => {
    // Set the dialogue options
    const dialogueConfig: DialogueConfig = confirmDialogue.type ? {
       APPROVED: {
-         title: "Approve payout request",
-         description: "Are you sure you want to approve this payout request? This action is permanent and cannot be undone.",
+         title: payoutsStaticData.dialogs.approve.title,
+         description: payoutsStaticData.dialogs.approve.description,
          onConfirm: handleApprovePayoutRequest,
-         confirmText: "Approve",
+         confirmText: payoutsStaticData.dialogs.approve.confirmText,
          variant: "warning" as const,
          isLoading: isApprovePayoutPending
       },
       REJECT: {
-         title: "Reject payout request",
-         description: "Are you sure you want to reject this payout request? This action is permanent and cannot be undone.",
+         title: payoutsStaticData.dialogs.reject.title,
+         description: payoutsStaticData.dialogs.reject.description,
          onConfirm: handleRejectPayoutRequest,
-         confirmText: "Reject",
+         confirmText: payoutsStaticData.dialogs.reject.confirmText,
          variant: "destructive" as const,
          isLoading: isRejectPayoutPending,
       },
       DEACTIVATE: {
-         title: "Deactivate Cashgram",
-         description: "Are you sure you want to deactivate this Cashgram link? This action is permanent and cannot be undone.",
+         title: payoutsStaticData.dialogs.deactivate.title,
+         description: payoutsStaticData.dialogs.deactivate.description,
          onConfirm: handleDeactivatePayout,
-         confirmText: "Deactivate",
+         confirmText: payoutsStaticData.dialogs.deactivate.confirmText,
          variant: "destructive" as const,
          isLoading: isDeactivatePayoutPending,
       }
