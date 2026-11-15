@@ -139,6 +139,7 @@ export const getPayouts = async (
          adminNote: payout.adminNote,
          createdAt: payout.createdAt,
          processedAt: payout.processedAt,
+         updatedAt: payout.updatedAt,
          cashgramUrl: payout.cashgramUrl ?? null
       }));
 

@@ -335,7 +335,7 @@ const Payouts = () => {
       },
       {
          accessorKey: 'createdAt',
-         header: 'Creation Date',
+         header: 'Requested Date',
          size: 130,
          cell: ({ row }) => {
             const { createdAt } = row.original;
@@ -355,13 +355,13 @@ const Payouts = () => {
          }
       },
       {
-         accessorKey: 'processedAt',
-         header: 'Process Date',
+         accessorKey: 'updatedAt',
+         header: 'Last Updated',
          size: 130,
          cell: ({ row }) => {
-            const { processedAt } = row.original;
+            const { updatedAt } = row.original;
 
-            if (!processedAt) {
+            if (!updatedAt) {
                return (
                   <PrimaryBody
                      text="-"
@@ -373,11 +373,11 @@ const Payouts = () => {
             return (
                <div className='flex flex-col gap-0.5'>
                   <PrimaryBody
-                     text={format(processedAt, 'PP') ?? '-'}
+                     text={format(updatedAt, 'PP') ?? '-'}
                      className="text-xs!"
                   />
                   <PrimaryBody
-                     text={format(processedAt, 'p') ?? '-'}
+                     text={format(updatedAt, 'p') ?? '-'}
                      className="text-[11px]! text-zinc-500"
                   />
                </div>

@@ -18,6 +18,7 @@ export interface PayoutItem {
    adminNote: string | null;
    createdAt: Date;
    processedAt: Date | null;
+   updatedAt: Date | null;
    cashgramUrl: string | null;
 }
 
