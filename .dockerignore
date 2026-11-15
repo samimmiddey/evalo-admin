@@ -1,0 +1,25 @@
+node_modules
+.next
+.git
+.gitignore
+.github
+.husky
+.vscode
+.idea
+
+# Environment files (secrets must never go into the image)
+.env
+.env.*
+!.env.example
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Logs and misc
+npm-debug.log*
+*.log
+.DS_Store
+coverage
+README.md
