@@ -212,7 +212,8 @@ export const PayoutScalarFieldEnum = {
   processedAt: 'processedAt',
   processedBy: 'processedBy',
   cashgramId: 'cashgramId',
-  cashgramUrl: 'cashgramUrl'
+  cashgramUrl: 'cashgramUrl',
+  utr: 'utr'
 } as const
 
 export type PayoutScalarFieldEnum = (typeof PayoutScalarFieldEnum)[keyof typeof PayoutScalarFieldEnum]

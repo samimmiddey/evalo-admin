@@ -147,6 +147,7 @@ model Payout {
   processedBy   String?
   cashgramId    String?
   cashgramUrl   String?
+  utr           String?
   interviewer   User         @relation(fields: [interviewerId], references: [id], onDelete: Cascade)
 
   @@index([status, createdAt])

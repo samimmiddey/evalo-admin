@@ -52,6 +52,7 @@ export type PayoutMinAggregateOutputType = {
   processedBy: string | null
   cashgramId: string | null
   cashgramUrl: string | null
+  utr: string | null
 }
 
 export type PayoutMaxAggregateOutputType = {
@@ -68,6 +69,7 @@ export type PayoutMaxAggregateOutputType = {
   processedBy: string | null
   cashgramId: string | null
   cashgramUrl: string | null
+  utr: string | null
 }
 
 export type PayoutCountAggregateOutputType = {
@@ -84,6 +86,7 @@ export type PayoutCountAggregateOutputType = {
   processedBy: number
   cashgramId: number
   cashgramUrl: number
+  utr: number
   _all: number
 }
 
@@ -114,6 +117,7 @@ export type PayoutMinAggregateInputType = {
   processedBy?: true
   cashgramId?: true
   cashgramUrl?: true
+  utr?: true
 }
 
 export type PayoutMaxAggregateInputType = {
@@ -130,6 +134,7 @@ export type PayoutMaxAggregateInputType = {
   processedBy?: true
   cashgramId?: true
   cashgramUrl?: true
+  utr?: true
 }
 
 export type PayoutCountAggregateInputType = {
@@ -146,6 +151,7 @@ export type PayoutCountAggregateInputType = {
   processedBy?: true
   cashgramId?: true
   cashgramUrl?: true
+  utr?: true
   _all?: true
 }
 
@@ -249,6 +255,7 @@ export type PayoutGroupByOutputType = {
   processedBy: string | null
   cashgramId: string | null
   cashgramUrl: string | null
+  utr: string | null
   _count: PayoutCountAggregateOutputType | null
   _avg: PayoutAvgAggregateOutputType | null
   _sum: PayoutSumAggregateOutputType | null
@@ -288,6 +295,7 @@ export type PayoutWhereInput = {
   processedBy?: Prisma.StringNullableFilter<"Payout"> | string | null
   cashgramId?: Prisma.StringNullableFilter<"Payout"> | string | null
   cashgramUrl?: Prisma.StringNullableFilter<"Payout"> | string | null
+  utr?: Prisma.StringNullableFilter<"Payout"> | string | null
   interviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -305,6 +313,7 @@ export type PayoutOrderByWithRelationInput = {
   processedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   cashgramId?: Prisma.SortOrderInput | Prisma.SortOrder
   cashgramUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  utr?: Prisma.SortOrderInput | Prisma.SortOrder
   interviewer?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -325,6 +334,7 @@ export type PayoutWhereUniqueInput = Prisma.AtLeast<{
   processedBy?: Prisma.StringNullableFilter<"Payout"> | string | null
   cashgramId?: Prisma.StringNullableFilter<"Payout"> | string | null
   cashgramUrl?: Prisma.StringNullableFilter<"Payout"> | string | null
+  utr?: Prisma.StringNullableFilter<"Payout"> | string | null
   interviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
@@ -342,6 +352,7 @@ export type PayoutOrderByWithAggregationInput = {
   processedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   cashgramId?: Prisma.SortOrderInput | Prisma.SortOrder
   cashgramUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  utr?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PayoutCountOrderByAggregateInput
   _avg?: Prisma.PayoutAvgOrderByAggregateInput
   _max?: Prisma.PayoutMaxOrderByAggregateInput
@@ -366,6 +377,7 @@ export type PayoutScalarWhereWithAggregatesInput = {
   processedBy?: Prisma.StringNullableWithAggregatesFilter<"Payout"> | string | null
   cashgramId?: Prisma.StringNullableWithAggregatesFilter<"Payout"> | string | null
   cashgramUrl?: Prisma.StringNullableWithAggregatesFilter<"Payout"> | string | null
+  utr?: Prisma.StringNullableWithAggregatesFilter<"Payout"> | string | null
 }
 
 export type PayoutCreateInput = {
@@ -381,6 +393,7 @@ export type PayoutCreateInput = {
   processedBy?: string | null
   cashgramId?: string | null
   cashgramUrl?: string | null
+  utr?: string | null
   interviewer: Prisma.UserCreateNestedOneWithoutPayoutsInput
 }
 
@@ -398,6 +411,7 @@ export type PayoutUncheckedCreateInput = {
   processedBy?: string | null
   cashgramId?: string | null
   cashgramUrl?: string | null
+  utr?: string | null
 }
 
 export type PayoutUpdateInput = {
@@ -413,6 +427,7 @@ export type PayoutUpdateInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   interviewer?: Prisma.UserUpdateOneRequiredWithoutPayoutsNestedInput
 }
 
@@ -430,6 +445,7 @@ export type PayoutUncheckedUpdateInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PayoutCreateManyInput = {
@@ -446,6 +462,7 @@ export type PayoutCreateManyInput = {
   processedBy?: string | null
   cashgramId?: string | null
   cashgramUrl?: string | null
+  utr?: string | null
 }
 
 export type PayoutUpdateManyMutationInput = {
@@ -461,6 +478,7 @@ export type PayoutUpdateManyMutationInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PayoutUncheckedUpdateManyInput = {
@@ -477,6 +495,7 @@ export type PayoutUncheckedUpdateManyInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PayoutListRelationFilter = {
@@ -503,6 +522,7 @@ export type PayoutCountOrderByAggregateInput = {
   processedBy?: Prisma.SortOrder
   cashgramId?: Prisma.SortOrder
   cashgramUrl?: Prisma.SortOrder
+  utr?: Prisma.SortOrder
 }
 
 export type PayoutAvgOrderByAggregateInput = {
@@ -525,6 +545,7 @@ export type PayoutMaxOrderByAggregateInput = {
   processedBy?: Prisma.SortOrder
   cashgramId?: Prisma.SortOrder
   cashgramUrl?: Prisma.SortOrder
+  utr?: Prisma.SortOrder
 }
 
 export type PayoutMinOrderByAggregateInput = {
@@ -541,6 +562,7 @@ export type PayoutMinOrderByAggregateInput = {
   processedBy?: Prisma.SortOrder
   cashgramId?: Prisma.SortOrder
   cashgramUrl?: Prisma.SortOrder
+  utr?: Prisma.SortOrder
 }
 
 export type PayoutSumOrderByAggregateInput = {
@@ -616,6 +638,7 @@ export type PayoutCreateWithoutInterviewerInput = {
   processedBy?: string | null
   cashgramId?: string | null
   cashgramUrl?: string | null
+  utr?: string | null
 }
 
 export type PayoutUncheckedCreateWithoutInterviewerInput = {
@@ -631,6 +654,7 @@ export type PayoutUncheckedCreateWithoutInterviewerInput = {
   processedBy?: string | null
   cashgramId?: string | null
   cashgramUrl?: string | null
+  utr?: string | null
 }
 
 export type PayoutCreateOrConnectWithoutInterviewerInput = {
@@ -676,6 +700,7 @@ export type PayoutScalarWhereInput = {
   processedBy?: Prisma.StringNullableFilter<"Payout"> | string | null
   cashgramId?: Prisma.StringNullableFilter<"Payout"> | string | null
   cashgramUrl?: Prisma.StringNullableFilter<"Payout"> | string | null
+  utr?: Prisma.StringNullableFilter<"Payout"> | string | null
 }
 
 export type PayoutCreateManyInterviewerInput = {
@@ -691,6 +716,7 @@ export type PayoutCreateManyInterviewerInput = {
   processedBy?: string | null
   cashgramId?: string | null
   cashgramUrl?: string | null
+  utr?: string | null
 }
 
 export type PayoutUpdateWithoutInterviewerInput = {
@@ -706,6 +732,7 @@ export type PayoutUpdateWithoutInterviewerInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PayoutUncheckedUpdateWithoutInterviewerInput = {
@@ -721,6 +748,7 @@ export type PayoutUncheckedUpdateWithoutInterviewerInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PayoutUncheckedUpdateManyWithoutInterviewerInput = {
@@ -736,6 +764,7 @@ export type PayoutUncheckedUpdateManyWithoutInterviewerInput = {
   processedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cashgramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  utr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -754,6 +783,7 @@ export type PayoutSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   processedBy?: boolean
   cashgramId?: boolean
   cashgramUrl?: boolean
+  utr?: boolean
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payout"]>
 
@@ -771,6 +801,7 @@ export type PayoutSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   processedBy?: boolean
   cashgramId?: boolean
   cashgramUrl?: boolean
+  utr?: boolean
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payout"]>
 
@@ -788,6 +819,7 @@ export type PayoutSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   processedBy?: boolean
   cashgramId?: boolean
   cashgramUrl?: boolean
+  utr?: boolean
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payout"]>
 
@@ -805,9 +837,10 @@ export type PayoutSelectScalar = {
   processedBy?: boolean
   cashgramId?: boolean
   cashgramUrl?: boolean
+  utr?: boolean
 }
 
-export type PayoutOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "interviewerId" | "credits" | "platformFee" | "netAmount" | "status" | "adminNote" | "createdAt" | "updatedAt" | "processedAt" | "processedBy" | "cashgramId" | "cashgramUrl", ExtArgs["result"]["payout"]>
+export type PayoutOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "interviewerId" | "credits" | "platformFee" | "netAmount" | "status" | "adminNote" | "createdAt" | "updatedAt" | "processedAt" | "processedBy" | "cashgramId" | "cashgramUrl" | "utr", ExtArgs["result"]["payout"]>
 export type PayoutInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   interviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -837,6 +870,7 @@ export type $PayoutPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     processedBy: string | null
     cashgramId: string | null
     cashgramUrl: string | null
+    utr: string | null
   }, ExtArgs["result"]["payout"]>
   composites: {}
 }
@@ -1274,6 +1308,7 @@ export interface PayoutFieldRefs {
   readonly processedBy: Prisma.FieldRef<"Payout", 'String'>
   readonly cashgramId: Prisma.FieldRef<"Payout", 'String'>
   readonly cashgramUrl: Prisma.FieldRef<"Payout", 'String'>
+  readonly utr: Prisma.FieldRef<"Payout", 'String'>
 }
     
 

@@ -10,7 +10,7 @@ import SecondaryTitle from '@/components/common/secondary-title';
 import PrimaryBody from '@/components/common/primary-body';
 import getStatusBadge from '@/components/common/get-status-badge';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useDebounce from '@/hooks/use-debounce';
 import { DateRange } from 'react-day-picker';
 import { PayoutStatus } from '@/generated/prisma/enums';
@@ -63,7 +63,8 @@ const Payouts = () => {
       value: false,
       type: null
    });
-   const [copied, setCopied] = useState<boolean>(false);
+   const [copiedId, setCopiedId] = useState<string | null>(null);
+   const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
    const params = {
       page: 1,
@@ -194,13 +195,29 @@ const Payouts = () => {
    }, [exportCSVError, isApprovePayoutError, isRejectPayoutError, isDeactivatePayoutError]);
 
    // Handle copy cashgram Url
-   const handleCopyText = async (value: string) => {
+   const handleCopyText = async (value: string, id: string) => {
       const ok = await copyText(value);
-      if (ok) {
-         setCopied(true);
-         setTimeout(() => setCopied(false), 1500);
+      if (!ok) {
+         toast.error('Failed to copy to clipboard');
+         return;
       }
+
+      if (copyTimeoutRef.current) {
+         clearTimeout(copyTimeoutRef.current);
+      }
+
+      setCopiedId(id);
+      copyTimeoutRef.current = setTimeout(() => setCopiedId(null), 1500);
    };
+
+   // Clear copy timeout on unmount
+   useEffect(() => {
+      return () => {
+         if (copyTimeoutRef.current) {
+            clearTimeout(copyTimeoutRef.current);
+         }
+      };
+   }, []);
 
    // Set the dialogue options
    const dialogueConfig: DialogueConfig = confirmDialogue.type ? {
@@ -289,7 +306,7 @@ const Payouts = () => {
          header: 'Cashgram URL',
          size: 150,
          cell: ({ row }) => {
-            const { cashgramUrl } = row.original;
+            const { cashgramUrl, id } = row.original;
 
             return (
                <div className="flex items-center gap-2">
@@ -304,11 +321,11 @@ const Payouts = () => {
                   {
                      cashgramUrl &&
                      (
-                        copied ?
+                        copiedId === id ?
                            <CircleCheckBig className='h-3.5 w-3.5 text-emerald-400' /> :
                            <Copy
                               className='h-3.5 w-3.5 text-zinc-400 cursor-pointer'
-                              onClick={() => void handleCopyText(cashgramUrl)}
+                              onClick={() => void handleCopyText(cashgramUrl, id)}
                            />
                      )
                   }
