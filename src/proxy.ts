@@ -13,7 +13,7 @@ export default clerkMiddleware(async (auth, req) => {
    const isAdmin = sessionClaims?.metadata?.role === 'ADMIN';
 
    // Redirect to dashboard page if user is logged in
-   if (isAuthenticated && isAdmin && isPublicRoutes(pathname) && !pathname.startsWith('/api')) {
+   if (isAuthenticated && isAdmin && (pathname === '/' || (isPublicRoutes(pathname) && !pathname.startsWith('/api')))) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
    }
 
