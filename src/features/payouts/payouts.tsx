@@ -251,12 +251,12 @@ const Payouts = () => {
       {
          accessorKey: 'fullName',
          header: 'Full Name',
-         size: 275,
+         size: 260,
          cell: ({ row }) => {
             const { name, image, email } = row.original.interviewer;
 
             return (
-               <div className="flex items-center gap-3">
+               <div className="flex items-center gap-3 min-w-0">
                   <Image
                      src={image ?? '/user.png'}
                      alt='Image'
@@ -264,14 +264,14 @@ const Payouts = () => {
                      width={50}
                      className='rounded-lg'
                   />
-                  <div className="flex flex-col items-start gap-0.5">
+                  <div className="flex flex-col items-start gap-0.5 min-w-0 w-full">
                      <SecondaryTitle
                         text={name ?? '-'}
-                        className="text-xs! 2xl:text-sm! truncate"
+                        className="text-xs! 2xl:text-sm! truncate w-full"
                      />
                      <PrimaryBody
                         text={email ?? '-'}
-                        className="text-[13px]! truncate"
+                        className="text-[13px]! truncate w-full"
                      />
                   </div>
                </div>
@@ -288,6 +288,21 @@ const Payouts = () => {
             return (
                <PrimaryBody
                   text={formatCurrency(netAmount) ?? '-'}
+                  className="text-xs!"
+               />
+            );
+         }
+      },
+      {
+         accessorKey: 'platformFee',
+         header: 'Platform Fee',
+         size: 110,
+         cell: ({ row }) => {
+            const { platformFee } = row.original;
+
+            return (
+               <PrimaryBody
+                  text={formatCurrency(platformFee) ?? '-'}
                   className="text-xs!"
                />
             );
@@ -322,9 +337,9 @@ const Payouts = () => {
                      cashgramUrl &&
                      (
                         copiedId === id ?
-                           <CircleCheckBig className='h-3.5 w-3.5 text-emerald-400' /> :
+                           <CircleCheckBig className='h-3.5 w-3.5 text-emerald-400 shrink-0' /> :
                            <Copy
-                              className='h-3.5 w-3.5 text-zinc-400 cursor-pointer'
+                              className='h-3.5 w-3.5 text-zinc-400 cursor-pointer shrink-0'
                               onClick={() => void handleCopyText(cashgramUrl, id)}
                            />
                      )
