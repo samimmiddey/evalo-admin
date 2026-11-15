@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<!-- TODO: Add banner image -->
+![Evalo Admin Banner](public/home.png)
 
-## Getting Started
+# Evalo Admin
 
-First, run the development server:
+Evalo Admin is an internal operations dashboard for managing mock technical interview sessions, interviewer payouts, user accounts, and platform configurations.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Peer-to-peer interview platforms require strict session auditing and fraud controls that customer-facing applications cannot expose. Evalo Admin centralizes call verification, automated financial disbursements, and role governance into an administrative portal.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Audits live video sessions by inspecting Stream call presence data, duration logs, and recordings to resolve dispute claims and process credit refunds.
+- Processes interviewer payouts through Cashfree Cashgram with instant payout link generation, approval workflows, and transaction state tracking.
+- Moderates platform accounts by inspecting user metadata, revoking active Clerk sessions, toggling access status, and exporting records to CSV.
+- Visualizes platform activity trends, domain expertise distribution, and operational metrics using Recharts.
+- Configures global platform fee percentages, credit conversion rates, and minimum withdrawal limits.
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+| Category | Technology |
+|---|---|
+| Language | TypeScript |
+| Framework | Next.js (App Router, React 19) |
+| UI & Styling | Tailwind CSS, shadcn/ui (Base UI), TanStack Table, Lucide Icon |
+| Database & ORM | PostgreSQL, Prisma ORM |
+| Authentication | Clerk (Role-Based Access Control) |
+| Major Services | Stream Video SDK, Cashfree Cashgram API |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Multi-stage Docker container utilizing Next.js standalone output for minimal production image footprint.
+- GitHub Actions CI workflow running lint checks, Prisma client generation, static type verification, and build validation on pull requests.
+- GitHub Actions CD workflow building and publishing container images to GitHub Packages (GHCR) and triggering deployments via Render deploy hooks.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Copyright (c) 2026 Samim Middey. All rights reserved.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This source code is provided for viewing and evaluation purposes only.
+No permission is granted to copy, modify, distribute, or use it
+without prior written permission from the copyright holder.
