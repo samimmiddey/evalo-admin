@@ -10,13 +10,19 @@ export async function POST(request: NextRequest) {
       const { searchParams } = new URL(request.url);
 
       const payoutId = body?.payoutId ?? searchParams.get("payoutId");
+      const adminNote = body?.adminNote ?? searchParams.get("adminNote");
 
       if (!payoutId || typeof payoutId !== "string") {
          throw new ValidationError("Payout ID is required");
       }
 
+      if (!adminNote || typeof adminNote !== "string" || !adminNote.trim()) {
+         throw new ValidationError("Admin note is required");
+      }
+
       const result = await deactivatePayout({
          payoutId,
+         adminNote: adminNote.trim(),
       });
 
       return apiResponse({

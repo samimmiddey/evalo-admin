@@ -98,11 +98,17 @@ export const approvePayout = async (params: ApprovePayoutParams): Promise<Approv
 };
 
 // Reject a payout request and restore credits
-export const rejectPayout = async (params: RejectPayoutParams): Promise<RejectPayoutResult> => {
+export const rejectPayout = async ({
+   payoutId,
+   adminNote,
+}: RejectPayoutParams): Promise<RejectPayoutResult> => {
    try {
       const res = await api
          .post(REJECT_PAYOUT, {
-            json: params,
+            json: {
+               payoutId,
+               adminNote,
+            },
          })
          .json<RejectPayoutResponse>();
 
@@ -120,13 +126,17 @@ export const rejectPayout = async (params: RejectPayoutParams): Promise<RejectPa
 };
 
 // Deactivate an approved Cashgram and restore credits
-export const deactivatePayout = async (
-   params: DeactivatePayoutParams
-): Promise<DeactivatePayoutResult> => {
+export const deactivatePayout = async ({
+   payoutId,
+   adminNote,
+}: DeactivatePayoutParams): Promise<DeactivatePayoutResult> => {
    try {
       const res = await api
          .post(DEACTIVATE_PAYOUT, {
-            json: params,
+            json: {
+               payoutId,
+               adminNote,
+            },
          })
          .json<DeactivatePayoutResponse>();
 

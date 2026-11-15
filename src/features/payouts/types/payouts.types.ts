@@ -71,7 +71,7 @@ export type ApprovePayoutResponse = BaseResponse<ApprovePayoutResult>;
 
 export interface RejectPayoutParams {
    payoutId: string;
-   adminNote?: string;
+   adminNote: string;
 }
 
 export interface RejectPayoutResult {
@@ -83,6 +83,7 @@ export type RejectPayoutResponse = BaseResponse<RejectPayoutResult>;
 
 export interface DeactivatePayoutParams {
    payoutId: string;
+   adminNote: string;
 }
 
 export interface DeactivatePayoutResult {

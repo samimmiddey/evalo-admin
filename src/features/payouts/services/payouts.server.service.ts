@@ -424,6 +424,10 @@ export const rejectPayout = async ({
          );
       }
 
+      if (!adminNote?.trim()) {
+         throw new ValidationError("Admin note is required to reject a payout");
+      }
+
       const [updatedPayout] = await db.$transaction([
          db.payout.update({
             where: { id: payoutId },
@@ -431,7 +435,7 @@ export const rejectPayout = async ({
                status: PayoutStatus.REJECTED,
                processedBy: admin.id,
                processedAt: new Date(),
-               adminNote: adminNote?.trim() || payout.adminNote,
+               adminNote: adminNote.trim(),
             },
          }),
          db.user.update({
@@ -459,9 +463,14 @@ export const rejectPayout = async ({
 // Deactivate an approved Cashgram and restore interviewer credits
 export const deactivatePayout = async ({
    payoutId,
+   adminNote,
 }: DeactivatePayoutParams): Promise<DeactivatePayoutResult> => {
    try {
       const admin = await getAuthenticatedUser();
+
+      if (!adminNote?.trim()) {
+         throw new ValidationError("Admin note is required to deactivate a payout");
+      }
 
       const payout = await db.payout.findUnique({
          where: { id: payoutId },
@@ -511,7 +520,7 @@ export const deactivatePayout = async ({
                status: PayoutStatus.EXPIRED,
                processedBy: admin.id,
                processedAt: new Date(),
-               adminNote: "Cashgram deactivated by admin",
+               adminNote: adminNote.trim(),
             },
          }),
          db.user.update({

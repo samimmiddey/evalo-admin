@@ -109,8 +109,13 @@ const Sessions = () => {
 
    // Handle issue refund
    const handleIssueRefund = async () => {
-      if (!refundDialogue.id || !adminNoteRef.current?.value) {
-         toast.error('Booking ID and admin note are required');
+      if (!refundDialogue.id) {
+         toast.error('Booking ID is required');
+         return;
+      }
+
+      if (!adminNoteRef.current?.value.trim()) {
+         toast.error("Admin note is required");
          return;
       }
 
@@ -465,7 +470,7 @@ const Sessions = () => {
             <Textarea
                className='w-full h-20 text-sm! placeholder:text-zinc-400/50'
                ref={adminNoteRef}
-               placeholder='Refund note'
+               placeholder='Admin note for refund'
             />
          </ConfirmDialog>
 

@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import ConfirmDialog, { ConfirmDialogVariant } from '@/components/common/confirm-dialog';
 import { CircleCheckBig, Copy } from 'lucide-react';
 import { copyText } from '@/utils/copy-text';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Filters {
    date?: DateRange;
@@ -65,6 +66,8 @@ const Payouts = () => {
    });
    const [copiedId, setCopiedId] = useState<string | null>(null);
    const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+   const [adminNote, setAdminNote] = useState<string>('');
 
    const params = {
       page: 1,
@@ -149,10 +152,16 @@ const Payouts = () => {
          return;
       }
 
-      const res = await rejectPayoutMutation({ payoutId: confirmDialogue.id });
+      if (!adminNote.trim()) {
+         toast.error("Admin note is required");
+         return;
+      }
+
+      const res = await rejectPayoutMutation({ payoutId: confirmDialogue.id, adminNote });
       if (res?.success) {
          toast.success("Payout request is successfully rejected");
          setConfirmDialogue({ id: null, value: false, type: null });
+         setAdminNote('');
          refecthPayouts();
       }
    };
@@ -167,10 +176,16 @@ const Payouts = () => {
          return;
       }
 
-      const res = await deactivatePayoutMutation({ payoutId: confirmDialogue.id });
+      if (!adminNote.trim()) {
+         toast.error("Admin note is required");
+         return;
+      }
+
+      const res = await deactivatePayoutMutation({ payoutId: confirmDialogue.id, adminNote });
       if (res?.success) {
          toast.success("Cashgram payout is successfully deactivated");
          setConfirmDialogue({ id: null, value: false, type: null });
+         setAdminNote('');
          refecthPayouts();
       }
    };
@@ -517,14 +532,27 @@ const Payouts = () => {
             dialogueConfig &&
             <ConfirmDialog
                open={confirmDialogue.value}
-               onClose={() => setConfirmDialogue({ id: null, value: false, type: null })}
+               onClose={() => {
+                  setAdminNote('');
+                  setConfirmDialogue({ id: null, value: false, type: null });
+               }}
                title={dialogueConfig.title}
                description={dialogueConfig.description}
                onConfirm={dialogueConfig.onConfirm}
                confirmText={dialogueConfig.confirmText}
                variant={dialogueConfig.variant}
                isLoading={dialogueConfig.isLoading}
-            />
+            >
+               {
+                  confirmDialogue.type !== 'APPROVED' &&
+                  <Textarea
+                     className='w-full h-20 text-sm! placeholder:text-zinc-400/50'
+                     value={adminNote}
+                     onChange={e => setAdminNote(e.target.value)}
+                     placeholder={confirmDialogue.type === 'REJECT' ? 'Admin note for rejection' : 'Admin note for deactivation'}
+                  />
+               }
+            </ConfirmDialog>
          }
 
       </div>
