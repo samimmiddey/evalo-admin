@@ -104,7 +104,7 @@ export function FilterSidebar({ open, setOpen, items, onResetFilters }: FilterSi
                   }
                </div>
             </DrawerHeader>
-            <div className={`p-4 flex flex-col gap-5 md:gap-6 ${mdWidth ? 'mb-6 mt-3' : 'mb-4 mt-4'}`}>
+            <div className={`p-4 flex flex-col gap-5 md:gap-6 ${mdWidth ? 'mb-7 mt-3' : 'mb-4 mt-4'}`}>
                {
                   items?.map(item => {
                      if (item.type === 'date') {
@@ -168,18 +168,16 @@ export function FilterSidebar({ open, setOpen, items, onResetFilters }: FilterSi
             </div>
             <DrawerFooter className='flex flex-row items-center gap-2.5'>
                <Button
-                  size='xl'
                   variant='ghost'
                   onClick={handleClear}
                   disabled={!Boolean(hasActiveDraft)}
-                  className='bg-red-500/10! text-red-400! w-1/2'
+                  className='bg-red-500/10! text-red-400! w-1/2 h-10'
                >
                   clear
                </Button>
                <Button
-                  size="xl"
                   onClick={handleApply}
-                  className='w-1/2'
+                  className='w-1/2 h-10'
                   disabled={!Boolean(hasActiveDraft)}
                >
                   Apply Filters
