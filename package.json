@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky",
-    "commitlint": "commitlint --edit",
-    "postinstall": "prisma generate"
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
