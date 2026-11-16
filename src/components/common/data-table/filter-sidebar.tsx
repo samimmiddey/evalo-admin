@@ -80,7 +80,7 @@ export function FilterSidebar({ open, setOpen, items, onResetFilters }: FilterSi
          showSwipeHandle={Boolean(mdWidth)}
          swipeDirection={mdWidth ? "down" : "right"}
       >
-         <DrawerContent className={`border-white/5 bg-zinc-900 ${mdWidth ? 'h-150' : ''}`}>
+         <DrawerContent className="border-white/5 bg-zinc-900">
             <DrawerHeader>
                <div className="flex items-start gap-4 justify-between">
                   <div className="flex flex-col gap-1 w-full">
@@ -104,7 +104,7 @@ export function FilterSidebar({ open, setOpen, items, onResetFilters }: FilterSi
                   }
                </div>
             </DrawerHeader>
-            <div className="p-4 flex flex-col gap-6 my-4">
+            <div className={`p-4 flex flex-col gap-5 md:gap-6 ${mdWidth ? 'mb-6 mt-3' : 'mb-4 mt-4'}`}>
                {
                   items?.map(item => {
                      if (item.type === 'date') {
