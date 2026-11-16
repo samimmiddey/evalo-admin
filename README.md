@@ -30,9 +30,10 @@ Peer-to-peer interview platforms require strict session auditing and fraud contr
 
 ## Deployment
 
-- Multi-stage Docker container utilizing Next.js standalone output for minimal production image footprint.
-- GitHub Actions CI workflow running lint checks, Prisma client generation, static type verification, and build validation on pull requests.
-- GitHub Actions CD workflow building and publishing container images to GitHub Packages (GHCR) and triggering deployments via Render deploy hooks.
+- Multi-stage Docker container utilizing Next.js standalone output for minimal image footprint.
+- GitHub Actions CI workflow running lint checks, Prisma client generation, static type verification, and build validation on pull requests targeting main, staging, and production branches.
+- Staging deployment building and publishing Docker container images to GitHub Packages (GHCR) and triggering updates via Render deploy hooks on pushes to staging branch.
+- Production deployment hosted on Vercel with automated deployments triggered on pushes to production branch.
 
 ## License
 
